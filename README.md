@@ -1,6 +1,5 @@
 # onsaemiro_reactWeb
 Material-UI의 Minimal UI 템플릿을 기반으로한 온새미로 관리자 웹
-시작하기 
  1. 파일 다운로드
  2. npm install
  3. npm run build
