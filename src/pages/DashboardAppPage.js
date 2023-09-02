@@ -37,7 +37,7 @@ export default function DashboardAppPage() {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Welcome back
 
-          <Button sx={{float:"right"}}variant="outlined" startIcon={<AddIcon />} onClick={modal} >
+          <Button sx={{float:"right"}} variant="outlined" startIcon={<AddIcon />} onClick={modal} >
             Add Profile
           </Button>
         </Typography>
