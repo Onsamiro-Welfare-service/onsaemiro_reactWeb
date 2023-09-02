@@ -41,6 +41,15 @@ export default function DashboardAppPage() {
             Add Profile
           </Button>
         </Typography>
+
+        <div>
+            {/* 여기는 프로필 바디 영역 */}
+
+            <div> {/* 이거는 default 모달창을 위한 영역  */}
+               <div>첫번째 모달 팝업</div>
+               <div>두번째 모달 팝업</div>
+            </div>
+        </div>
         
       </Container>
     </>
