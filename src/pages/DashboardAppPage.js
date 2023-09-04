@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 // import { faker } from '@faker-js/faker'; 해당 라이브러리는
 // @mui
 // import { useTheme } from '@mui/material/styles';
-import { Container, Typography, Button } from '@mui/material';
+import { Container, Typography, Button, Box } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 // components
 // import Iconify from '../components/iconify';
@@ -33,7 +33,14 @@ export default function DashboardAppPage() {
         <title> Dashboard | Minimal UI </title>
       </Helmet>
 
-      <Container maxWidth="xl">
+      <Container 
+        maxWidth="xl" 
+        sx={{
+          backgroundColor:"white", 
+          padding:"24px",
+          borderRadius:"15px"
+        }}
+         >
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Welcome back
 
@@ -42,8 +49,15 @@ export default function DashboardAppPage() {
           </Button>
         </Typography>
 
+        <Box
+          sx={{
+            backgroundColor:"white",
+            width:'100%',
+            height:'100%'
+          }}
+        >첫번째 모달 팝업</Box>
 
-        <div>첫번째 모달 팝업</div>
+
         <div>두번째 모달 팝업</div>
         
         
