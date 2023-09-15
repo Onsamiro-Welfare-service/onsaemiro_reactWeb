@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 // import { faker } from '@faker-js/faker'; 해당 라이브러리는
 // @mui
 // import { useTheme } from '@mui/material/styles';
-import { Container, Typography, Button, Box } from '@mui/material';
+import { Container, Typography, Button, Box  } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 // components
 // import Iconify from '../components/iconify';
@@ -27,6 +27,7 @@ export default function DashboardAppPage() {
     // 여기에 회원가입 완료 관련 코드 입력
     console.log("버튼 클릭");
   };
+
   return (
     <>
       <Helmet>
@@ -56,6 +57,7 @@ export default function DashboardAppPage() {
             height:'100%'
           }}
         >첫번째 모달 팝업</Box>
+        
 
 
         <div>두번째 모달 팝업</div>

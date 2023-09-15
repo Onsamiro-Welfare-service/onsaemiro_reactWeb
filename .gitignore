@@ -10,7 +10,7 @@ node_modules/
 /coverage
 
 # production
-/build
+# /build
 
 # misc
 .DS_Store
@@ -25,3 +25,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .eslintcache
+
+node_modules/
