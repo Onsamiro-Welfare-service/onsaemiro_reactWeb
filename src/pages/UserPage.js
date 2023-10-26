@@ -21,6 +21,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Select, FormControl, InputLabel
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -35,16 +36,17 @@ import USERLIST from '../_mock/user';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'loginId', label: 'Id', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'approve', label: 'Approve', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-function descendingComparator(a, b, orderBy) {
+// 리스트 정렬 관련
+function descendingComparator(a, b, orderBy) { 
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -54,7 +56,7 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-function getComparator(order, orderBy) {
+function getComparator(order, orderBy) { 
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -73,6 +75,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+// 메인 함수 
 export default function UserPage() {
   const [open, setOpen] = useState(null);
 
@@ -201,7 +204,24 @@ export default function UserPage() {
 
                         <TableCell align="left">{role}</TableCell>
 
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell align="left">
+                        <FormControl>
+                          <Select
+                            labelId="select-label"
+                            id="select"
+                            sx={{
+                              width: '120px',
+                              height: '40px',
+                              fontWeight: '10px'
+                            }}
+                          >
+                            <MenuItem value="banned">banned</MenuItem>
+                            <MenuItem value="active">active</MenuItem>
+                            <MenuItem value="suspend">suspend</MenuItem>
+                            
+                          </Select>
+                        </FormControl>
+                        </TableCell>
 
                         <TableCell align="left">
                           <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
@@ -279,14 +299,14 @@ export default function UserPage() {
           },
         }}
       >
-        <MenuItem>
+        {/* <MenuItem>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Edit
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem sx={{ color: 'error.main' }}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
+          삭제하기
         </MenuItem>
       </Popover>
     </>
