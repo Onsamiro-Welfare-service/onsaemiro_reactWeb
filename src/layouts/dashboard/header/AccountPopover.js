@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import account from '../../../_mock/account';
-
+import { rmCookie } from '../../../sections/auth/cookie/cookie';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -25,6 +26,8 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const navigate = useNavigate();
+
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -33,6 +36,11 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
+    rmCookie('accessToken');
+    rmCookie('refreshToken');
+    alert("로그아웃 되었습니다.");
+    navigate('/login', { replace: true });
+    // 삭제 요청하는 api
   };
 
   return (

@@ -1,5 +1,5 @@
 // const baseURL = `https://test.onsaemiro.site/api`; // 기본 api 주소
-const baseURL = `http://localhost:8080/`;
+const baseURL = `http://localhost:8080`;
 export const API = {
     "manageRegister": `${baseURL}/auth/register/manager`,
     "newToken": `${baseURL}/auth/newtoken`,
@@ -19,5 +19,5 @@ export const API = {
     "userDelete": `${baseURL}/managemnet/user/delete`,
 
     "departmentAdd": `${baseURL}/management/department/add`,
-    "departmentGetList": `${baseURL}/management/department/all`
+    "departmentGetList": `${baseURL}/auth/department/all`
 };
