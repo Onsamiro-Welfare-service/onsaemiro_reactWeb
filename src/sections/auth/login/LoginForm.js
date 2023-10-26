@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
@@ -12,12 +13,15 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loginId, setLoginId] = useState('');
+  const [loginPwd, setLoginPwd] = useState('');
 
   const handleClickSignin = () => {
     // 여기에 로그인 관련 코드 입력
-    navigate('/dashboard', { replace: true });
+    // navigate('/login', { replace: true });
+    console.log(loginId, loginPwd);
   };
-  const handleClickJoinin = () => {
+  const handleClickSignUp = () => {
     // 여기에 회원가입 관련 코드 입력
     navigate('/signUp', { replace: true });
   };
@@ -25,12 +29,17 @@ export default function LoginForm() {
   return (
     <>
       <Stack spacing={3}>
-        <TextField name="loginId" label="아이디" />
+        <TextField 
+          name="loginId" 
+          label="아이디" 
+          onBlur={(e)=> setLoginId(e.target.value)}  
+        />
 
         <TextField
           name="loginPassword"
           label="비밀번호"
           type={showPassword ? 'text' : 'password'}
+          onBlur={(e)=> setLoginPwd(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -72,7 +81,7 @@ export default function LoginForm() {
           borderColor: 'rgba(255, 86, 48)', // hover 시 배경 색상 변경
           backgroundColor: 'rgba(255, 86, 48, 0.05)'
         }
-      }} fullWidth size="large" type="submit" variant="outlined" onClick={handleClickJoinin} >
+      }} fullWidth size="large" type="submit" variant="outlined" onClick={handleClickSignUp} >
         회원가입
       </LoadingButton>
     </>
