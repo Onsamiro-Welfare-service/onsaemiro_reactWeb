@@ -2,6 +2,7 @@
 const baseURL = `http://localhost:8080`;
 export const API = {
     "manageRegister": `${baseURL}/auth/register/manager`,
+    "manageDoubleCheck" : `${baseURL}/auth/login/doublecheck`,
     "newToken": `${baseURL}/auth/newtoken`,
     "loginAdmin": `${baseURL}/auth/login/manager`,
     "imgUpload": `${baseURL}/image/upload`,
