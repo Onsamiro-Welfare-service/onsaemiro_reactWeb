@@ -61,17 +61,17 @@ export default function SignUpForm() {
       return;
     }
     
-
-    try {
-      const response = await axios.post(API.manageDoubleCheck, manageData);
-      if(response.status === 200){
-        console.log("중복확인");
-      } else {
-        alert("이미 등록된 정보입니다!.");
-      }
-    } catch(err){
-      console.log('[Error : registerManager] doubleCheck:',err);
-    }
+    // double Check API 업데이트 되면 
+    // try {
+    //   const response = await axios.post(API.manageDoubleCheck, manageData);
+    //   if(response.status === 200){
+    //     console.log("중복확인");
+    //   } else {
+    //     alert("이미 등록된 정보입니다!.");
+    //   }
+    // } catch(err){
+    //   console.log('[Error : registerManager] doubleCheck:',err);
+    // }
     // 회원가입 API 요청 - POST
     try {
       const response = await axios.post(API.manageRegister, manageData);

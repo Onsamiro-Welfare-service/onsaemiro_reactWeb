@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
@@ -5,7 +6,8 @@ import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import account from '../../../_mock/account';
-import { rmCookie } from '../../../sections/auth/cookie/cookie';
+import { rmCookie, getCookie } from '../../../sections/auth/cookie/cookie';
+import { API } from '../../../apiLink';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -25,22 +27,56 @@ const MENU_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
+
 export default function AccountPopover() {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(null);
-
+  let logoutChk = false;
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setOpen(null);
-    rmCookie('accessToken');
-    rmCookie('refreshToken');
-    alert("로그아웃 되었습니다.");
-    navigate('/login', { replace: true });
-    // 삭제 요청하는 api
+  // 로그아웃 처리하는 API
+  const requestLogout = async() => {
+    try {
+      const manageId = getCookie("managerId");
+      const accessTkn = getCookie("accessToken");
+      const response = await axios.post(API.manageLogout, 
+        { "managerId": manageId },
+        { headers: { 'Authorization': `Bearer ${accessTkn} `}}
+      );
+      // 헤더부분 어떻게 처리?
+      if(response.status === 200){
+        logoutChk = true;
+      } else {
+        console.log('[Error] Logout Api request Failed. Status - ', response.status);
+        logoutChk = false;
+      }
+    } catch(err){
+      console.log('[Error] Logout Api request:',err);
+      if(err.name === 'AxiosError'){
+        console.log('토큰으로 인한 AxiosError 발생. 로그아웃 처리함');
+        logoutChk = true;
+      } else {
+        logoutChk = false;
+      }
+    }
+  };
+
+  // 버튼이 눌리면 로그아웃 처리
+  const handleClose = async() => {
+    await requestLogout();
+    if(logoutChk){
+      setOpen(null);
+      rmCookie('accessToken');
+      rmCookie('refreshToken');
+      rmCookie('managerId');
+      alert("로그아웃 되었습니다.");
+      navigate('/login', { replace: true });
+    } else {
+      alert("로그아웃 실패. 다시 요청해주세요");
+    }
   };
 
   return (

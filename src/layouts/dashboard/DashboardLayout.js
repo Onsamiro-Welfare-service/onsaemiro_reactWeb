@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+// import { Outlet, useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 //
 import Header from './header';
 import Nav from './nav';
+//
+import { getCookie } from '../../sections/auth/cookie/cookie';
 
 // ----------------------------------------------------------------------
 
@@ -33,8 +36,16 @@ const Main = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
+  // const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const accessTkn = getCookie("accessToken");
+  // const refreshTkn = getCookie("refreshToken");
 
+  if(accessTkn === null || accessTkn === undefined){
+    console.log("DashboardLayout.js : 로그인 권한이 없습니다");
+    // alert('로그인 권한이 없습니다!');
+    // navigate('/login', { replace: true });
+  }
   return (
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)} />
