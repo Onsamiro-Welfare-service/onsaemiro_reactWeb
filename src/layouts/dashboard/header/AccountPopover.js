@@ -26,8 +26,6 @@ const MENU_OPTIONS = [
 ];
 
 // ----------------------------------------------------------------------
-
-
 export default function AccountPopover() {
   const navigate = useNavigate();
 
@@ -39,29 +37,26 @@ export default function AccountPopover() {
 
   // 로그아웃 처리하는 API
   const requestLogout = async() => {
-    try {
-      const manageId = getCookie("managerId");
-      const accessTkn = getCookie("accessToken");
-      const response = await axios.post(API.manageLogout, 
-        { "managerId": manageId },
-        { headers: { 'Authorization': `Bearer ${accessTkn} `}}
-      );
-      // 헤더부분 어떻게 처리?
-      if(response.status === 200){
-        logoutChk = true;
-      } else {
-        console.log('[Error] Logout Api request Failed. Status - ', response.status);
-        logoutChk = false;
+    const manageId = getCookie("managerId");
+    const accessTkn = getCookie("accessToken");
+    console.log(manageId);
+    console.log(accessTkn);
+    await axios.post(API.manageLogout, 
+      { "managerId": manageId },
+      { headers: {
+          'Authorization': `Bearer ${accessTkn}` 
       }
-    } catch(err){
-      console.log('[Error] Logout Api request:',err);
-      if(err.name === 'AxiosError'){
+    }).then(() => {
+      logoutChk = true;
+    }).catch((error) => {
+      console.log('[Error] Logout Api request:',error);
+      if(error.name === 'AxiosError'){
         console.log('토큰으로 인한 AxiosError 발생. 로그아웃 처리함');
         logoutChk = true;
       } else {
         logoutChk = false;
       }
-    }
+    });
   };
 
   // 버튼이 눌리면 로그아웃 처리
