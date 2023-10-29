@@ -1,10 +1,13 @@
+import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import account from '../../../_mock/account';
-
+import { rmCookie, getCookie } from '../../../sections/auth/cookie/cookie';
+import { API } from '../../../apiLink';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -23,16 +26,52 @@ const MENU_OPTIONS = [
 ];
 
 // ----------------------------------------------------------------------
-
 export default function AccountPopover() {
-  const [open, setOpen] = useState(null);
+  const navigate = useNavigate();
 
+  const [open, setOpen] = useState(null);
+  let logoutChk = false;
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setOpen(null);
+  // 로그아웃 처리하는 API
+  const requestLogout = async() => {
+    const manageId = getCookie("managerId");
+    const accessTkn = getCookie("accessToken");
+    console.log(manageId);
+    console.log(accessTkn);
+    await axios.post(API.manageLogout, 
+      { "managerId": manageId },
+      { headers: {
+          'Authorization': `Bearer ${accessTkn}` 
+      }
+    }).then(() => {
+      logoutChk = true;
+    }).catch((error) => {
+      console.log('[Error] Logout Api request:',error);
+      if(error.name === 'AxiosError'){
+        console.log('토큰으로 인한 AxiosError 발생. 로그아웃 처리함');
+        logoutChk = true;
+      } else {
+        logoutChk = false;
+      }
+    });
+  };
+
+  // 버튼이 눌리면 로그아웃 처리
+  const handleClose = async() => {
+    await requestLogout();
+    if(logoutChk){
+      setOpen(null);
+      rmCookie('accessToken');
+      rmCookie('refreshToken');
+      rmCookie('managerId');
+      alert("로그아웃 되었습니다.");
+      navigate('/login', { replace: true });
+    } else {
+      alert("로그아웃 실패. 다시 요청해주세요");
+    }
   };
 
   return (
