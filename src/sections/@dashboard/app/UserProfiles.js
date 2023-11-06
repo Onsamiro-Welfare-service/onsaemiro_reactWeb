@@ -1,7 +1,7 @@
 // @mui
 import PropTypes from 'prop-types';
 import Avatar from '@mui/material/Avatar';
-import { alpha, styled } from '@mui/material/styles';
+// import { alpha, styled } from '@mui/material/styles';
 
 // icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -12,34 +12,43 @@ import AccessibleIcon from '@mui/icons-material/Accessible';
 
 import { Card, Typography, Box, Grid } from '@mui/material';
 // utils
-import { fShortenNumber } from '../../../utils/formatNumber';
+// import { fShortenNumber } from '../../../utils/formatNumber';
 // components
-import Iconify from '../../../components/iconify';
+// import Iconify from '../../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-const StyledIcon = styled('div')(({ theme }) => ({
-  margin: '10px',
-  display: 'flex',
-  borderRadius: '50%',
-  alignItems: 'center',
-  width: theme.spacing(24),
-  height: theme.spacing(7.5),
-  justifyContent: 'center',
-  marginBottom: theme.spacing(7),
-}));
+// const StyledIcon = styled('div')(({ theme }) => ({
+//   margin: '10px',
+//   display: 'flex',
+//   borderRadius: '50%',
+//   alignItems: 'center',
+//   width: theme.spacing(24),
+//   height: theme.spacing(7.5),
+//   justifyContent: 'center',
+//   marginBottom: theme.spacing(7),
+// }));
 
 // ----------------------------------------------------------------------
 
-AppWidgetSummary.propTypes = {
+UserProfiles.propTypes = {
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    id: PropTypes.string,
+    address: PropTypes.string,
+    birth: PropTypes.string,
+    phone: PropTypes.string, // This should be a string if it includes hyphens
+    level: PropTypes.number,
+  }).isRequired,
+
   color: PropTypes.string,
-  icon: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  total: PropTypes.number.isRequired,
   sx: PropTypes.object,
+  // icon: PropTypes.string,
+  // title: PropTypes.string.isRequired,
+  // total: PropTypes.number.isRequired,
 };
 
-export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, data,...other }) {
+export default function UserProfiles({ color = 'primary', sx, data,...other }) {
   // const name = '김승주';
   // const id = "b1203";
   // const address = "경기도 수원시 영통구 효원로 363";

@@ -1,9 +1,10 @@
-import Avatar from '@mui/material/Avatar';
+import { useState } from 'react'; 
+// import Avatar from '@mui/material/Avatar';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Button } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
 // sections
@@ -14,9 +15,10 @@ import {
   AppCurrentVisits,
   AppWebsiteVisits,
   AppTrafficBySite,
-  AppWidgetSummary,
+  UserProfiles,
   AppCurrentSubject,
   AppConversionRates,
+  UserAddModal
 } from '../sections/@dashboard/app';
 
 // ----------------------------------------------------------------------
@@ -36,34 +38,60 @@ export default function DashboardAppPage() {
   
   // 데이터 배열 생성
   const data = Array.from({ length: 5 }, generateRandomData);
+
+  const [modalUserAdd, setModalUserAdd] = useState(true);
+  const click = () => setModalUserAdd(true);
+  const close = () => setModalUserAdd(false);
   return (
     <>
       <Helmet>
         <title> Dashboard | Minimal UI </title>
       </Helmet>
+      
+      {/* 유저 프로필 추가 모달 페이지 */}
+      <UserAddModal click={ modalUserAdd } close={ close } />
 
+      {/* 메인 페이지 */}
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
-        </Typography>
+        <Grid container alignItems="center" justifyContent="space-between" spacing={3}>
+          <Grid item>
+            <Typography variant="h4" sx={{ mb: 5 }}>
+              온새미로 프로필 페이지입니다.
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button variant="outlined" 
+              sx={{ 
+                width: '200px',
+                height: '50px', 
+                mb: '20px', 
+                fontWeight: 'bold', 
+                fontSize: '20px'
+              }}
+              onClick={ click }
+              >
+              추가하기
+            </Button>
+          </Grid>
+        </Grid>
 
         <Grid container spacing={3}>
           
         {data.map((item, index) => (
-        <Grid key={index} item xs={12} sm={10} md={4}>
-          <AppWidgetSummary data={item}/>
-        </Grid>
-      ))}
+          <Grid key={index} item xs={12} sm={10} md={4}>
+            <UserProfiles data={item}/>
+          </Grid>
+        ))}
 
           {/* <Grid item xs={12} sm={10} md={4}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <UserProfiles title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={10} md={4}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <UserProfiles title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
           <Grid item xs={12} sm={10} md={4}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <UserProfiles title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
             
           </Grid> */}
 
