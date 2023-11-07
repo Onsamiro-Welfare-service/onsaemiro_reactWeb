@@ -1,7 +1,6 @@
 // @mui
 import PropTypes from 'prop-types';
 import Avatar from '@mui/material/Avatar';
-// import { alpha, styled } from '@mui/material/styles';
 
 // icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -9,25 +8,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import AccessibleIcon from '@mui/icons-material/Accessible';
 
-
-import { Card, Typography, Box, Grid } from '@mui/material';
-// utils
-// import { fShortenNumber } from '../../../utils/formatNumber';
 // components
-// import Iconify from '../../../components/iconify';
-
-// ----------------------------------------------------------------------
-
-// const StyledIcon = styled('div')(({ theme }) => ({
-//   margin: '10px',
-//   display: 'flex',
-//   borderRadius: '50%',
-//   alignItems: 'center',
-//   width: theme.spacing(24),
-//   height: theme.spacing(7.5),
-//   justifyContent: 'center',
-//   marginBottom: theme.spacing(7),
-// }));
+import { Card, Typography, Box, Grid } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -37,15 +19,13 @@ UserProfiles.propTypes = {
     id: PropTypes.string,
     address: PropTypes.string,
     birth: PropTypes.string,
-    phone: PropTypes.string, // This should be a string if it includes hyphens
+    phone: PropTypes.string, 
     level: PropTypes.number,
   }).isRequired,
 
   color: PropTypes.string,
   sx: PropTypes.object,
-  // icon: PropTypes.string,
-  // title: PropTypes.string.isRequired,
-  // total: PropTypes.number.isRequired,
+
 };
 
 export default function UserProfiles({ color = 'primary', sx, data,...other }) {
