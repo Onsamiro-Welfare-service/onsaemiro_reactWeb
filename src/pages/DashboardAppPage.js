@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useEffect, useState } from 'react'; 
 // import Avatar from '@mui/material/Avatar';
 import { Helmet } from 'react-helmet-async';
 // import { faker } from '@faker-js/faker';
@@ -18,7 +18,8 @@ import {
   UserProfiles,
   // AppCurrentSubject,
   // AppConversionRates,
-  UserAddModal
+  UserAddModal,
+  UserAnswerModal
 } from '../sections/@dashboard/app';
 
 // ----------------------------------------------------------------------
@@ -42,9 +43,25 @@ export default function DashboardAppPage() {
   
 
   // 유저 프로필 등록하는 모달팝업
-  const [modalUserAdd, setModalUserAdd] = useState(true);
+  const [modalUserAdd, setModalUserAdd] = useState(false);
   const click = () => setModalUserAdd(true);
   const close = () => setModalUserAdd(false);
+  const [modalUserAnswer, setModalUserAnswer] = useState(false);
+  const [modalUserData, setModalUserData] = useState(['','']);
+  const profClick = () => setModalUserAnswer(true);
+  const profClose = () => setModalUserAnswer(false);
+  const getProfileInfo = async(event) => {
+    await setModalUserData(event.currentTarget.id.split('_'));
+    
+  };
+
+  useEffect(() => {
+    console.log(modalUserData);
+    if(modalUserData[0] !== ''){
+      profClick();
+    }
+    
+  }, [modalUserData]);
 
   return (
     <>
@@ -54,6 +71,8 @@ export default function DashboardAppPage() {
       
       {/* 유저 프로필 추가 모달 페이지 */}
       <UserAddModal click={ modalUserAdd } close={ close } />
+
+      <UserAnswerModal click={ modalUserAnswer } close={ profClose }  data={modalUserData} />
 
       {/* 메인 페이지 */}
       <Container maxWidth="xl">
@@ -87,7 +106,7 @@ export default function DashboardAppPage() {
         <Grid container spacing={3}>
           {data.map((item, index) => (
             <Grid key={index} item xs={12} sm={10} md={4}>
-              <UserProfiles data={item}/>
+              <UserProfiles data={item} onClick={ getProfileInfo } />
             </Grid>
           ))}
 

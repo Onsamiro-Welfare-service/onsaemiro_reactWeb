@@ -8,3 +8,4 @@ export { default as UserProfiles } from './UserProfileList';
 export { default as AppCurrentSubject } from './AppCurrentSubject';
 export { default as AppConversionRates } from './AppConversionRates';
 export { default as UserAddModal } from './AddModal/AddModal';
+export { default as UserAnswerModal } from './UserAnswerModal/UserAnswerModal';

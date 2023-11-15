@@ -50,11 +50,13 @@ export default function UserProfiles({ color = 'primary', sx, data,...other }) {
         padding: '5px'
       }}
       {...other}
+      id={`${data.name}_${data.id}`}
+      
     >
 
-      <Avatar sx={{ margin: 3, width: 60, height: 60 }} src="/static/images/avatar/1.jpg" /> 
+      <Avatar sx={{ margin: 3, width: 60, height: 60 }} src="/static/images/avatar/1.jpg" id={`${data.name}_${data.id}`}/> 
 
-      <Box sx={{ my: 3 }} md={1}>
+      <Box sx={{ my: 3 }} md={1} id={`${data.name}_${data.id}`}>
         <Grid container alignItems="center">
 
           <Grid item xs sx={{ mb: 0.5, mt: 1 }}>
