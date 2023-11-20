@@ -28,21 +28,23 @@ UserProfiles.propTypes = {
 
 };
 
-export default function UserProfiles({ color = 'primary', sx, data,...other }) {
+
+export default function UserProfiles({ sx, data,...other }) {
   // const name = '김승주';
   // const id = "b1203";
   // const address = "경기도 수원시 영통구 효원로 363";
   // const birth = "1999-10-01";
   // const phone = "010-4151-2489";
   // const level = "중증도 0단계";
+
   return (
     <Card
       sx={{
         // py: 5,
-        boxShadow: 0,
         textAlign: 'left',
         color: '#212B36',
-        bgcolor: (theme) => theme.palette[color].lighter,
+        bgcolor: 'white',
+        boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.1)',
         borderRadius: '15px',
         ...sx,
         display: 'flex',

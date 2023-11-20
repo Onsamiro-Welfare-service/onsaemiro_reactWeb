@@ -18,7 +18,12 @@ const navConfig = [[
   },
   {
     title: '사용자 요구사항',
-    path: '/dashboard/user',
+    path: '/dashboard/requirement',
+    icon: icon('ic_user'),
+  },
+  {
+    title: '관리자 권한 승인 ',
+    path: '/dashboard/adminAuth',
     icon: icon('ic_user'),
   },
   {

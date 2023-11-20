@@ -1,10 +1,17 @@
+import PropTypes from 'prop-types';
 
 import { Box, Typography, Card, Divider  } from "@mui/material";
 
-export default function UserAnswerCard(){
+UserAnswerCard.propTypes = {
+    answerDate: PropTypes.string
+};
+
+export default function UserAnswerCard({answerDate}){
   
     return (
         <>
+        <Typography variant='h5' sx={{mb:'15px'}}>{answerDate} 답변</Typography>
+
         <Card id='answerCategory_health' variant='outlined' sx={{padding:'20px', mt:'10px'}} >
             <Box sx={{
                 width:'60px',

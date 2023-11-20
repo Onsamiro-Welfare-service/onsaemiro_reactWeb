@@ -11,6 +11,7 @@ import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import SignUpPage from './pages/SignUpPage';
 import ForgotLoginPage from './pages/ForgotLoginPage';
+import AdminAuthPage from './pages/AdminAuthPage';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -21,9 +22,10 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index:true },
         { path: 'app', element: <DashboardAppPage /> },
-        { path: 'user', element: <UserPage /> },
+        { path: 'requirement', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'adminAuth', element: <AdminAuthPage /> },
       ],
     },
     {
