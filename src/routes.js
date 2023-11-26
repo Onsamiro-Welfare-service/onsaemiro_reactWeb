@@ -7,11 +7,12 @@ import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
-import DashboardAppPage from './pages/DashboardAppPage';
+// import ProductsPage from './pages/ProductsPage';
+import DashboardUserProfile from './pages/DashboardUserProfile';
 import SignUpPage from './pages/SignUpPage';
 import ForgotLoginPage from './pages/ForgotLoginPage';
 import AdminAuthPage from './pages/AdminAuthPage';
+import DashboardSurveyList from './pages/DashboardSurveyList';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -20,10 +21,10 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index:true },
-        { path: 'app', element: <DashboardAppPage /> },
+        { element: <Navigate to="/dashboard/userProfile" />, index:true },
+        { path: 'userProfile', element: <DashboardUserProfile /> },
         { path: 'requirement', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
+        { path: 'surveyList', element: <DashboardSurveyList /> },
         { path: 'blog', element: <BlogPage /> },
         { path: 'adminAuth', element: <AdminAuthPage /> },
       ],

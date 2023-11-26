@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 // components
 import { Box, Button, IconButton } from "@mui/material";
 
-import ProfileAvatar from './AnswerModalModifyProfileIcon';
+import ProfileAvatar from '../defaultProfileIcon';
 
 
 ProfileImg.propTypes = {

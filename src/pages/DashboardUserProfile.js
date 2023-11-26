@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 // @mui components
-import { Grid, Container, Typography, Button } from '@mui/material';
+import { Grid, Container, Typography, Button, Stack } from '@mui/material';
 
 // components
 // import Iconify from '../components/iconify';
@@ -15,7 +15,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function DashboardAppPage() {
+export default function DashboardUserProfile() {
   // const theme = useTheme();
   function generateRandomData() {
     return {
@@ -55,7 +55,7 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> 프로필 페이지 | 온새미로 </title>
       </Helmet>
       
       {/* 유저 프로필 추가 모달 페이지 */}
@@ -65,32 +65,18 @@ export default function DashboardAppPage() {
       <UserAnswerModal click={modalUserAnswer} close={profClose} data={modalUserData} />
 
       {/* 메인 페이지 */}
-      <Container maxWidth="xl">
-        <Grid container alignItems="center" justifyContent="space-between" spacing={3}>
-
+      <Container>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
           {/* 페이지 상단 제목 */}
-          <Grid item>
-            <Typography variant="h4" sx={{ mb: 5 }}>
-              온새미로 프로필 페이지입니다.
-            </Typography>
-          </Grid>
-
+          <Typography variant="h4" gutterBottom mt={3}>
+            사용자 프로필
+          </Typography>
+            
           {/* 유저 프로필 추가 버튼 */}
-          <Grid item>
-            <Button variant="outlined" 
-              sx={{ 
-                width: '200px',
-                height: '50px', 
-                mb: '20px', 
-                fontWeight: 'bold', 
-                fontSize: '20px'
-              }}
-              onClick={ click }
-              >
-              추가하기
-            </Button>
-          </Grid>
-        </Grid>
+          <Button variant="outlined" onClick={ click } sx={{fontWeight:'bold', fontSize:'20px', position:'relative', top: '10px'}}>
+            추가하기
+          </Button>
+        </Stack>
         
         {/* 유저 프로필 리스트 */}
         <Grid container spacing={3}>

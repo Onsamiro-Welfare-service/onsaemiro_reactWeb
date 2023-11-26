@@ -1,6 +1,6 @@
 // @mui
 import PropTypes from 'prop-types';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 
 // icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -12,6 +12,7 @@ import AccessibleIcon from '@mui/icons-material/Accessible';
 import { Card, Typography, Box, Grid } from '@mui/material';
 
 // ----------------------------------------------------------------------
+import ProfileAvatar from './defaultProfileIcon';
 
 UserProfiles.propTypes = {
   data: PropTypes.shape({
@@ -21,15 +22,16 @@ UserProfiles.propTypes = {
     birth: PropTypes.string,
     phone: PropTypes.string, 
     level: PropTypes.number,
+    
   }).isRequired,
-
+  images: PropTypes.string,
   color: PropTypes.string,
   sx: PropTypes.object,
 
 };
 
 
-export default function UserProfiles({ sx, data,...other }) {
+export default function UserProfiles({ sx, data, images=null, ...other }) {
   // const name = '김승주';
   // const id = "b1203";
   // const address = "경기도 수원시 영통구 효원로 363";
@@ -56,8 +58,9 @@ export default function UserProfiles({ sx, data,...other }) {
       
     >
 
-      <Avatar sx={{ margin: 3, width: 60, height: 60 }} src="/static/images/avatar/1.jpg" id={`${data.name}_${data.id}`}/> 
-
+      
+      <ProfileAvatar id={`${data.name}_${data.id}`} profilePhoto={ images } width={60} height={60} sx={{ margin:3}}/>
+      
       <Box sx={{ my: 3 }} md={1} id={`${data.name}_${data.id}`}>
         <Grid container alignItems="center">
 
@@ -67,7 +70,7 @@ export default function UserProfiles({ sx, data,...other }) {
             </Typography>
           </Grid>
           <Grid item>
-            <Typography gutterBottom variant="h6" component="div">
+            <Typography gutterBottom variant="h5" component="div">
               {data.id}
             </Typography>
           </Grid>

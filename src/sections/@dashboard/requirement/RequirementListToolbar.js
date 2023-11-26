@@ -8,7 +8,7 @@ import Iconify from '../../../components/iconify';
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled(Toolbar)(({ theme }) => ({
-  height: 96,
+  height: 76,
   display: 'flex',
   justifyContent: 'space-between',
   padding: theme.spacing(0, 1, 0, 3),
@@ -52,7 +52,7 @@ export default function RequirementListToolbar({ numSelected, filterName, onFilt
         <Typography component="div" variant="subtitle1">
           {numSelected} selected
         </Typography>
-      ) : (
+      ) : (       
         <StyledSearch
           value={filterName}
           onChange={onFilterName}
