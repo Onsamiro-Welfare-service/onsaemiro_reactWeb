@@ -5,13 +5,15 @@ import { Helmet } from 'react-helmet-async';
 import { Grid, Container, Typography, Button, Stack } from '@mui/material';
 
 // components
-// import Iconify from '../components/iconify';
+import Iconify from '../components/iconify';
 // sections
 import {
   UserProfiles,
   UserAddModal,
   UserAnswerModal
 } from '../sections/@dashboard/userProfile';
+
+
 
 // ----------------------------------------------------------------------
 
@@ -73,7 +75,7 @@ export default function DashboardUserProfile() {
           </Typography>
             
           {/* 유저 프로필 추가 버튼 */}
-          <Button variant="outlined" onClick={ click } sx={{fontWeight:'bold', fontSize:'20px', position:'relative', top: '10px'}}>
+          <Button variant="outlined" onClick={ click } startIcon={<Iconify icon="eva:plus-fill" />} sx={{ position:'relative', top: '10px', fontSize:'18px'}}>
             추가하기
           </Button>
         </Stack>
