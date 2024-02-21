@@ -16,6 +16,7 @@ import SurveyToolbar from '../sections/@dashboard/survey/surveyToolBar';
 import { SurveyList,SurveyHead } from '../sections/@dashboard/survey/index';
 import ModalAddSurvey from '../sections/@dashboard/survey/addSurvey/addSurvey';
 import ModalSeqSurvey from '../sections/@dashboard/survey/seqSurvey/seqSurvey';
+// import ModalPreviewSurvey from '../sections/@dashboard/survey/previewSurvey/previewSurvey';
 // mock
 import USERLIST from '../_mock/user';
 

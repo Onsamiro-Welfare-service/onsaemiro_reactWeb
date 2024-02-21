@@ -22,29 +22,25 @@ function valuetext(value) {
 }
 
 AddSurveySelectForm.propTypes = {
-    category: PropTypes.string,
-    setCategory: PropTypes.func,
-    type: PropTypes.string,
-    setType: PropTypes.func,
-    level: PropTypes.number,
-    setLevel: PropTypes.func,
+    inputs: PropTypes.object,
+    setInputs: PropTypes.func,
 }
 
-export default function AddSurveySelectForm({category, setCategory, type, setType, level, setLevel}) {
+export default function AddSurveySelectForm({inputs, setInputs}) {
     // const [categorySelect, setCategorySelect] = useState('');
     const selectedCategory = (event) => {
-        setCategory(event.target.value);
+        setInputs({ ...inputs, category: event.target.value});
     };
 
     
     // const [surveyType, setSurveyType] = useState('');
     const selectedType = (event) => {
-        setType(event.target.value);
+        setInputs({ ...inputs, type: event.target.value});
     }
 
     // const [level, setLevel] = useState(null);
     const levelChange = (event) => {
-        setLevel(event.target.value);
+        setInputs({ ...inputs, level: event.target.value});
     }
 
     return (
@@ -57,12 +53,11 @@ export default function AddSurveySelectForm({category, setCategory, type, setTyp
                 <FormControl sx={{width:'70%'}}>
                     <InputLabel id="select-label">선택하기</InputLabel>
                     <Select labelId='test' id='test'
-                        value={category}
+                        value={inputs.category}
                         label='카테고리'
                         onChange={selectedCategory}>
-
                         {TestCategoryArr.data.map((option, index) => (
-                        <MenuItem key={index} value={option}>
+                        <MenuItem key={index} value={index}>
                             {option}
                         </MenuItem>))}
                     </Select>
@@ -79,12 +74,13 @@ export default function AddSurveySelectForm({category, setCategory, type, setTyp
                 <FormControl sx={{width:'70%'}}>
                     <InputLabel id="select-label">선택하기</InputLabel>
                     <Select labelId='test1' id='test1'
-                        value={type}
+                        value={inputs.type}
                         label='선택하기'
                         onChange={selectedType}>
-                        <MenuItem value={'1'}>선택형(2항)</MenuItem>
-                        <MenuItem value={'2'}>선택형(3항)</MenuItem>
-                        <MenuItem value={'3'}>선택형(4항)</MenuItem>
+                        <MenuItem value={0}>선택하기</MenuItem>
+                        <MenuItem value={1}>선택형(2항)</MenuItem>
+                        <MenuItem value={2}>선택형(3항)</MenuItem>
+                        <MenuItem value={3}>선택형(4항)</MenuItem>
                     </Select>
                 </FormControl>
             </Grid>
@@ -96,7 +92,7 @@ export default function AddSurveySelectForm({category, setCategory, type, setTyp
             <Grid item xs={8} mt={1.5}>
                 <Slider
                     aria-label="level"
-                    value={level}
+                    value={inputs.level}
                     onChange={levelChange}
                     getAriaValueText={valuetext}
                     valueLabelDisplay="auto"
@@ -104,16 +100,7 @@ export default function AddSurveySelectForm({category, setCategory, type, setTyp
                     min={0}
                     max={3}
                     />
-            </Grid>
-
-            {/* 질문입력 */}
-            {/* <Grid item xs={12}>
-                <span style={{fontSize: '18px', fontWeight:'bold', lineHeight:'2.7', marginRight:'20px'}}>질문 내용</span> 
-                <span style={{fontSize: '12px', fontWeight:'bold', lineHeight:'2.7', marginRight:'20px'}}>*필수입력 사항입니다.</span> 
-                <TextField variant='outlined' label='test' fullWidth/>
-            </Grid> */}
-            
-            
+            </Grid>            
         </Grid>
     ); 
 }

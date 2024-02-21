@@ -10,8 +10,32 @@ import {
 } from '@mui/material';
 
 import Scrollbar from '../../../components/scrollbar';
-import SurveyListForm from './surveyListForm'; // 경로에 따라 조정하세요
 
+import SurveyListForm from './surveyListForm';
+
+const testSurveyList = [
+  {
+    category: 1,
+    level: 1,
+    type: '1',
+    question: { text: '오늘 아침 어떰?', fileUrl: null },
+    answers: [{ text: '좋아요', fileUrl: null }, { text: '안 좋아요', fileUrl: null }],
+  },
+  {
+    category: 2,
+    level: 2,
+    type: '2',
+    question: { text: '오늘 뭐했음?', fileUrl: null },
+    answers: [{ text: '놀았음', fileUrl: null }, { text: '일했음', fileUrl: null }, { text: '쉬었음', fileUrl: null }],
+  },
+  {
+    category: 3,
+    level: 3,
+    type: '3',
+    question: { text: '오늘 기분 어떰?', fileUrl: null },
+    answers: [{ text: '안좋음', fileUrl: null }, { text: '보통', fileUrl: null }, { text: '좋음', fileUrl: null }, { text: '아주 좋음', fileUrl: null }],
+  },
+]
 
   
 
@@ -34,9 +58,15 @@ export default function SurveyList() {
 
                 <TableBody>
                   {/* CollapsibleRow 컴포넌트 사용 */}
-                  <SurveyListForm question="안녕하세요 오늘 아침은 어땠나요?" />
-                  <SurveyListForm question="다른 질문" />
-                  {/* 필요한 만큼 CollapsibleRow를 추가 */}
+                  
+                  {
+                    testSurveyList.map((data, index) => (
+                      <SurveyListForm key={index} surveyData={data} />
+                    ))
+                  }
+
+                  
+  
                 </TableBody>
               </Table>
             </TableContainer>
