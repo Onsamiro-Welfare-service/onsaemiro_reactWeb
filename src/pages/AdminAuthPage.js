@@ -76,7 +76,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 // 메인 함수 
-export default function UserPage() {
+export default function AdminAuthPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
