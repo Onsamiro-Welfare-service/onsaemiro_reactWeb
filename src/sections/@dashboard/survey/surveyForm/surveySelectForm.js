@@ -14,7 +14,7 @@ import {
 
 const TestCategoryArr = {
     "count": 3,
-    "data": ['aa','bb','cc']
+    "data": ['aa','bb','cc','dd']
 };
 
 function valuetext(value) {
@@ -99,7 +99,7 @@ export default function AddSurveySelectForm({inputs, setInputs}) {
                     step={1}
                     min={0}
                     max={3}
-                    />
+                />
             </Grid>            
         </Grid>
     ); 

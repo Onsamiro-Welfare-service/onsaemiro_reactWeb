@@ -25,6 +25,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 SurveyListForm.propTypes = {
   surveyData: PropTypes.object,
+  prevClick: PropTypes.func,
+  modifyClick: PropTypes.func,
+  setData: PropTypes.func,
 };
 
 const categoryList = {
@@ -47,12 +50,10 @@ const levelList = {
   '4': '중증도-매우높음'
 }
 
-export default function SurveyListForm({ surveyData }) {
+export default function SurveyListForm({ surveyData, prevClick, modifyClick, setData}) {
   const [open, setOpen] = useState(false);
 
-  const handlePreview = () => {
-    
-  }
+  
   return (
     <>
       {/* 이 부분은 질문의 기본 정보를 나타냅니다. */}
@@ -97,10 +98,10 @@ export default function SurveyListForm({ surveyData }) {
                 </Grid>
                 <Grid item xs={1.4}>
                 {/* // todo: 미리보기 버튼을 누르면 surveyData를 넘겨주며 ModalPreviewSurveySlide를 띄워줍니다. */}
-                <Button variant='outlined' sx={{ float:'right'}} onClick={handlePreview}>미리보기</Button>
+                <Button variant='outlined' sx={{ float:'right'}} onClick={()=>{prevClick(); setData(surveyData)}}>미리보기</Button>
                 </Grid>
                 <Grid item xs={1}>
-                <Button variant='outlined' sx={{ float:'right'}}>수정하기</Button>
+                <Button variant='outlined' sx={{ float:'right'}} onClick={()=>{modifyClick(); setData(surveyData)}}>수정하기</Button>
                 </Grid>
             </Grid>
             

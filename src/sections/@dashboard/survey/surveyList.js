@@ -1,4 +1,6 @@
 // SurveyList.js
+import PropTypes from 'prop-types';
+
 import React from 'react';
 import {
   Table,
@@ -37,9 +39,13 @@ const testSurveyList = [
   },
 ]
 
-  
+SurveyList.propTypes = {
+  prevClick: PropTypes.func,
+  modifyClick: PropTypes.func,
+  setData: PropTypes.func,
+};
 
-export default function SurveyList() {
+export default function SurveyList({ prevClick, modifyClick, setData}) {
     return (
         <>
         <Scrollbar>
@@ -61,7 +67,7 @@ export default function SurveyList() {
                   
                   {
                     testSurveyList.map((data, index) => (
-                      <SurveyListForm key={index} surveyData={data} />
+                      <SurveyListForm key={index} surveyData={data} prevClick={prevClick} modifyClick={modifyClick} setData={setData} />
                     ))
                   }
 

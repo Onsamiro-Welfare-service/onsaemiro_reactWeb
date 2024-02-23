@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
 import {
-    Modal,
     Box
 } from '@mui/material';
 
@@ -20,17 +19,11 @@ const style = {
 
 ModalSeqSurvey.propTypes = {
     status: PropTypes.bool,
-    close: PropTypes.func
 }
 
-export default function ModalSeqSurvey({status, close}) {
+export default function ModalSeqSurvey({status}) {
   
   return (
-    <Modal
-        open={status}
-        onClose={close}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-    ><Box sx={style}>순서 변경 폼</Box></Modal>
+    <Box sx={style} display={status ? 'block':'none'}>순서 변경 폼</Box>
   );
 }
