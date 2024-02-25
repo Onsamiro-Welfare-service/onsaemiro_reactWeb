@@ -19,8 +19,8 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
+import { categoryList, tagList, levelList } from './constants';
 // import CategoryIcon from '../../../components/category/categoryIcon';
-
 
 
 SurveyListForm.propTypes = {
@@ -29,26 +29,6 @@ SurveyListForm.propTypes = {
   modifyClick: PropTypes.func,
   setData: PropTypes.func,
 };
-
-const categoryList = {
-  1: '건강',
-  2: '생활',
-  3: '감정',
-  4: '기타',
-}
-
-const tagList = {
-  1: '선택형-2항목',
-  2: '선택형-3항목',
-  3: '선택형-4항목',
-}
-
-const levelList = {
-  '1': '중증도-낮음',
-  '2': '중증도-보통',
-  '3': '중증도-높음',
-  '4': '중증도-매우높음'
-}
 
 export default function SurveyListForm({ surveyData, prevClick, modifyClick, setData}) {
   const [open, setOpen] = useState(false);

@@ -12,10 +12,7 @@ import {
 
 // import CategoryAdd from './addSurveyDialog';
 
-const TestCategoryArr = {
-    "count": 3,
-    "data": ['aa','bb','cc','dd']
-};
+import { TestCategoryArr } from '../constants';
 
 function valuetext(value) {
     return `${value}°C`;
