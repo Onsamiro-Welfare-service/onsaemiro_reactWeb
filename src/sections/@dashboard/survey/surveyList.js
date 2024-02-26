@@ -1,4 +1,6 @@
 // SurveyList.js
+import PropTypes from 'prop-types';
+
 import React from 'react';
 import {
   Table,
@@ -10,12 +12,18 @@ import {
 } from '@mui/material';
 
 import Scrollbar from '../../../components/scrollbar';
-import SurveyListForm from './surveyListForm'; // 경로에 따라 조정하세요
 
+import SurveyListForm from './surveyListForm';
 
-  
+import { testSurveyList } from './constants';
 
-export default function SurveyList() {
+SurveyList.propTypes = {
+  prevClick: PropTypes.func,
+  modifyClick: PropTypes.func,
+  setData: PropTypes.func,
+};
+
+export default function SurveyList({ prevClick, modifyClick, setData}) {
     return (
         <>
         <Scrollbar>
@@ -34,9 +42,15 @@ export default function SurveyList() {
 
                 <TableBody>
                   {/* CollapsibleRow 컴포넌트 사용 */}
-                  <SurveyListForm question="안녕하세요 오늘 아침은 어땠나요?" />
-                  <SurveyListForm question="다른 질문" />
-                  {/* 필요한 만큼 CollapsibleRow를 추가 */}
+                  
+                  {
+                    testSurveyList.map((data, index) => (
+                      <SurveyListForm key={index} surveyData={data} prevClick={prevClick} modifyClick={modifyClick} setData={setData} />
+                    ))
+                  }
+
+                  
+  
                 </TableBody>
               </Table>
             </TableContainer>
