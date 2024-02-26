@@ -36,9 +36,10 @@ RequirementListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
+  delClick: PropTypes.func,
 };
 
-export default function RequirementListToolbar({ numSelected, filterName, onFilterName }) {
+export default function RequirementListToolbar({ numSelected, filterName, onFilterName, delClick }) {
   return (
     <StyledRoot
       sx={{
@@ -65,19 +66,14 @@ export default function RequirementListToolbar({ numSelected, filterName, onFilt
         />
       )}
 
-      {numSelected > 0 ? (
+      {numSelected > 0 && 
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={delClick}>
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
-      )}
+    
+      }
     </StyledRoot>
   );
 }

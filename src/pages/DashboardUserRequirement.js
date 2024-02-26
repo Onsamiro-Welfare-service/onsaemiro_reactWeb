@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 // @mui
 import {
@@ -19,41 +18,40 @@ import Scrollbar from '../components/scrollbar';
 import { RequirementListHead, RequirementListToolbar } from '../sections/@dashboard/requirement';
 import RequirementListBody from '../sections/@dashboard/requirement/requirementListBody';
 import RequirementListNotFound from '../sections/@dashboard/requirement/requirementListNotFound';
-import RequirementListPopover from '../sections/@dashboard/requirement/requirementListPopover';
+// import RequirementListPopover from '../sections/@dashboard/requirement/requirementListPopover';
 
 const testData = [
-  { imageUrl: '', name: 'ㄴㄴㄴ', userId: 'U1111', status: 'active', description: 'Leader', id: '1' },
-  { imageUrl: '', name: 'ㄱㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '2' },
-  { imageUrl: '', name: 'ㄴㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '3' },
-  { imageUrl: '', name: 'ㄷㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '4' },
-  { imageUrl: '', name: 'ㄹㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '5' },
-  { imageUrl: '', name: 'ㅁㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '6' },
-  { imageUrl: '', name: 'ㅂㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '7' },
-  { imageUrl: '', name: 'ㅅㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '8' },
-  { imageUrl: '', name: 'ㄴㄴㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '9' },
-  { imageUrl: '', name: 'ㄱㄱㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '10' },
-  { imageUrl: '', name: 'ㄹㄹㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '11' },
-  { imageUrl: '', name: 'ㅎㅎㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '12' },
-  { imageUrl: '', name: 'ㅂㅂㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '13' },
-  { imageUrl: '', name: 'ㅍㅍㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '14' },
-  { imageUrl: '', name: 'ㅋㅋㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '15' },
-  { imageUrl: '', name: 'ㅁㅁㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '16' },
-  { imageUrl: '', name: 'ㄱㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '17' },
-  { imageUrl: '', name: 'ㄴㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '18' },
-  { imageUrl: '', name: 'ㄷㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '19' },
-  { imageUrl: '', name: 'ㄹㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '20' },
-  { imageUrl: '', name: 'ㅁㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '21' },
-  { imageUrl: '', name: 'ㅂㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '22' },
-  { imageUrl: '', name: 'ㅅㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '23' },
-  { imageUrl: '', name: 'ㅋㅇㅇㅇ', userId: 'U1111', status: 'active', description: 'Leader', id: '24' }
+  { imageUrl: '', name: 'ㄴㄴㄴ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '1' },
+  { imageUrl: '', name: 'ㄱㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는중', id: '2' },
+  { imageUrl: '', name: 'ㄴㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '3' },
+  { imageUrl: '', name: 'ㄷㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '4' },
+  { imageUrl: '', name: 'ㄹㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '5' },
+  { imageUrl: '', name: 'ㅁㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '6' },
+  { imageUrl: '', name: 'ㅂㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '7' },
+  { imageUrl: '', name: 'ㅅㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '8' },
+  { imageUrl: '', name: 'ㄴㄴㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '9' },
+  { imageUrl: '', name: 'ㄱㄱㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '10' },
+  { imageUrl: '', name: 'ㄹㄹㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '11' },
+  { imageUrl: '', name: 'ㅎㅎㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '12' },
+  { imageUrl: '', name: 'ㅂㅂㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '13' },
+  { imageUrl: '', name: 'ㅍㅍㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '14' },
+  { imageUrl: '', name: 'ㅋㅋㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '15' },
+  { imageUrl: '', name: 'ㅁㅁㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '16' },
+  { imageUrl: '', name: 'ㄱㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '17' },
+  { imageUrl: '', name: 'ㄴㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '18' },
+  { imageUrl: '', name: 'ㄷㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '19' },
+  { imageUrl: '', name: 'ㄹㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '20' },
+  { imageUrl: '', name: 'ㅁㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '21' },
+  { imageUrl: '', name: 'ㅂㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '22' },
+  { imageUrl: '', name: 'ㅅㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '23' },
+  { imageUrl: '', name: 'ㅋㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '24' }
 ];
 
 const TABLE_HEAD = [
   { id: 'name', label: '이름', alignRight: false },
-  { id: 'userId', label: '아이디', alignRight: false },
-  { id: 'description', label: '내용', alignRight: false },
   { id: 'status', label: '상태', alignRight: false },
-  { id: '' },
+  { id: 'description', label: '내용', alignRight: false },
+  { id: 'orderDate', label: '시간', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -90,7 +88,7 @@ function applySortFilter(array, comparator, query) {
 
 // 메인 함수 
 export default function DashboardUserRequirement() {
-  const [open, setOpen] = useState(null);
+  // const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -105,13 +103,14 @@ export default function DashboardUserRequirement() {
 
   
   // 메뉴 열기
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
+  // const handleOpenMenu = (event) => {
+  //   setOpen(event.currentTarget);
+  // };
   // 메뉴 닫기
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
+  // const handleCloseMenu = () => {
+  //   setOpen(null);
+  // };
+
   // 정렬 관련 함수
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -145,7 +144,6 @@ export default function DashboardUserRequirement() {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
-    console.log(selected);
   };
 
   // 페이징 관련 함수
@@ -187,7 +185,7 @@ export default function DashboardUserRequirement() {
         </Stack>
 
         <Card>
-          <RequirementListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <RequirementListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} delClick={handleDelete} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -209,9 +207,7 @@ export default function DashboardUserRequirement() {
                   selected={selected} 
                   filteredUsers={filteredUsers} 
                   emptyRows={emptyRows} 
-                  handleClick={handleClick} 
-                  handleOpenMenu={handleOpenMenu} 
-                  sentenceCase={sentenceCase} />
+                  handleClick={handleClick} />
 
                 {/* 검색했을때 아무값이 나오지 않는 경우 */}
                 <RequirementListNotFound isNotFound={isNotFound} filterName={filterName} />
@@ -232,7 +228,7 @@ export default function DashboardUserRequirement() {
       </Container>
 
       
-      <RequirementListPopover open={open} handleCloseMenu={handleCloseMenu} click={handleDelete} />
+      {/* <RequirementListPopover open={open} handleCloseMenu={handleCloseMenu} click={handleDelete} /> */}
     </>
   );
 }
