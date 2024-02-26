@@ -53,12 +53,12 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
         <TableCell />
         
         {/* 이 부분은 질문 사항을 표시하는 부분입니다. */}
-        <TableCell style={{ width: '55%' }}>{surveyData.question.text}</TableCell>
+        <TableCell style={{ width: '55%', fontWeight:'bold', fontSize:'18px' }}>{surveyData.question.text}</TableCell>
+
+        {/* 이 부분은 태그를 나타내는 부분입니다. */}
         <TableCell align="left" style={{ width: '25%' }}>
             <Chip label={tagList[surveyData.type]} />
             <Chip label={levelList[surveyData.level]} />
-            {/* <Box sx={{ height:'25px',border:'1px solid rgb(255 109 0)',borderRadius:'4px',color:'rgb(255 109 0)', ml:'2px', px:'3px', fontWeight:'bold', display:'inline-block'}}>선택형</Box>
-            <Box sx={{ height:'25px',border:'1px solid cornflowerblue',borderRadius:'4px',color:'cornflowerblue', ml:'2px', px:'3px', fontWeight:'bold', display:'inline-block'}}>중증도</Box> */}
         </TableCell>
       </TableRow>
 
@@ -67,25 +67,22 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{border:'1px solid black',  padding:'10px'}} >
-                {/* <Typography variant='h4'>질문입니다.</Typography>
-                <Typography variant='h6' ml={10}>1답변입니다.</Typography> */}
-            {/* <CategoryIcon category='건강'/> */}
-            <Grid container spacing={0.1} mb={2}>
-                <Grid item xs={9.6}>
-                <Typography variant="h6" gutterBottom component="div">
-                상세 정보
-              </Typography>
-                </Grid>
-                <Grid item xs={1.4}>
-                {/* // todo: 미리보기 버튼을 누르면 surveyData를 넘겨주며 ModalPreviewSurveySlide를 띄워줍니다. */}
-                <Button variant='outlined' sx={{ float:'right'}} onClick={()=>{prevClick(); setData(surveyData)}}>미리보기</Button>
-                </Grid>
-                <Grid item xs={1}>
-                <Button variant='outlined' sx={{ float:'right'}} onClick={()=>{modifyClick(); setData(surveyData)}}>수정하기</Button>
-                </Grid>
-            </Grid>
+                
+              <Grid container spacing={0.1} mb={2}>
+                  <Grid item xs={9.6}>
+                  <Typography variant="h6" gutterBottom component="div">
+                  상세 정보
+                </Typography>
+                  </Grid>
+                  <Grid item xs={1.4}>
+                  {/* // todo: 미리보기 버튼을 누르면 surveyData를 넘겨주며 ModalPreviewSurveySlide를 띄워줍니다. */}
+                  <Button variant='outlined' sx={{ float:'right'}} onClick={()=>{prevClick(); setData(surveyData)}}>미리보기</Button>
+                  </Grid>
+                  <Grid item xs={1}>
+                  <Button variant='outlined' sx={{ float:'right'}} onClick={()=>{modifyClick(); setData(surveyData)}}>수정하기</Button>
+                  </Grid>
+              </Grid>
             
-              
               <Table size="small" aria-label="purchases" variant={'head'}>
                 {/* 이 부분은 질문과 답변의 형식을 나타냅니다. */}
                 <TableHead>

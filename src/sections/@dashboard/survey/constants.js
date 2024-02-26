@@ -23,10 +23,19 @@ export const testSurveyList = [
 ]
 
 export const TestCategoryArr = {
-    "count": 3,
-    "data": ['aa','bb','cc','dd']
+    "count": 4,
+    "data": ['선택하기','bb','cc','dd']
 };
 
+export const initialSurveyData = [
+    {
+      category: -1,
+      level: 1,
+      type: '1',
+      question: { text: '선택된 카테고리가 없습니다.', fileUrl: null },
+      answers: [{ text: '', fileUrl: null }, { text: '', fileUrl: null }],
+    }
+  ];
 
 export const categoryList = {
     1: '건강',
