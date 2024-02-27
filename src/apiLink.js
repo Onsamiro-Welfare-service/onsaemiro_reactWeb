@@ -1,5 +1,5 @@
 // const baseURL = `https://test.onsaemiro.site/api`; // 기본 api 주소
-const baseURL = `http://localhost:8080`;
+const baseURL = `https://onsaemiro.site/test/api/`;
 export const API = {
     "manageRegister": `${baseURL}/auth/register/manager`,
     "manageDoubleCheck" : `${baseURL}/auth/login/doublecheck`,
