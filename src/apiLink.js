@@ -7,5 +7,7 @@ export const API = {
     "loginAdmin": `${baseURL}/auth/login/manager`,
     "departmentGetList": `${baseURL}/auth/department/all`,
     
-    "manageLogout": `${baseURL}/management/manager/logout`
+    "manageLogout": `${baseURL}/management/manager/logout`,
+
+    "LoginIdCheck": `${baseURL}/member/auth/login/doublecheck`,
 };
