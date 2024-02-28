@@ -7,17 +7,15 @@ import {
   Container,
   Typography,
   TablePagination,
-  Modal,Box
+
 } from '@mui/material';
 
 
 // sections
 import SurveyToolbar from '../sections/@dashboard/survey/surveyToolBar';
 import { SurveyList,SurveyHead } from '../sections/@dashboard/survey/index';
-import ModalAddSurvey from '../sections/@dashboard/survey/addSurvey';
+import ModalAddSurvey from '../sections/@dashboard/survey/addSurvey/addSurvey';
 import ModalSeqSurvey from '../sections/@dashboard/survey/seqSurvey/seqSurvey';
-import PreviewSurveyModal from '../sections/@dashboard/survey/previewSurvey/previewSurveyModal';
-import ModalModifySurvey from '../sections/@dashboard/survey/modifySurvey';
 // mock
 import USERLIST from '../_mock/user';
 
@@ -48,17 +46,22 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  const [modalAddSurvey, setModalAddSurvey] = useState(false);
+  const addClick = () => setModalAddSurvey(true);
+  const addClose = () => setModalAddSurvey(false)
 
-  const [modalState, setModalState] = useState({ status: false, val: '' });
-  const openModal = (val) => setModalState({ status: true, val });
-  const closeModal = () => setModalState({ status: false, val: '' });
-
-  const [surveyData, setSurveyData] = useState({});
-  const setDatas = (data) => setSurveyData(data);
-  // const resetDatas = () => setSurveyData({});
+  const [modalSeqSurvey, setModalSeqSurvey] = useState(false);
+  const seqClick = () => setModalSeqSurvey(true);
+  const seqClose = () => setModalSeqSurvey(false);
 
   useEffect(() => {
-  }, [modalState]);
+    if (modalSeqSurvey) {
+      seqClick();
+    }
+    if (modalAddSurvey) {
+      addClick();
+    }
+  }, [modalSeqSurvey,modalAddSurvey]);
 
   return (
     <>
@@ -74,19 +77,14 @@ export default function UserPage() {
         </Stack>
 
         <Card>
-          <Modal open={modalState.status} onClose={closeModal} aria-labelledby="surveyModal">
-            <Box>
-              {modalState.val === 'add' && <ModalAddSurvey status={modalState.status} />}
-              {modalState.val === 'seq' && <ModalSeqSurvey status={modalState.status} />}
-              {modalState.val === 'preview' && <PreviewSurveyModal status={modalState.status} data={surveyData} /> }
-              {modalState.val === 'modify' && <ModalModifySurvey status={modalState.status} data={surveyData} /> }
-            </Box>
-          </Modal>
+          <ModalSeqSurvey status={modalSeqSurvey} close={seqClose} />
+          <ModalAddSurvey status={modalAddSurvey} close={addClose} />
+          
 
           <SurveyToolbar  filterName={filterName} onFilterName={handleFilterByName} /> {/* numSelected={selected.length} */}
-          <SurveyHead addClick={()=>openModal('add')} seqClick={()=>openModal('seq')} />
+          <SurveyHead addClick={addClick} seqClick={seqClick} />
           
-          <SurveyList prevClick={()=>openModal('preview')} modifyClick={()=>openModal('modify')} setData={setDatas}/>
+          <SurveyList />
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}

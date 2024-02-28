@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CryptoJS from 'crypto-js';
 // @mui
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -26,29 +25,33 @@ export default function LoginForm() {
   const loginManager = async() => {
 
     // 로그인 요청 전 데이터 무결성 확인
-    setIdStatus(loginId.length === 0);
-    setPwdStatus(loginPwd.length === 0);
-    if(idStatus || pwdStatus) return;
+    let isEmpty = false;
+    if(loginId.length === 0){
+      setIdStatus(true);
+      isEmpty = true;
+    }
+    if(loginPwd.length === 0){
+      setPwdStatus(true);
+      isEmpty = true;
+    }
+    if(isEmpty){
+      return;
+    }
 
     // 데이터 이상 없을 시 로그인 요청
-    console.log('loginId : ', loginId, 'loginPwd : ', CryptoJS.SHA256(loginPwd).toString(CryptoJS.enc.Base64));
-
     try {
       const response = await axios.post(API.loginAdmin, 
         {
           "username": loginId,
-          "password": CryptoJS.SHA256(loginPwd).toString(CryptoJS.enc.Base64)
+          "password": loginPwd
         }
       );
       if(response.status === 200){
+        setCookie('accessToken', response.data.data.accessToken);
+        setCookie('refreshToken', response.data.data.refreshToken);
+        setCookie('managerId', response.data.data.id);
         console.log(response.data);
-        setCookie('accessToken', response.data.accessToken);
-        setCookie('refreshToken', response.data.refreshToken);
-        setCookie('managerId', response.data.id);
-        
-        navigate('/dashboard', { replace: true });
-        
-        
+        navigate('/dashboard/app', { replace: true });
       }else{
         console.log('[Error : loginManager]: Response Status - ', response.status);
       }
@@ -139,17 +142,15 @@ export default function LoginForm() {
         로그인
       </LoadingButton>
 
-      <LoadingButton 
-        sx={{ 
-          mt: 2,
-          color:  'rgba(255, 86, 48, 0.7)',
-          borderColor: 'rgba(255, 86, 48, 0.7)',
-          '&:hover': {
-            borderColor: 'rgba(255, 86, 48)', // hover 시 배경 색상 변경
-            backgroundColor: 'rgba(255, 86, 48, 0.05)'
-          }
-        }} 
-        fullWidth size="large" type="submit" variant="outlined" onClick={handleClickSignUp} >
+      <LoadingButton sx={{ 
+        mt: 2,
+        color:  'rgba(255, 86, 48, 0.7)',
+        borderColor: 'rgba(255, 86, 48, 0.7)',
+        '&:hover': {
+          borderColor: 'rgba(255, 86, 48)', // hover 시 배경 색상 변경
+          backgroundColor: 'rgba(255, 86, 48, 0.05)'
+        }
+      }} fullWidth size="large" type="submit" variant="outlined" onClick={handleClickSignUp} >
         회원가입
       </LoadingButton>
     </>

@@ -12,32 +12,39 @@ import {
 
 // import CategoryAdd from './addSurveyDialog';
 
-import { TestCategoryArr } from '../constants';
+const TestCategoryArr = {
+    "count": 3,
+    "data": ['aa','bb','cc']
+};
 
 function valuetext(value) {
     return `${value}°C`;
 }
 
 AddSurveySelectForm.propTypes = {
-    inputs: PropTypes.object,
-    setInputs: PropTypes.func,
+    category: PropTypes.string,
+    setCategory: PropTypes.func,
+    type: PropTypes.string,
+    setType: PropTypes.func,
+    level: PropTypes.number,
+    setLevel: PropTypes.func,
 }
 
-export default function AddSurveySelectForm({inputs, setInputs}) {
+export default function AddSurveySelectForm({category, setCategory, type, setType, level, setLevel}) {
     // const [categorySelect, setCategorySelect] = useState('');
     const selectedCategory = (event) => {
-        setInputs({ ...inputs, category: event.target.value});
+        setCategory(event.target.value);
     };
 
     
     // const [surveyType, setSurveyType] = useState('');
     const selectedType = (event) => {
-        setInputs({ ...inputs, type: event.target.value});
+        setType(event.target.value);
     }
 
     // const [level, setLevel] = useState(null);
     const levelChange = (event) => {
-        setInputs({ ...inputs, level: event.target.value});
+        setLevel(event.target.value);
     }
 
     return (
@@ -50,11 +57,12 @@ export default function AddSurveySelectForm({inputs, setInputs}) {
                 <FormControl sx={{width:'70%'}}>
                     <InputLabel id="select-label">선택하기</InputLabel>
                     <Select labelId='test' id='test'
-                        value={inputs.category}
+                        value={category}
                         label='카테고리'
                         onChange={selectedCategory}>
+
                         {TestCategoryArr.data.map((option, index) => (
-                        <MenuItem key={index} value={index}>
+                        <MenuItem key={index} value={option}>
                             {option}
                         </MenuItem>))}
                     </Select>
@@ -71,13 +79,12 @@ export default function AddSurveySelectForm({inputs, setInputs}) {
                 <FormControl sx={{width:'70%'}}>
                     <InputLabel id="select-label">선택하기</InputLabel>
                     <Select labelId='test1' id='test1'
-                        value={inputs.type}
+                        value={type}
                         label='선택하기'
                         onChange={selectedType}>
-                        <MenuItem value={0}>선택하기</MenuItem>
-                        <MenuItem value={1}>선택형(2항)</MenuItem>
-                        <MenuItem value={2}>선택형(3항)</MenuItem>
-                        <MenuItem value={3}>선택형(4항)</MenuItem>
+                        <MenuItem value={'1'}>선택형(2항)</MenuItem>
+                        <MenuItem value={'2'}>선택형(3항)</MenuItem>
+                        <MenuItem value={'3'}>선택형(4항)</MenuItem>
                     </Select>
                 </FormControl>
             </Grid>
@@ -89,15 +96,24 @@ export default function AddSurveySelectForm({inputs, setInputs}) {
             <Grid item xs={8} mt={1.5}>
                 <Slider
                     aria-label="level"
-                    value={inputs.level}
+                    value={level}
                     onChange={levelChange}
                     getAriaValueText={valuetext}
                     valueLabelDisplay="auto"
                     step={1}
                     min={0}
                     max={3}
-                />
-            </Grid>            
+                    />
+            </Grid>
+
+            {/* 질문입력 */}
+            {/* <Grid item xs={12}>
+                <span style={{fontSize: '18px', fontWeight:'bold', lineHeight:'2.7', marginRight:'20px'}}>질문 내용</span> 
+                <span style={{fontSize: '12px', fontWeight:'bold', lineHeight:'2.7', marginRight:'20px'}}>*필수입력 사항입니다.</span> 
+                <TextField variant='outlined' label='test' fullWidth/>
+            </Grid> */}
+            
+            
         </Grid>
     ); 
 }
