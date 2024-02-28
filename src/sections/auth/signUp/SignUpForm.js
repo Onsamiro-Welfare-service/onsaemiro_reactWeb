@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect  } from 'react'; // useEffect
 import { useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 // @mui
 import {  Stack, IconButton, InputAdornment, TextField, Select, MenuItem, FormControl, InputLabel, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -9,7 +10,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import Iconify from '../../../components/iconify';
 import { API } from '../../../apiLink';
 
-import EmailVerifyDialog from './emailVerify';
+// import EmailVerifyDialog from './emailVerify';
 
 // ----------------------------------------------------------------------
 
@@ -31,25 +32,27 @@ export default function SignUpForm() {
     email: ''
   });
 
-  const [emailVerifyOpen, setEmailVerifyOpen] = useState(false); // 이메일 확인 다이얼로그 오픈 여부
+  //  const [emailVerifyOpen, setEmailVerifyOpen] = useState(false); // 이메일 확인 다이얼로그 오픈 여부
 
   const [validate, setValidate] = useState({// 회원가입 유효성 검사
     name_valid: false,
     loginId_valid: false,
-    loginDoubleCheck: false,
+    loginDoubleCheck: true,
     pwdData_valid: false,
     pwdConfirm_valid: false,
     department_valid: false,
-    email_valid: false,
-    emailVerify_valid: false
+    email_valid: false
+    // emailVerify_valid: false
   }); 
 
   const registerManager = async() => { // 회원가입 요청
     // 여기에 회원가입 완료 관련 코드 입력
+    const hashPwd = CryptoJS.SHA256(inputData.pwdData).toString(CryptoJS.enc.Base64);
+
     const manageData = {
       "name": inputData.name,
       "username": inputData.loginId,
-      "password": inputData.pwdData,
+      "password": hashPwd,
       "email": inputData.email,
       "departmentId": inputData.department
     }
@@ -69,21 +72,20 @@ export default function SignUpForm() {
 
     // 모든 필드가 유효한지 확인
     const validateCheck = Object.values(validate).some(value => value === true);
-    if(validateCheck) return;
+    if(validateCheck) {console.log('회원가입 조건 충족이 안됨 : ', validate);return;}
     
     console.log('manageData : ', manageData);
-    navigate('/login', { replace: true });
-    // try {
-    //   const response = await axios.post(API.manageRegister, manageData);
-    //   if(response.status === 200){
-    //     alert("성공적으로 회원가입이 되었습니다."); // 관리자의 승인을 기다려주세요
-    //     navigate('/login', { replace: true });
-    //   }else{
-    //     console.log('[Error : registerManager] Regist: Response Status - ', response.status);
-    //   }
-    // } catch(err){
-    //   console.log('[Error : registerManager] Regist:',err);
-    // }
+    try {
+      const response = await axios.post(API.manageRegister, manageData);
+      if(response.status === 200){
+        alert("성공적으로 회원가입이 되었습니다."); // 관리자의 승인을 기다려주세요
+        navigate('/dashboard', { replace: true });
+      }else{
+        console.log('[Error : registerManager] Regist: Response Status - ', response.status);
+      }
+    } catch(err){
+      console.log('[Error : registerManager] Regist:',err);
+    }
   };
 
  
@@ -95,7 +97,7 @@ export default function SignUpForm() {
           'Content-Type': 'application/json'
       }});
       if(response.status === 200){
-        console.log(response.data.data);
+        // console.log('getDepartmentList:', response.data);
         setdepartmentList(response.data.data);
       }else{
         console.log('[Error : getDepartmentList]: Response Status - ', response.status);
@@ -105,18 +107,19 @@ export default function SignUpForm() {
     }
   };
 
-  const postloginCheck = async() => {
-    console.log('postloginCheck', inputData.loginId);
-    // try {
-    //   const response = await axios.post(API.LoginIdCheck, {managerId: inputData.loginId});
-    //   if(response.status === 200){
-    //     setValidate({...validate, loginDoubleCheck: response.data.data === inputData.loginId}); // 아이디 중복체크 
-    //   }else{
-    //     console.log('[Error : loginDoubleCheck]: Response Status - ', response.status);
-    //   } 
-    // }catch(err){
-    //   console.log('[Error : getDepartmentList]: ',err);
-    // }
+  const postloginIdDoubleCheck = async() => {
+    // console.log('postloginIdDoubleCheck', inputData.loginId);
+    try {
+      const response = await axios.post(API.LoginIdCheck, {managerId: inputData.loginId});
+      if(response.status === 200){
+        setValidate({...validate, loginDoubleCheck: false}); // 아이디 중복체크 
+        console.log(response.data);
+      }else{
+        console.log('[Error : loginDoubleCheck]: Response Status - ', response.status);
+      } 
+    }catch(err){
+      console.log('[Error : postloginIdDoubleCheck]: ',err);
+    }
   };     
   
   
@@ -154,15 +157,14 @@ export default function SignUpForm() {
           name="loginId" 
           label="아이디"
           value={inputData.loginId}
-          onChange={(e)=>{setInputData({...inputData, loginId: e.target.value }); setValidate({...validate, loginDoubleCheck: false})}}
+          onChange={(e)=>{setInputData({...inputData, loginId: e.target.value }); setValidate({...validate, loginDoubleCheck: true})}}
           onBlur={idEmptyChk}
           sx={{ flexGrow: 1 }}
           /> 
           
           {validate.loginDoubleCheck ? 
-          <CheckIcon sx={{color: 'green', position:'relative',top:'15px'}}/>:
-          <Button variant="outlined" sx={{ height:'50px', fontWeight: 'bold', size: '15px'}} onClick={postloginCheck}>중복확인</Button>}
-          
+          <Button variant="outlined" sx={{ height:'50px', fontWeight: 'bold', size: '15px'}} onClick={postloginIdDoubleCheck}>중복확인</Button>:
+          <CheckIcon sx={{color: 'green', position:'relative',top:'15px'}}/>}
 
         </Stack>
         
@@ -230,7 +232,7 @@ export default function SignUpForm() {
         </MenuItem>
         {departmentList.map((option) => (
           <MenuItem key={option.id} value={option.id}>
-            {option.name}
+            {option.departmentName}
           </MenuItem>
         ))}
           </Select>
@@ -250,13 +252,13 @@ export default function SignUpForm() {
           onBlur={emailCheck}
           sx={{ flexGrow: 1 }}
           /> 
-          <Button variant="outlined" sx={{ height:'50px', fontWeight: 'bold', size: '15px'}} onClick={()=>{setEmailVerifyOpen(true)}}>인증하기</Button>
+          {/* <Button variant="outlined" sx={{ height:'50px', fontWeight: 'bold', size: '15px'}} onClick={()=>{setEmailVerifyOpen(true)}}>인증하기</Button>
 
           <EmailVerifyDialog 
             open={emailVerifyOpen} 
             onClose={()=>{setEmailVerifyOpen(false)}} 
             onConfirm={(isVerify)=>{setValidate({...validate, emailVerify_valid: isVerify})}} 
-          />
+          /> */}
         </Stack>
 
         {/* 회원가입하기 버튼 */}
