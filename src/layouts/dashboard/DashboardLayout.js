@@ -1,15 +1,9 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-// import { Outlet, useNavigate } from 'react-router-dom';
-// @mui
+import { useState, useEffect } from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-//
 import Header from './header';
 import Nav from './nav';
-//
 import { getCookie } from '../../sections/auth/cookie/cookie';
-
-// ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -33,25 +27,23 @@ const Main = styled('div')(({ theme }) => ({
   },
 }));
 
-// ----------------------------------------------------------------------
-
 export default function DashboardLayout() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const accessTkn = getCookie("accessToken");
-  // const refreshTkn = getCookie("refreshToken");
 
-  if(accessTkn === null || accessTkn === undefined){
-    console.log("DashboardLayout.js : 로그인 권한이 없습니다");
-    // alert('로그인 권한이 없습니다!');
-    // navigate('/login', { replace: true });
-  }
+  useEffect(() => {
+    const accessTkn = getCookie("accessToken");
+    if(accessTkn === null || accessTkn === undefined){
+      console.log("DashboardLayout.js : 로그인 권한이 없습니다");
+      // alert('로그인 권한이 없습니다!');
+      navigate('/login', { replace: true });
+    }
+  }, [navigate]); // 의존성 배열에 navigate를 추가하여 navigate 함수가 변경될 때만 useEffect를 다시 실행
+
   return (
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)} />
-
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
-
       <Main>
         <Outlet />
       </Main>
