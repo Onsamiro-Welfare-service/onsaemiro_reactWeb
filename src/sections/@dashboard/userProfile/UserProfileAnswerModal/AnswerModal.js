@@ -30,10 +30,6 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    overflow: 'auto',
-    '&:: -webkit-scrollbar':{
-      display: 'none'
-    } 
 };
 
 UserAnswerModal.propTypes = {
@@ -74,7 +70,7 @@ export default function UserAnswerModal({click, close, data }){
           aria-labelledby="UserAnswerModal"
           aria-describedby="can read user answered survey data"
         >
-          <Box sx={style} id="UserAnswer" overflow='auto'>
+          <Box sx={style} id="UserAnswer">
 
             {/* 답변창 헤더 */}
             <UserAnswerHeader userData={data} dateSet={handleDateChange} dateValue={answerDate} />
@@ -87,14 +83,21 @@ export default function UserAnswerModal({click, close, data }){
                     <Tab label="개인정보 변경" value="3" />
                   </TabList>
                 </Box>
-                <TabPanel value="1">
+                <TabPanel value="1" 
+                  sx={{ 
+                    maxHeight:'600px',
+                    overflow: 'auto',
+                    '&:: -webkit-scrollbar':{
+                      display: 'none'
+                    } 
+                  }}>
                   
                   <UserAnswerCard answerDate={answerDate} />
 
                 </TabPanel>
                 <TabPanel value="2">준비중입니다.</TabPanel>
-                <TabPanel value="3" sx={{overflow:'hidden'}}>
-                  <Grid container spacing={2} >
+                <TabPanel value="3">
+                  <Grid container spacing={2}>
                     <Grid item xs={5}>
                       <span style={{ fontSize: '18px', fontWeight:'bold' }}>프로필 사진</span>
                       <UserAnswerModifyProfile url={setUrl} />
