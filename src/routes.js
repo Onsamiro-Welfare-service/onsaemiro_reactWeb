@@ -4,7 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
-// import UserPage from './pages/UserPage';
+import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 // import ProductsPage from './pages/ProductsPage';
@@ -13,7 +13,6 @@ import SignUpPage from './pages/SignUpPage';
 import ForgotLoginPage from './pages/ForgotLoginPage';
 import AdminAuthPage from './pages/AdminAuthPage';
 import DashboardSurveyList from './pages/DashboardSurveyList';
-import DashboardUserRequirement from './pages/DashboardUserRequirement';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -24,7 +23,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/userProfile" />, index:true },
         { path: 'userProfile', element: <DashboardUserProfile /> },
-        { path: 'requirement', element: <DashboardUserRequirement /> },
+        { path: 'requirement', element: <UserPage /> },
         { path: 'surveyList', element: <DashboardSurveyList /> },
         { path: 'blog', element: <BlogPage /> },
         { path: 'adminAuth', element: <AdminAuthPage /> },

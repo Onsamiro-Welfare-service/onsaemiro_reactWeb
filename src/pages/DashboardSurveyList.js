@@ -22,10 +22,14 @@ import {
   TableContainer,
   TablePagination,
 <<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
   Modal,Box
 =======
   Select, FormControl, TableHead
 >>>>>>> parent of d90a5ed (질문 생성)
+>>>>>>> feature/authApi
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -35,13 +39,16 @@ import Scrollbar from '../components/scrollbar';
 <<<<<<< HEAD
 import SurveyToolbar from '../sections/@dashboard/survey/surveyToolBar';
 import { SurveyList,SurveyHead } from '../sections/@dashboard/survey/index';
-import ModalAddSurvey from '../sections/@dashboard/survey/addSurvey';
+import ModalAddSurvey from '../sections/@dashboard/survey/addSurvey/addSurvey';
 import ModalSeqSurvey from '../sections/@dashboard/survey/seqSurvey/seqSurvey';
+<<<<<<< HEAD
+=======
 import PreviewSurveyModal from '../sections/@dashboard/survey/previewSurvey/previewSurveyModal';
 import ModalModifySurvey from '../sections/@dashboard/survey/modifySurvey';
 =======
 import { RequirementListHead, RequirementListToolbar } from '../sections/@dashboard/requirement';
 >>>>>>> parent of d90a5ed (질문 생성)
+>>>>>>> feature/authApi
 // mock
 import USERLIST from '../_mock/user';
 
@@ -157,16 +164,27 @@ export default function UserPage() {
   };
 
 <<<<<<< HEAD
+  const [modalAddSurvey, setModalAddSurvey] = useState(false);
+  const addClick = () => setModalAddSurvey(true);
+  const addClose = () => setModalAddSurvey(false)
+=======
+<<<<<<< HEAD
+>>>>>>> feature/authApi
 
-  const [modalState, setModalState] = useState({ status: false, val: '' });
-  const openModal = (val) => setModalState({ status: true, val });
-  const closeModal = () => setModalState({ status: false, val: '' });
-
-  const [surveyData, setSurveyData] = useState({});
-  const setDatas = (data) => setSurveyData(data);
-  // const resetDatas = () => setSurveyData({});
+  const [modalSeqSurvey, setModalSeqSurvey] = useState(false);
+  const seqClick = () => setModalSeqSurvey(true);
+  const seqClose = () => setModalSeqSurvey(false);
 
   useEffect(() => {
+<<<<<<< HEAD
+    if (modalSeqSurvey) {
+      seqClick();
+    }
+    if (modalAddSurvey) {
+      addClick();
+    }
+  }, [modalSeqSurvey,modalAddSurvey]);
+=======
   }, [modalState]);
 =======
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
@@ -175,6 +193,7 @@ export default function UserPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 >>>>>>> parent of d90a5ed (질문 생성)
+>>>>>>> feature/authApi
 
   return (
     <>
@@ -191,6 +210,11 @@ export default function UserPage() {
 
         <Card>
 <<<<<<< HEAD
+          <ModalSeqSurvey status={modalSeqSurvey} close={seqClose} />
+          <ModalAddSurvey status={modalAddSurvey} close={addClose} />
+          
+=======
+<<<<<<< HEAD
           <Modal open={modalState.status} onClose={closeModal} aria-labelledby="surveyModal">
             <Box>
               {modalState.val === 'add' && <ModalAddSurvey status={modalState.status} />}
@@ -199,10 +223,14 @@ export default function UserPage() {
               {modalState.val === 'modify' && <ModalModifySurvey status={modalState.status} data={surveyData} /> }
             </Box>
           </Modal>
+>>>>>>> feature/authApi
 
           <SurveyToolbar  filterName={filterName} onFilterName={handleFilterByName} /> {/* numSelected={selected.length} */}
-          <SurveyHead addClick={()=>openModal('add')} seqClick={()=>openModal('seq')} />
+          <SurveyHead addClick={addClick} seqClick={seqClick} />
           
+<<<<<<< HEAD
+          <SurveyList />
+=======
           <SurveyList prevClick={()=>openModal('preview')} modifyClick={()=>openModal('modify')} setData={setDatas}/>
 =======
           <RequirementListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
@@ -329,6 +357,7 @@ export default function UserPage() {
             </TableContainer>
           </Scrollbar>
 >>>>>>> parent of d90a5ed (질문 생성)
+>>>>>>> feature/authApi
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}

@@ -30,7 +30,7 @@ export default function SignUpPage() {
   return (
     <>
       <Helmet>
-        <title> 회원가입 </title>
+        <title> Login | Minimal UI </title>
       </Helmet>
 
       <StyledRoot>
