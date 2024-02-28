@@ -45,7 +45,6 @@ export default function LoginForm() {
         setCookie('accessToken', response.data.accessToken);
         setCookie('refreshToken', response.data.refreshToken);
         setCookie('managerId', response.data.id);
-        
         navigate('/dashboard', { replace: true });
          
         
