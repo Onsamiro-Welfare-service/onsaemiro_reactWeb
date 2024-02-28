@@ -47,7 +47,7 @@ export default function LoginForm() {
         setCookie('managerId', response.data.id);
         
         navigate('/dashboard', { replace: true });
-        
+         
         
       }else{
         console.log('[Error : loginManager]: Response Status - ', response.status);
