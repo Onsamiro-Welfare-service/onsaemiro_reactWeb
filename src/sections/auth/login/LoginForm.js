@@ -47,11 +47,10 @@ export default function LoginForm() {
         }
       );
       if(response.status === 200){
-        setCookie('accessToken', response.data.data.accessToken);
-        setCookie('refreshToken', response.data.data.refreshToken);
-        setCookie('managerId', response.data.data.id);
-        console.log(response.data);
-        navigate('/dashboard/app', { replace: true });
+        setCookie('accessToken', response.data.accessToken);
+        setCookie('refreshToken', response.data.refreshToken);
+        setCookie('managerId', response.data.id);
+        navigate('/dashboard', { replace: true });
       }else{
         console.log('[Error : loginManager]: Response Status - ', response.status);
       }
