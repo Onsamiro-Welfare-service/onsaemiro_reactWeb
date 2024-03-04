@@ -128,7 +128,7 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label} onClick={console.log("팝업 클릭")}>
               {option.label}
             </MenuItem>
           ))}
