@@ -16,33 +16,28 @@ import ProfileAvatar from './defaultProfileIcon';
 
 UserProfiles.propTypes = {
   data: PropTypes.shape({
-    name: PropTypes.string,
     id: PropTypes.string,
-    address: PropTypes.string,
-    birth: PropTypes.string,
-    phone: PropTypes.string, 
-    level: PropTypes.number,
-    
+    userName: PropTypes.string,
+    userAddress: PropTypes.string,
+    userLevel: PropTypes.number,
+    userBirth: PropTypes.string,
+    imageUrl: PropTypes.string,
+    phoneNumber: PropTypes.string, 
   }).isRequired,
-  images: PropTypes.string,
+  
   color: PropTypes.string,
   sx: PropTypes.object,
 
 };
 
 
-export default function UserProfiles({ sx, data, images=null, ...other }) {
-  // const name = '김승주';
-  // const id = "b1203";
-  // const address = "경기도 수원시 영통구 효원로 363";
-  // const birth = "1999-10-01";
-  // const phone = "010-4151-2489";
-  // const level = "중증도 0단계";
+
+
+export default function UserProfiles({ sx, data, ...other }) {
 
   return (
     <Card
       sx={{
-        // py: 5,
         textAlign: 'left',
         color: '#212B36',
         bgcolor: 'white',
@@ -54,19 +49,19 @@ export default function UserProfiles({ sx, data, images=null, ...other }) {
         padding: '5px'
       }}
       {...other}
-      id={`${data.name}_${data.id}`}
+      id={`${data.userName}_${data.id}`}
       
     >
 
       
-      <ProfileAvatar id={`${data.name}_${data.id}`} profilePhoto={ images } width={60} height={60} sx={{ margin:3}}/>
+      <ProfileAvatar id={`${data.userName}_${data.id}`} profilePhoto={ `${data.imageUrl}0` } width={60} height={60} sx={{ margin:3}}/>
       
-      <Box sx={{ my: 3 }} md={1} id={`${data.name}_${data.id}`}>
+      <Box sx={{ my: 3 }} md={1} id={`${data.userName}_${data.id}`}>
         <Grid container alignItems="center">
 
           <Grid item xs sx={{ mb: 0.5, mt: 1 }}>
             <Typography gutterBottom variant="h4" component="div">
-              {data.name}
+              {data.userName}
             </Typography>
           </Grid>
           <Grid item>
@@ -79,28 +74,28 @@ export default function UserProfiles({ sx, data, images=null, ...other }) {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1}}>
           <LocationOnIcon fontSize='small' sx={{mr:1}} />
           <Typography color="text.secondary" variant="body2">
-            {data.address}
+            {data.userAddress}
           </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1}}>
           <CalendarTodayIcon fontSize="small" sx={{mr:1}}/>
           <Typography color="text.secondary" variant="body2">
-            {data.birth}
+            {data.userBirth}
           </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
           <LocalPhoneIcon fontSize='small' sx={{mr:1}} />
           <Typography color="text.secondary" variant="body2">
-            {data.phone}
+            {data.phoneNumber}
           </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <AccessibleIcon fontSize='small' sx={{mr:1}} />
           <Typography color="text.secondary" variant="body2">
-            {data.level}
+            {data.userLevel}
           </Typography>
         </Box>
       </Box>

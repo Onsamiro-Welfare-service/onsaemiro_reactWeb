@@ -5,11 +5,12 @@ import { Box, Typography, Card, Divider, Grid  } from "@mui/material";
 import CategoryIcon from '../../../../components/category/categoryIcon';
 
 UserAnswerCard.propTypes = {
+    userSurveyAnswers: PropTypes.object,
     answerDate: PropTypes.string
 };
 
-export default function UserAnswerCard({answerDate}){
-  
+export default function UserAnswerCard({userSurveyAnswers, answerDate}){
+    console.log(userSurveyAnswers);
     return (
         <>
         <Typography variant='h5' sx={{mb:'15px'}}>{answerDate} 답변</Typography>

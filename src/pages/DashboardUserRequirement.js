@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import {
   Card,
@@ -19,33 +20,10 @@ import { RequirementListHead, RequirementListToolbar } from '../sections/@dashbo
 import RequirementListBody from '../sections/@dashboard/requirement/requirementListBody';
 import RequirementListNotFound from '../sections/@dashboard/requirement/requirementListNotFound';
 // import RequirementListPopover from '../sections/@dashboard/requirement/requirementListPopover';
+import { API } from '../apiLink';
+import { getRequestApi, postRequestApi } from '../apiRequest';
+import { getCookie } from '../sections/auth/cookie/cookie';
 
-const testData = [
-  { imageUrl: '', name: 'ㄴㄴㄴ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '1' },
-  { imageUrl: '', name: 'ㄱㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는중', id: '2' },
-  { imageUrl: '', name: 'ㄴㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '3' },
-  { imageUrl: '', name: 'ㄷㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '4' },
-  { imageUrl: '', name: 'ㄹㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '5' },
-  { imageUrl: '', name: 'ㅁㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '6' },
-  { imageUrl: '', name: 'ㅂㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '7' },
-  { imageUrl: '', name: 'ㅅㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '8' },
-  { imageUrl: '', name: 'ㄴㄴㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '9' },
-  { imageUrl: '', name: 'ㄱㄱㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '10' },
-  { imageUrl: '', name: 'ㄹㄹㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '11' },
-  { imageUrl: '', name: 'ㅎㅎㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '12' },
-  { imageUrl: '', name: 'ㅂㅂㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '13' },
-  { imageUrl: '', name: 'ㅍㅍㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '14' },
-  { imageUrl: '', name: 'ㅋㅋㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '15' },
-  { imageUrl: '', name: 'ㅁㅁㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '16' },
-  { imageUrl: '', name: 'ㄱㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '17' },
-  { imageUrl: '', name: 'ㄴㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '18' },
-  { imageUrl: '', name: 'ㄷㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '19' },
-  { imageUrl: '', name: 'ㄹㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '20' },
-  { imageUrl: '', name: 'ㅁㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '21' },
-  { imageUrl: '', name: 'ㅂㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '22' },
-  { imageUrl: '', name: 'ㅅㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '23' },
-  { imageUrl: '', name: 'ㅋㅇㅇㅇ', orderDate: '2024-12-01 12:22:22', status: 'active', description: '이런저런내용이 있는데 어디까지 길게해야 적당히 될까 보는중', id: '24' }
-];
 
 const TABLE_HEAD = [
   { id: 'name', label: '이름', alignRight: false },
@@ -88,20 +66,30 @@ function applySortFilter(array, comparator, query) {
 
 // 메인 함수 
 export default function DashboardUserRequirement() {
-  // const [open, setOpen] = useState(null);
+  const navigate = useNavigate();
+  const [userRequirement, setUserRequirement] = useState([]);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [order, setOrder] = useState('asc');
-
-  const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('name');
-
-  const [filterName, setFilterName] = useState('');
-
+  useEffect(() => {
+    const getUserRequirements = async () => {
+      const errMsg = 'Error : getUserRequirements';
+      const params = { managerId: getCookie('managerId') };
   
+      try {
+        const response = await getRequestApi(API.getRequirementList, params, errMsg, navigate);
+        if (response.status === 200 && response.data.requestList !== undefined) {
+          setUserRequirement(response.data.requestList);
+        } else {
+          console.error(errMsg, '지정되지 않은 에러');
+        }
+      } catch (error) {
+        console.error(errMsg, error);
+      }
+    };
+
+    getUserRequirements();
+  }, [navigate]);
+  // const [open, setOpen] = useState(null);
   // 메뉴 열기
   // const handleOpenMenu = (event) => {
   //   setOpen(event.currentTarget);
@@ -110,6 +98,15 @@ export default function DashboardUserRequirement() {
   // const handleCloseMenu = () => {
   //   setOpen(null);
   // };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState('asc');
+  const [selected, setSelected] = useState([]); // 선택된 행 - 화면에 표시되는 데이터는 이거
+  const [orderBy, setOrderBy] = useState('name');
+  const [filterName, setFilterName] = useState('');
+
+  
+  
 
   // 정렬 관련 함수
   const handleRequestSort = (event, property) => {
@@ -120,15 +117,28 @@ export default function DashboardUserRequirement() {
   // 전체 선택 관련 함수
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = testData.map((n) => n.name);
+      const newSelecteds = userRequirement.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
   // 삭제 관련 함수
-  const handleDelete = () => {
-    console.log(selected);
+  const handleDelete = async() => {
+    const errMsg = 'Error : [deleteRequirement]';
+  
+    try {
+      selected.forEach(async (id) => {
+        const response = await postRequestApi(`${API.deleteRequirement}?requestId=${id}`, null, errMsg, navigate, 'DELETE');
+        if (response.status === 200) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      console.error(errMsg, error);
+    }
+    // console.log(selected);
+
   };
   // 테이블 행 선택 관련 함수
   const handleClick = (event, name) => {
@@ -146,29 +156,22 @@ export default function DashboardUserRequirement() {
     setSelected(newSelected);
   };
 
-  // 페이징 관련 함수
-  const handleChangePage = (event, newPage) => {
+  
+  const handleChangePage = (event, newPage) => { // 페이징 관련 함수
     setPage(newPage);
   };
-
-  // 행 수 관련 함수
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event) => { // 행 수 관련 함수
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
-
-  // 필터링 관련 함수
-  const handleFilterByName = (event) => {
+  const handleFilterByName = (event) => { // 필터링 관련 함수
     setPage(0);
     setFilterName(event.target.value);
   };
 
-  // 테이블 행 수 계산
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - testData.length) : 0;
-  // 필터링 관련 변수
-  const filteredUsers = applySortFilter(testData, getComparator(order, orderBy), filterName);
-  // 검색했을때 아무값이 나오지 않는 경우
-  const isNotFound = !filteredUsers.length && !!filterName;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userRequirement.length) : 0;// 테이블 행 수 계산
+  const filteredUsers = applySortFilter(userRequirement, getComparator(order, orderBy), filterName);// 필터링 관련 변수
+  const isNotFound = !filteredUsers.length && !!filterName;// 검색했을때 아무값이 나오지 않는 경우
 
   return (
     <>
@@ -195,7 +198,7 @@ export default function DashboardUserRequirement() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={testData.length}
+                  rowCount={userRequirement.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}/>
@@ -218,7 +221,7 @@ export default function DashboardUserRequirement() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={testData.length}
+            count={userRequirement.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

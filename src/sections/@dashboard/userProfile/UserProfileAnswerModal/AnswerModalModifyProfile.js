@@ -14,20 +14,24 @@ import ProfileAvatar from '../defaultProfileIcon';
 
 
 ProfileImg.propTypes = {
-    url: PropTypes.func,
+    img: PropTypes.string,
+    setImg: PropTypes.func,
 };
 
 const name = 'modifyProfile';
 
 
-export default function ProfileImg ({url}){
-    const [profilePhoto, setProfilePhoto] = useState(null);
+export default function ProfileImg ({img, setImg}){
+    if (img === undefined) {
+        img = null;
+    }
+    const [profilePhoto, setProfilePhoto] = useState(img);
 
     // 사용자가 사진을 선택했을 때 호출될 핸들러
     const handlePhotoChange = (event) => {
         if (event.target.files[0]) {
             setProfilePhoto(URL.createObjectURL(event.target.files[0]));
-            url(URL.createObjectURL(event.target.files[0]));
+            setImg(event.target.files[0]);
         }
     };
 

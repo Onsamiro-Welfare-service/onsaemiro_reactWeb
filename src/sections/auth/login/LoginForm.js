@@ -26,9 +26,9 @@ export default function LoginForm() {
   const loginManager = async() => {
 
     // 로그인 요청 전 데이터 무결성 확인
-    setIdStatus(loginId.length === 0);
-    setPwdStatus(loginPwd.length === 0);
-    if(idStatus || pwdStatus) return;
+    // setIdStatus(loginId.length === 0);
+    // setPwdStatus(loginPwd.length === 0);
+    // if(idStatus || pwdStatus) {console.log('1'); return;}
 
     // 데이터 이상 없을 시 로그인 요청
     console.log('loginId : ', loginId, 'loginPwd : ', CryptoJS.SHA256(loginPwd).toString(CryptoJS.enc.Base64));
@@ -54,6 +54,7 @@ export default function LoginForm() {
       }
     } catch(err){
       console.log('[Error : loginManager]:',err);
+      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
   };
 
