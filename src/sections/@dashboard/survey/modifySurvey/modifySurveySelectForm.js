@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
     Grid,
@@ -10,10 +11,12 @@ import {
     FormControl,
 } from '@mui/material';
 
-
+import { getDefaultRequestApi } from '../../../../apiRequest';
+import { API } from '../../../../apiLink';
 // import { useState } from 'react';
 // import CategoryAdd from './addSurveyDialog';
 
+// import { TestCategoryArr } from '../constants';
 
 function valuetext(value) {
     return `${value}°C`;
@@ -22,14 +25,51 @@ function valuetext(value) {
 AddSurveySelectForm.propTypes = {
     inputs: PropTypes.object,
     setInputs: PropTypes.func,
-    category: PropTypes.array
 }
 
+// AddSurveySelectForm.defaultProps = {
+//     inputs: {
+//         id: 1,
+//         categoryId: 1,
+//         level: 0,
+//         type: '0',
+//         question: '',
+//         imageUrl: null,
+//         answerList: [{ description: '', imageUrl: null }, { description: '', imageUrl: null }],
+//     }
+// }
 
-export default function AddSurveySelectForm({inputs, setInputs, category}) {
+
+export default function AddSurveySelectForm({inputs, setInputs}) {
+    const navigate = useNavigate();
+    const [categorySelect, setCategorySelect] = useState([]);
+
+    useEffect(() => {
+        const getCategoryList = async () => {
+          const errMsg = 'Error : getCategoryList';
+      
+          try {
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate);
+            console.log(response.data);
+            if (response.status === 200 && response.data.categoryList !== undefined) {
+                setCategorySelect(response.data.categoryList);
+                if (!response.data.categoryList.some(category => category.id === inputs.categoryId)) {
+                    setInputs(inputs => ({ ...inputs, categoryId: '' }));
+                  }
+            } else {
+              console.error(errMsg, '지정되지 않은 에러');
+            }
+          } catch (error) {
+            console.error(errMsg, error);
+          }
+        };
     
+        getCategoryList();
+      }, [navigate, inputs.categoryId, setInputs]);
+
+
     const selectedCategory = (event) => {
-        // console.log('selectedCategory', event.target.value);
+        console.log('selectedCategory', event.target.value);
         setInputs({ ...inputs, categoryId: Number(event.target.value)});
     };
 
@@ -41,7 +81,7 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
 
     // const [level, setLevel] = useState(null);
     const levelChange = (event) => {
-        setInputs({ ...inputs, userLevel: event.target.value});
+        setInputs({ ...inputs, level: event.target.value});
     }
 
     return (
@@ -53,13 +93,13 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
             <Grid item xs={8}>
                 <FormControl sx={{width:'70%'}}>
                     <InputLabel id="select-label">선택하기</InputLabel>
-                    { category.length!==0 && // 카테고리가 없을 때는 렌더링 하지 않음
+                    { categorySelect.length!==0 && // 카테고리가 없을 때는 렌더링 하지 않음
                     <Select labelId='test' id='test'
                         value={inputs.categoryId}
                         defaultValue={"선택하기"}
                         label='카테고리'
                         onChange={selectedCategory}>
-                        { category.map((data) => (
+                        { categorySelect.map((data) => (
                             <MenuItem key={data.id} value={String(data.id)}>
                                 {data.name}
                             </MenuItem>))}
@@ -94,7 +134,7 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
             <Grid item xs={8} mt={1.5}>
                 <Slider
                     aria-label="level"
-                    value={inputs.userLevel}
+                    value={inputs.level}
                     onChange={levelChange}
                     getAriaValueText={valuetext}
                     valueLabelDisplay="auto"

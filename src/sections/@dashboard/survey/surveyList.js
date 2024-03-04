@@ -1,7 +1,6 @@
 // SurveyList.js
 import PropTypes from 'prop-types';
 
-import React from 'react';
 import {
   Table,
   TableBody,
@@ -12,18 +11,23 @@ import {
 } from '@mui/material';
 
 import Scrollbar from '../../../components/scrollbar';
-
 import SurveyListForm from './surveyListForm';
+// import { testSurveyList } from './constants';
 
-import { testSurveyList } from './constants';
 
 SurveyList.propTypes = {
   prevClick: PropTypes.func,
   modifyClick: PropTypes.func,
   setData: PropTypes.func,
+  categoryList: PropTypes.array,
+  surveyList: PropTypes.array,
 };
 
-export default function SurveyList({ prevClick, modifyClick, setData}) {
+
+
+export default function SurveyList({ prevClick, modifyClick, setData, categoryList, surveyList}) {
+  
+
     return (
         <>
         <Scrollbar>
@@ -42,15 +46,12 @@ export default function SurveyList({ prevClick, modifyClick, setData}) {
 
                 <TableBody>
                   {/* CollapsibleRow 컴포넌트 사용 */}
-                  
+                 
                   {
-                    testSurveyList.map((data, index) => (
-                      <SurveyListForm key={index} surveyData={data} prevClick={prevClick} modifyClick={modifyClick} setData={setData} />
+                    surveyList.map((data, index) => (
+                      <SurveyListForm key={index} surveyData={data} prevClick={prevClick} modifyClick={modifyClick} setData={setData} categoryList={categoryList}/>
                     ))
                   }
-
-                  
-  
                 </TableBody>
               </Table>
             </TableContainer>

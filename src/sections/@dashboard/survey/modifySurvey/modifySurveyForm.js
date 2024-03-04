@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import {
     Box,
     Button
 } from '@mui/material';
 
-import SurveySelectForm from './surveySelectForm';
-import SurveyInputForm from './surveyInputForm';
-import PreviewSurveySlide from '../previewSurvey/previewSurveySlide';
-import { getDefaultRequestApi, multiFormRequestApi } from '../../../../apiRequest';
+import SurveySelectForm from './modifySurveySelectForm';
+import SurveyInputForm from './modifySurveyInputForm';
+import PreviewSurveyModal from '../previewSurvey/previewSurveyModal';
+import { multiFormRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
 
 const style = {
@@ -25,29 +26,25 @@ const style = {
     p: 4,
 };
 
-SurveyForm.propTypes = {
+ModifySurveyForm.propTypes = {
     status: PropTypes.bool,
     mode: PropTypes.bool,
+    data: PropTypes.object,
     closeModal: PropTypes.func,
 }
 
 
-export default function SurveyForm({status, mode, closeModal}) {
+export default function ModifySurveyForm({status, mode, data, closeModal}) {
     const navigate = useNavigate();
-    const [categorySelect, setCategorySelect] = useState([]);
-
-    const initialInputs =  {
-        question: "",
-        categoryId: 0,
-        userLevel: 0,
-        type: 0,
+    const initialInputs = data === null ? {
+        id: 1,
+        categoryId: 1,
+        level: 0,
+        type: '0',
+        question: '',
         imageUrl: null,
-        answers: [
-            { answer: "", imageUrl: null },
-            { answer: "", imageUrl: null }
-        ]
-    };
-
+        answers: [{ description: '', imageUrl: null }, { description: '', imageUrl: null }],
+    }: data;
     
     const [inputs, setInputs] = useState(initialInputs);
 
@@ -55,18 +52,20 @@ export default function SurveyForm({status, mode, closeModal}) {
     const prevClick = () => setPreview(!modalPreview);
 
     const handleSubmit = async() => {
-        const errMsg = 'Error : [CreateSurveyForm] handleSubmit';
+        const errMsg = 'Error : [ModifySurveyForm] handleSubmit';
         const formData = new FormData();
 
         formData.append('request', JSON.stringify({
+            surveyId: inputs.id,
             question: inputs.question,
             categoryId: inputs.categoryId,
-            userLevel: inputs.userLevel,
-            type: inputs.type,
-            hasImage: inputs.imageUrl !== null,
-            answers: inputs.answers.map(answer => ({
-                answer: answer.answer,
-                hasImage: answer.imageUrl !== null
+            level: inputs.level,
+            // type: inputs.type,
+            questionImage: inputs.imageUrl !== null,
+            answers: inputs.answerList.map(answer => ({
+                answerId: answer.id,
+                answers: answer.description,
+                imageCk: answer.imageUrl !== null
             }))
         }));
 
@@ -74,7 +73,7 @@ export default function SurveyForm({status, mode, closeModal}) {
             formData.append('images', inputs.imageUrl);
         }  
 
-        inputs.answers.forEach((answer) => { // 답변 이미지 추가
+        inputs.answerList.forEach((answer) => { // 답변 이미지 추가
             if (answer.imageUrl !== null) {
                 formData.append('images', answer.imageUrl);
             }
@@ -82,52 +81,32 @@ export default function SurveyForm({status, mode, closeModal}) {
 
 
         try {
-            const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, );
+            const response = await multiFormRequestApi(API.modifySurvey, formData, errMsg, navigate);
             if (response.status === 200) {
                 // 성공적으로 등록
-                console.log('[CreateSurveyForm]', response.data);
-                alert('새로운 질문이 추가되었습니다.');
+                console.log('[ModifySurveyForm]', response.data);
+                alert('질문이 수정되었습니다.');
 
                 // 입력 초기화
                 setPreview(false); // 미리보기 닫기
-                setInputs(initialInputs);   
-                setCategorySelect([]);
+                setInputs(initialInputs);   // 입력 초기화
                 closeModal();
               } else {
                 console.error(errMsg, '지정되지 않은 에러');
-                alert('질문 추가에 실패했습니다. 다시 시도해주세요');
+                alert('질문 수정에 실패했습니다. 다시 시도해주세요');
               }
         } catch (error) {
             console.error(errMsg, error);
-            alert('질문 추가에 실패했습니다. 다시 시도해주세요');
+            alert('질문 수정에 실패했습니다. 다시 시도해주세요');
         }
+        
+        // 여기서 입력 데이터 처리
+        // console.log("수정", inputs); // 예: 입력된 데이터를 콘솔에 출력
+        // 서버로 데이터 전송 또는 기타 처리
+        // const tt = mode ? '새로운 질문이 추가되었습니다.' : '질문이 수정되었습니다.';
+        // alert(tt);
+        
     };
-
-    useEffect(() => {
-        const getCategoryList = async () => {
-          const errMsg = 'Error : getCategoryList';
-      
-          try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate);
-            console.log(response.data);
-            if (response.status === 200 && response.data.categoryList !== undefined) {
-                setCategorySelect(response.data.categoryList);
-                if (!response.data.categoryList.some(category => category.id === inputs.categoryId)) {
-                    setInputs(inputs => ({ ...inputs, categoryId: '' }));
-                  }
-            } else {
-              console.error(errMsg, '지정되지 않은 에러');
-            }
-          } catch (error) {
-            console.error(errMsg, error);
-          }
-        };
-    
-        getCategoryList();
-      }, [navigate, inputs.categoryId, setInputs]);
-
-
-    
 
     return (
         <Box sx={style} display={status ? 'block':'none'}>
@@ -136,12 +115,12 @@ export default function SurveyForm({status, mode, closeModal}) {
                     <span style={{fontSize: '24px', fontWeight:'bold'}}>{mode ? '새로운 질문 생성하기':'질문 수정하기'}</span>
                     <Button disabled variant='outlined' sx={{float:'right', margin:'5px',}} display={mode ? 'block':'none'}>설정</Button>
 
-                    <SurveySelectForm inputs={inputs} setInputs={setInputs} category={categorySelect}/>
+                    <SurveySelectForm inputs={inputs} setInputs={setInputs}/>
                     <SurveyInputForm inputs={inputs} setInputs={setInputs}/>
                 </Box>
             
                 
-                <PreviewSurveySlide status={modalPreview} data={inputs} />
+                <PreviewSurveyModal status={modalPreview} data={inputs} />
             </Box>
 
             <Button variant='contained' sx={{float:'right', mt:'15px'}} onClick={handleSubmit}  disabled={inputs.type === 0}>{mode ? '추가하기':'수정하기'}</Button>

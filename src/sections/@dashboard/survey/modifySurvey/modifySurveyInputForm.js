@@ -24,6 +24,7 @@ SurveyInputForm.propTypes = {
 }
 
 export default function SurveyInputForm({inputs, setInputs}) {    
+    // console.log('SurveyInputForm --- inputs', inputs);
     const fileInputRefs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()]);
 
     const handleFileChange = (index) => (event) => {
@@ -34,13 +35,13 @@ export default function SurveyInputForm({inputs, setInputs}) {
         // const fileUrl = URL.createObjectURL(file);
         if (index === -1) {
             // 질문의 파일 변경
-            // console.log(file);
+            console.log(file);
             setInputs({ ...inputs, imageUrl: file });
         } else {
             // 답변의 파일 변경
-            const newAnswers = [...inputs.answers];
+            const newAnswers = [...inputs.answerList];
             newAnswers[index].imageUrl = file;
-            setInputs({ ...inputs, answers: newAnswers });
+            setInputs({ ...inputs, answerList: newAnswers });
         }
     };
 
@@ -51,30 +52,29 @@ export default function SurveyInputForm({inputs, setInputs}) {
             setInputs({ ...inputs, question: newText });
         } else {
             // 답변의 텍스트 변경
-            const newAnswers = [...inputs.answers];
-            newAnswers[index].answer = newText;
-            setInputs({ ...inputs, answers: newAnswers });
+            const newAnswers = [...inputs.answerList];
+            newAnswers[index].description = newText;
+            setInputs({ ...inputs, answerList: newAnswers });
         }
     };
     
     useEffect(() => {
         let count;
-        // console.log(inputs.type);
-        switch(inputs.type){ 
+        switch(inputs.type){ // 임시 설정
             case 1: count = 2; break;
             case 2: count = 3; break;
             case 3: count = 4; break;
             default: ;
         }
-        const updatedAnswers = inputs.answers.slice(0, count); // answers 배열 조절
+        const updatedAnswers = inputs.answerList.slice(0, count); // answers 배열 조절
     
         // 필요한 경우 배열 확장
         while (updatedAnswers.length < count) {
-          updatedAnswers.push({ answer: '', imageUrl: null });
+          updatedAnswers.push({ description: '', imageUrl: null });
         }
     
-        setInputs((prevInputs) => ({ ...prevInputs, answers: updatedAnswers }));// eslint-disable-next-line
-      }, [inputs.type, inputs.answers.length]); 
+        setInputs((prevInputs) => ({ ...prevInputs, answerList: updatedAnswers }));// eslint-disable-next-line
+      }, [inputs.type, inputs.answerList.length]); 
     
     return (
         <Box sx={{
@@ -105,8 +105,8 @@ export default function SurveyInputForm({inputs, setInputs}) {
                 />
                 <IconButton onClick={() => fileInputRefs.current[0].current.click()}>
                     {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
-                    {inputs.imageUrl!==null ? (
-                            <img src={URL.createObjectURL(inputs.imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
+                    {inputs.imageUrl ? (
+                            <img src={inputs.imageUrl} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
                             ) : (
                             <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
                         )}
@@ -117,7 +117,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                 <Grid item xs={12}>
                     <span style={spanStyle}>답변 내용</span> 
                     <span style={{...spanStyle, fontSize:'12px'}}>*필수입력 사항입니다.</span> 
-                    {inputs.answers.map((answer, index) => (
+                    {inputs.answerList.map((answer, index) => (
                         <Box key={index+1} mt={2}>
                             <TextField 
                                 variant='outlined'
@@ -133,8 +133,8 @@ export default function SurveyInputForm({inputs, setInputs}) {
                                 style={{ display: 'none' }}
                             />
                             <IconButton onClick={() => fileInputRefs.current[index+1].current.click()}>
-                                {inputs.answers[index].imageUrl ? (
-                                    <img src={URL.createObjectURL(inputs.answers[index].imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
+                                {inputs.answerList[index].imageUrl ? (
+                                    <img src={inputs.answerList[index].imageUrl} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
                                     ) : (
                                     <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
                                 )}

@@ -54,6 +54,7 @@ export default function RequirementListHead({
             key={headCell.id}
             align={headCell.alignRight ? 'right' : 'left'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ minWidth: 100, maxWidth: 300 }}
           >
             <TableSortLabel
               hideSortIcon

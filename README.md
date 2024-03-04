@@ -5,6 +5,8 @@ Material-UI의 Minimal UI 템플릿을 기반으로한 온새미로 관리자 �
  3. npm run build
  4. npm start
 
+// api 연결 작업중
+
 ## Minimal [(Free version)](https://minimal-kit-react.vercel.app/)
 
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
