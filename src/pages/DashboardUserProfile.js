@@ -31,7 +31,7 @@ export default function DashboardUserProfile() {
     const getUserProfiles = async () => {
       const errMsg = 'Error : getUserProfiles';
       const params = { departmentId: 2 };
-  
+      console.log("실행");
       try {
         const response = await getRequestApi(API.userProfileList, params, errMsg, navigate);
         if (response.status === 200 && response.data.userList !== undefined) {
@@ -58,7 +58,7 @@ export default function DashboardUserProfile() {
     setModalUserData(item);
     handleAnswerModalOpen();
   };
-
+  
   return (
     <>
       <Helmet>

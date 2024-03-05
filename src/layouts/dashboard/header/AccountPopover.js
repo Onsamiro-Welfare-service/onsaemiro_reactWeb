@@ -127,8 +127,9 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
+        {/* // <MenuItem key={option.label} onClick={console.log("1")}>   */}
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={console.log("팝업 클릭")}>
+            <MenuItem key={option.label}>  
               {option.label}
             </MenuItem>
           ))}

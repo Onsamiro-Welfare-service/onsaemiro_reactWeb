@@ -6,10 +6,6 @@ CategoryIcon.propTypes = {
     category: PropTypes.string,
 }
 
-
-
-
-
 export default function CategoryIcon({category}){
     return(
         <>

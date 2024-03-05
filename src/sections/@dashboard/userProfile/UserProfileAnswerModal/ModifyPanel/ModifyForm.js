@@ -10,7 +10,6 @@ export default function ModifyForm({ userData, setUserData }) {
     const handleChange = (prop) => (event) => {
         setUserData({ ...userData, [prop]: event.target.value });
     };
-
     return (
         <Container id="form" maxWidth="sm" sx={{ width: '484px' }}>
             <Box sx={{ position: 'relative', left: '-25%' }}>

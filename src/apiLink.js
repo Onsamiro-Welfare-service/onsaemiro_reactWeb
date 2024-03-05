@@ -18,9 +18,11 @@ export const API = {
     "userProfileList": `${baseURL}/member/user/management/department/get`, // 유저 프로필 리스트 받아오기
     "userProfileCreate": `${baseURL}/member/register/user`, // 유저 프로필 등록
     "userProfileUpdate": `${baseURL}/member/user/change`, // 유저 프로필 수정
+    "getUserLoginCode": `${baseURL}/member/auth/user/loginCode`, // 유저 로그인 코드 받아오기
+    "deleteUserProfile": `${baseURL}/member/user/delete`, // 유저 프로필 삭제
 
     // 유저 답변 페이지 요청 API
-    "userSurveyAnswer": `${baseURL}/survey/answer/`, // 유저 답변 페이지 받아오기
+    "userSurveyAnswer": `${baseURL}/survey/answer`, // 유저 답변 페이지 받아오기
 
     // 카테고리 요청 API
     "getCategoryList": `${baseURL}/survey/category/get`, // 카테고리 리스트 받아오기

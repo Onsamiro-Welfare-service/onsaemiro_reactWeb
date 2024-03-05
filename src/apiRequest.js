@@ -117,7 +117,7 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, method_="PO
             if (refreshResponse.status === 200) {
                 setCookie('accessToken', refreshResponse.data.accessToken);
                 setCookie('refreshToken', refreshResponse.data.refreshToken);
-                return postRequestApi(apiUrl, body, errMsg, navigate); 
+                return postRequestApi(apiUrl, body, errMsg, navigate, method_); 
             }
             console.error(errMsg, ': Need to login again.');
             navigate('/login', { replace: true });
@@ -157,6 +157,44 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate) => {
                 setCookie('accessToken', refreshResponse.data.accessToken);
                 setCookie('refreshToken', refreshResponse.data.refreshToken);
                 return multiFormRequestApi(apiUrl, body, errMsg, navigate); 
+            }
+            console.error(errMsg, ': Need to login again.');
+            navigate('/login', { replace: true });
+        } else {
+            console.error(errMsg, error);
+        }
+        return undefined;
+    }
+};
+
+export const deleteDefaultRequestApi = async (apiUrl, errMsg, navigate) => {
+    const config = {
+        method: 'DELETE', // HTTP 메소드 (GET, POST 등)
+        url: apiUrl, // API URL
+        headers: {
+            'Content-Type':  'application/json', // 컨텐트 타입multipart/form-data
+            'Authorization': `Bearer ${accessToken}` // 인증 토큰
+        }
+    };
+    // console.log("Sending API request:", config);
+
+    try {
+        const response = await axios(config); // axios에 설정 객체를 직접 전달
+        if (response.status === 200) {
+            return response;
+        }
+        return response.data;
+        
+    } catch (error) {
+        // 오류 처리 로직
+        if (error.response && error.response.status === 401) {
+            const refreshToken = getCookie('refreshToken');
+            const refreshResponse = await axios.post(API.refreshToken, { refreshToken }, {headers: {'Content-Type': 'application/json'}});
+
+            if (refreshResponse.status === 200) {
+                setCookie('accessToken', refreshResponse.data.accessToken);
+                setCookie('refreshToken', refreshResponse.data.refreshToken);
+                return postRequestApi(apiUrl, errMsg, navigate); 
             }
             console.error(errMsg, ': Need to login again.');
             navigate('/login', { replace: true });

@@ -81,7 +81,7 @@ export default function LoginForm() {
           label="아이디" 
           error={idStatus}
           helperText={idStatus ? "아이디를 입력해주세요":""}
-          onBlur={(e)=> {
+          onChange={(e)=> {
             setLoginId(e.target.value);
             if(e.target.value.length !== 0){
               setIdStatus(false);
@@ -98,7 +98,7 @@ export default function LoginForm() {
           error={pwdStatus}
           helperText={pwdStatus ? "비밀번호를 입력해주세요":""}
           type={showPassword ? 'text' : 'password'}
-          onBlur={(e)=> {
+          onChange={(e)=> {
             setLoginPwd(e.target.value);
             if(e.target.value.length !== 0){
               setPwdStatus(false);
