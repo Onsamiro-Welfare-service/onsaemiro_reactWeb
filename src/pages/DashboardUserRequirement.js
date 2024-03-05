@@ -68,7 +68,7 @@ function applySortFilter(array, comparator, query) {
 export default function DashboardUserRequirement() {
   const navigate = useNavigate();
   const [userRequirement, setUserRequirement] = useState([]);
-
+  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
     const getUserRequirements = async () => {
@@ -78,7 +78,7 @@ export default function DashboardUserRequirement() {
       try {
         const response = await getRequestApi(API.getRequirementList, params, errMsg, navigate);
         if (response.status === 200 && response.data.requestList !== undefined) {
-          setUserRequirement(response.data.requestList);
+          setUserRequirement(response.data.requestList.reverse());
         } else {
           console.error(errMsg, '지정되지 않은 에러');
         }
@@ -86,7 +86,22 @@ export default function DashboardUserRequirement() {
         console.error(errMsg, error);
       }
     };
-
+    const getUserList = async () => {
+      const errMsg = 'Error : getUserList';
+      const params = { departmentId: 2 };
+  
+      try {
+        const response = await getRequestApi(API.userProfileList, params, errMsg, navigate);
+        if (response.status === 200 && response.data.userList !== undefined) {
+          setUserList(response.data.userList);
+        } else {
+          console.error(errMsg, '지정되지 않은 에러');
+        }
+      } catch (error) {
+        console.error(errMsg, error);
+      }
+    };
+    getUserList();
     getUserRequirements();
   }, [navigate]);
   // const [open, setOpen] = useState(null);
@@ -102,6 +117,7 @@ export default function DashboardUserRequirement() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]); // 선택된 행 - 화면에 표시되는 데이터는 이거
+
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
 
@@ -207,6 +223,7 @@ export default function DashboardUserRequirement() {
                 <RequirementListBody 
                   page={page} 
                   rowsPerPage={rowsPerPage} 
+                  userData={userList}
                   selected={selected} 
                   filteredUsers={filteredUsers} 
                   emptyRows={emptyRows} 

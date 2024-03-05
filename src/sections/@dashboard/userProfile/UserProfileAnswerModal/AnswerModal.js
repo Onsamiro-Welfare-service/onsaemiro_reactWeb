@@ -1,7 +1,7 @@
 // @mui
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react'; 
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'; // useEffect 
+
 
 // icons
 
@@ -12,12 +12,11 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 // Button
 
-import UserAnswerCard from './AnswerModalCard';
+import UserAnswerPanel from './AnswerPanel/Answer';
 import UserAnswerHeader from './AnswerModalHeaders';
-import UserAnswerModifyProfile from './AnswerModalModifyProfile';
-import ModifyForm from './AnswerModalModifyForm';
-import { getDefaultRequestApi } from '../../../../apiRequest';
-import { API } from '../../../../apiLink';
+import UserAnswerModifyProfile from './ModifyPanel/ModifyProfile';
+import ModifyForm from './ModifyPanel/ModifyForm';
+
 
 
 const style = {
@@ -69,29 +68,7 @@ export default function UserAnswerModal({click, close, data }){
   const [imgUrl, setImgUrl] = useState(`${data.imageUrl}0`);
   const [userData, setUserData] = useState(data);
 
-  // request API 관련 변수
-  const navigate = useNavigate();
-  const [userSurveyAnswers, setUserSurveyAnswers] = useState([]);
-  const requestApi = `${API.userSurveyAnswer}1/${data.id}`;
-  console.log(requestApi);
-
-  useEffect(() => {
-    const getSurveyAnswers = async () => {
-      const errMsg = 'Error : getSurveyAnswers';
-      try {
-        const response = await getDefaultRequestApi(requestApi, errMsg, navigate);
-        if (response.status === 200 && response.data.userList !== undefined) {
-          setUserSurveyAnswers(response.data.userList);
-        } else {
-          console.error(errMsg, '지정되지 않은 에러');
-        }
-      } catch (error) {
-        console.log(errMsg, error, '1');
-      }
-    };
-
-    getSurveyAnswers();
-  }, [navigate, requestApi]);
+  
 
   
   return (
@@ -117,12 +94,16 @@ export default function UserAnswerModal({click, close, data }){
                   <Tab label="개인정보 변경" value="3" />
                 </TabList>
               </Box>
-              <TabPanel value="1">
-                
-              <UserAnswerCard answerData={userSurveyAnswers} answerDate={answerDate} />
 
+              {/* 답변 조회 패널 */}
+              <TabPanel value="1">
+                <UserAnswerPanel userId={userData.id} answerDate={answerDate} />
               </TabPanel>
+
+              { /* 답변 통계 패널 */}
               <TabPanel value="2">준비중입니다.</TabPanel>
+
+              {/* 프로필 변경 패널 */}
               <TabPanel value="3" sx={{overflow:'hidden'}}>
                 <Grid container spacing={2} >
                   <Grid item xs={5}>
@@ -135,14 +116,8 @@ export default function UserAnswerModal({click, close, data }){
                   </Grid>
                   <Grid item xs={10} />
                   <Grid item xs={2} mt={5}>
-                  <Button variant='outlined' 
-                    sx={{
-                      ml:'15px',
-                      mb:'10px',
-                      fontSize: '20px',
-                    }}>변경하기</Button>
+                  <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px'}}>변경하기</Button>
                   </Grid>
-                  
                 </Grid>
                 
                 

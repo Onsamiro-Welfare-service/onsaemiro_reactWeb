@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';// Button, Stack 사용 안해서 지워둠
 // mock
-import account from '../../../_mock/account';
+// import account from '../../../_mock/account';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 // components
@@ -14,7 +14,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
-
+import { getCookie } from '../../../sections/auth/cookie/cookie';
 // ----------------------------------------------------------------------
 
 const NAV_WIDTH = 280;
@@ -60,15 +60,15 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}> {/* 사용자 프로필 사진 파트 */}
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={''} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {'온새미로 관리자'}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                {`관리자ID: ${getCookie('managerId')}`}
               </Typography>
             </Box>
           </StyledAccount>

@@ -21,16 +21,17 @@ const navConfig = [[
     path: '/dashboard/requirement',
     icon: icon('ic_user'),
   },
-  {
-    title: '관리자 권한 승인 ',
-    path: '/dashboard/adminAuth',
-    icon: icon('ic_user'),
-  },
-  {
-    title: '통계',
-    path: '/dashboard/blog',
-    icon: icon('ic_blog'),
-  }],
+  // {
+  //   title: '관리자 권한 승인 ',
+  //   path: '/dashboard/adminAuth',
+  //   icon: icon('ic_user'),
+  // },
+  // {
+  //   title: '통계',
+  //   path: '/dashboard/blog',
+  //   icon: icon('ic_blog'),
+  // }
+  ],
   [ {
     title: 'login',
     path: '/login',

@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 // components
 import { Box, Button, IconButton } from "@mui/material";
 
-import ProfileAvatar from '../defaultProfileIcon';
+import ProfileAvatar from '../../defaultProfileIcon';
 
 
 ProfileImg.propTypes = {
@@ -22,8 +22,8 @@ const name = 'modifyProfile';
 
 
 export default function ProfileImg ({img, setImg}){
-    if (img === undefined) {
-        img = null;
+    if (img === undefined) { 
+        img = null; 
     }
     const [profilePhoto, setProfilePhoto] = useState(img);
 
@@ -35,8 +35,7 @@ export default function ProfileImg ({img, setImg}){
         }
     };
 
-    const addPhotoBtn = () => {
-        // 버튼 클릭 시 input 클릭 이벤트를 트리거합니다.
+    const addPhotoBtn = () => {// 버튼 클릭 시 input 클릭 이벤트를 트리거합니다.
         const fileInput = document.getElementById(`${name}_filebtn`);
         if (fileInput) {
             fileInput.click();
@@ -45,20 +44,8 @@ export default function ProfileImg ({img, setImg}){
 
     return (
         <>
-          
-            <Box id={name}
-                sx={{
-                    width: '532px',
-                    height: '150px',
-                    mt: '24px',
-                    mb: '24px',
-                }}
-            >
-                <Box id={`${name}_icon`}
-                    sx={{
-                    display: 'flex',
-                    marginY: 3,
-                    }}>
+            <Box id={name} sx={{ width: '532px', height: '150px', mt: '24px', mb: '24px' }}>
+                <Box id={`${name}_icon`} sx={{ display: 'flex', marginY: 3 }}>
                     <ProfileAvatar profilePhoto={ profilePhoto }/>
                 </Box>
 
@@ -70,17 +57,8 @@ export default function ProfileImg ({img, setImg}){
                     onChange={handlePhotoChange}
                 />
 
-                <Button id={`${name}_addBtn`}
-                    
-                    startIcon={<AddAPhotoIcon 
-                        sx={{ 
-                            width: '40px', 
-                            height: '40px', 
-                            ml: '5px',
-                            mt: '2px',
-                            color: 'white',
-                        }}
-                    />}
+                <Button id={`${name}_addBtn`} 
+                    startIcon={ <AddAPhotoIcon  sx={{ width: '40px',  height: '40px', ml: '5px', mt: '2px',color: 'white'}}/>}
                     onClick={addPhotoBtn}
                     sx={{ 
                         position: 'absolute', 
@@ -98,19 +76,12 @@ export default function ProfileImg ({img, setImg}){
                     }}
                 />
 
-                <IconButton id={`${name}_deleteBtn`}
+                <IconButton 
+                    id={`${name}_deleteBtn`}
                     onClick={() => setProfilePhoto(null)} 
-                    sx={{ 
-                        postion: 'absolute', 
-                        left: '130px', 
-                        top: '-190px',
-                        visibility: profilePhoto ? 'visible' : 'hidden'
-                    }}
-                ><CloseIcon color='black'/>
-                    
-                    </IconButton>
-                
-
+                    sx={{ postion: 'absolute', left: '130px', top: '-190px', visibility: profilePhoto ? 'visible' : 'hidden' }}>
+                        <CloseIcon color='black'/>
+                </IconButton>
             </Box> 
         </>
       );
