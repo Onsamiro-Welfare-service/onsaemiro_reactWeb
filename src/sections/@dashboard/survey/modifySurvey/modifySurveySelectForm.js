@@ -13,6 +13,7 @@ import {
 
 import { getDefaultRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
+import { getCookie } from '../../../auth/cookie/cookie';
 // import { useState } from 'react';
 // import CategoryAdd from './addSurveyDialog';
 
@@ -49,7 +50,7 @@ export default function AddSurveySelectForm({inputs, setInputs}) {
           const errMsg = 'Error : getCategoryList';
       
           try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate);
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             console.log(response.data);
             if (response.status === 200 && response.data.categoryList !== undefined) {
                 setCategorySelect(response.data.categoryList);

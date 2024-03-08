@@ -8,6 +8,7 @@ import { Typography, Grid  } from "@mui/material";
 import AnswerCard from './AnswerCard';
 import { API } from '../../../../../apiLink';
 import { getDefaultRequestApi } from '../../../../../apiRequest';
+import { getCookie } from '../../../../auth/cookie/cookie';
 
 UserAnswerPanel.propTypes = {
     userId: PropTypes.number,
@@ -36,7 +37,7 @@ export default function UserAnswerPanel({ userId, answerDate }){
             
         ]);
         try {
-            const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/3/${userId}`, errMsg, navigate);
+            const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/3/${userId}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             if (response.status === 200 && response.data.surveyList !== undefined) {
                 // setUserSurveyAnswers(response.data.surveyList);
                 console.log(response.data.surveyList);

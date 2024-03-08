@@ -64,9 +64,7 @@ export default function AccountPopover() {
     await requestLogout();
     if(logoutChk){
       setOpen(null);
-      rmCookie('accessToken');
-      rmCookie('refreshToken');
-      rmCookie('managerId');
+      rmCookie();
       alert("로그아웃 되었습니다.");
       navigate('/login', { replace: true });
     } else {

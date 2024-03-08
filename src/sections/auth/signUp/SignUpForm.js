@@ -110,7 +110,7 @@ export default function SignUpForm() {
   const postloginIdDoubleCheck = async() => {
     // console.log('postloginIdDoubleCheck', inputData.loginId);
     try {
-      const response = await axios.post(API.manageDoubleCheck, {managerId: inputData.loginId});
+      const response = await axios.post(API.manageDoubleCheck, {managerUsername: inputData.loginId});
       if(response.status === 200){
         setValidate({...validate, loginDoubleCheck: false}); // 아이디 중복체크 
         console.log(response.data);

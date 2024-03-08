@@ -1,7 +1,7 @@
 // @mui
 import PropTypes from 'prop-types';
 import { useState } from 'react'; // useEffect 
-
+import { useNavigate } from 'react-router-dom';
 
 // icons
 
@@ -17,6 +17,9 @@ import UserAnswerHeader from './AnswerModalHeaders';
 import UserAnswerModifyProfile from './ModifyPanel/ModifyProfile';
 import ModifyForm from './ModifyPanel/ModifyForm';
 
+import { multiFormRequestApi } from '../../../../apiRequest';
+import { API } from '../../../../apiLink';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 
 const style = {
@@ -42,12 +45,13 @@ UserAnswerModal.propTypes = {
     click: PropTypes.bool,
     close: PropTypes.func,
     data: PropTypes.object,
+    reload: PropTypes.func
 };
 
 
 
 
-export default function UserAnswerModal({click, close, data }){
+export default function UserAnswerModal({ click, close, data, reload }){
   // data는 유저 정보값을 가지고 있음
 
   // 날짜 관련 변수
@@ -65,10 +69,48 @@ export default function UserAnswerModal({click, close, data }){
   };
 
   // 유저 프로필 데이터 관련 변수
-  const [imgUrl, setImgUrl] = useState(`${data.imageUrl}0`);
+  const [imgUrl, setImgUrl] = useState({ imageUrl: `${data.imageUrl}0`});
   const [userData, setUserData] = useState(data);
 
-  
+  const navigate = useNavigate();
+
+  const handleModify = async() => {
+    const errMsg = 'Error : handleModify';
+    console.log('imgUrl:', imgUrl);
+    console.log('initData:', data);
+    console.log('userData:', userData);
+    if (data === userData) { 
+      alert('변경된 사항이 없습니다.');
+      return; 
+    }
+    const formData = new FormData();
+
+    formData.append('request', JSON.stringify({
+      id: data.id,
+      name: data.userName === userData.userName ? "" : userData.userName,
+      managerId: 0,
+      address: data.userAddress === userData.userAddress ? "" : userData.userAddress,
+      birth: data.userBirth === userData.userBirth ? "" : userData.userBirth,
+      phoneNumber: data.phoneNumber === userData.phoneNumber ? "" : userData.phoneNumber,
+      level: data.userLevel === userData.userLevel ? 0 : Number(userData.userLevel)
+    }));
+    if (imgUrl !== null && (imgUrl.imageUrl !== `${data.imageUrl}0`) ) {
+      formData.append('images', imgUrl);
+    }
+
+    try {
+      const response = await multiFormRequestApi(API.userProfileUpdate, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "PUT");
+      if (response.status === 200) {
+        alert('성공적으로 변경되었습니다.');
+        reload();
+        close();
+      } else {
+        console.error(errMsg, '지정되지 않은 에러');
+      }
+    } catch (error) {
+      console.error(errMsg, error);
+    }
+  }
 
   
   return (
@@ -116,7 +158,7 @@ export default function UserAnswerModal({click, close, data }){
                   </Grid>
                   <Grid item xs={10} />
                   <Grid item xs={2} mt={5}>
-                  <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px'}}>변경하기</Button>
+                  <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px'}} onClick={handleModify}>변경하기</Button>
                   </Grid>
                 </Grid>
                 

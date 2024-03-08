@@ -30,8 +30,9 @@ export default function SurveyInputForm({inputs, setInputs}) {
     const handleFileChange = (index) => (event) => {
         console.log(index);
         const file = event.target.files[0];
-        if (!file) return;
         console.log(file);
+        if (!file) return;
+        
         // const fileUrl = URL.createObjectURL(file);
         if (index === -1) {
             // 질문의 파일 변경
@@ -106,7 +107,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                 <IconButton onClick={() => fileInputRefs.current[0].current.click()}>
                     {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
                     {inputs.imageUrl ? (
-                            <img src={inputs.imageUrl} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
+                            <img src={typeof inputs.imageUrl === 'string' ? inputs.imageUrl:URL.createObjectURL(inputs.imageUrl) } alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
                             ) : (
                             <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
                         )}
@@ -134,7 +135,10 @@ export default function SurveyInputForm({inputs, setInputs}) {
                             />
                             <IconButton onClick={() => fileInputRefs.current[index+1].current.click()}>
                                 {inputs.answerList[index].imageUrl ? (
-                                    <img src={inputs.answerList[index].imageUrl} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
+                                    <img 
+                                        src={typeof inputs.answerList[index].imageUrl === "string" ? inputs.answerList[index].imageUrl: URL.createObjectURL(inputs.answerList[index].imageUrl)} 
+                                        alt="Description" 
+                                        style={{ width: 30, height: 30, marginTop: 6 }} />
                                     ) : (
                                     <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
                                 )}

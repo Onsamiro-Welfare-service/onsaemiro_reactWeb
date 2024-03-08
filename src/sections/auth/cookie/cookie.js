@@ -9,7 +9,11 @@ export const setCookie = (name, value, options) => {
 
 export const getCookie = (name) => cookies.get(name);
 
-export const rmCookie = (name) => {
-  cookies.remove(name, { path: '/'});
-  console.log(`${name} 데이터가 정상적으로 삭제 되었습니다`);
+export const rmCookie = () => {
+  cookies.remove('accessToken', { path: '/' });
+  cookies.remove('refreshToken', { path: '/' });
+  cookies.remove('managerId', { path: '/' });
+  // cookies.remove('departmentId', { path: '/' });
+  // cookies.remove(name, { path: '/'});
+  console.log(`데이터가 정상적으로 삭제 되었습니다`);
 };

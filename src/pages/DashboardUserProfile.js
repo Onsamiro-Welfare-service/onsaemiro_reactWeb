@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+
 import { Grid, Container, Typography, Button, Stack } from '@mui/material';
 import Iconify from '../components/iconify';
 import { UserProfiles, UserAddModal, UserAnswerModal } from '../sections/@dashboard/userProfile';
 import { getRequestApi } from '../apiRequest';
 import { API } from '../apiLink';
+import { getCookie } from '../sections/auth/cookie/cookie';
+
 
 export default function DashboardUserProfile() {
   const navigate = useNavigate();
@@ -25,27 +28,25 @@ export default function DashboardUserProfile() {
   const [modalUserData, setModalUserData] = useState(null);
 
   // 프로필 리스트를 불러오는 함수
-  
-
-  useEffect(() => {
-    const getUserProfiles = async () => {
-      const errMsg = 'Error : getUserProfiles';
-      const params = { departmentId: 2 };
-      console.log("실행");
-      try {
-        const response = await getRequestApi(API.userProfileList, params, errMsg, navigate);
-        if (response.status === 200 && response.data.userList !== undefined) {
-          setUserProfiles(response.data.userList);
-        } else {
-          console.error(errMsg, '지정되지 않은 에러');
-        }
-      } catch (error) {
-        console.error(errMsg, error);
+  const getUserProfiles = useCallback(async () => {
+    const errMsg = 'Error : getUserProfiles';
+    const params = { departmentId: 2 };
+    console.log("실행");
+    try {
+      const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+      if (response.status === 200 && response.data.userList !== undefined) {
+        setUserProfiles(response.data.userList);
+      } else {
+        console.error(errMsg, '지정되지 않은 에러');
       }
-    };
-
-    getUserProfiles();
+    } catch (error) {
+      console.error(errMsg, error);
+    }
   }, [navigate]);
+  
+  useEffect(() => {
+    getUserProfiles();
+  }, [getUserProfiles]);
 
   const handleAddModalOpen = () => setModalUserAdd(true);
   const handleAddModalClose = () => setModalUserAdd(false);
@@ -65,8 +66,8 @@ export default function DashboardUserProfile() {
         <title>프로필 페이지 | 온새미로</title>
       </Helmet>
 
-      { modalUserAdd && <UserAddModal click={modalUserAdd} close={handleAddModalClose} />}
-      { modalUserAnswer && <UserAnswerModal click={modalUserAnswer} close={handleAnswerModalClose} data={modalUserData} />}
+      { modalUserAdd && <UserAddModal click={modalUserAdd} close={handleAddModalClose} reload={getUserProfiles}/>}
+      { modalUserAnswer && <UserAnswerModal click={modalUserAnswer} close={handleAnswerModalClose} data={modalUserData} reload={getUserProfiles} />}
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
