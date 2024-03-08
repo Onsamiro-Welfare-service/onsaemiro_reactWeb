@@ -6,6 +6,7 @@
   import Label from '../../../components/label';
   import { API } from '../../../apiLink';
   import { postRequestApi } from '../../../apiRequest';
+  import { getCookie } from '../../auth/cookie/cookie';
 
   RequirementListBody.propTypes = {
     page: PropTypes.number.isRequired,
@@ -43,7 +44,7 @@
 
       try {
         console.log()
-        const response = await postRequestApi(`${API.checkRequirement}?requestId=${clickedId}` , null, errMsg, navigate);
+        const response = await postRequestApi(`${API.checkRequirement}?requestId=${clickedId}` , null, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
         if (response.status === 200) {
           console.log('체크 요청 성공');
           } else {

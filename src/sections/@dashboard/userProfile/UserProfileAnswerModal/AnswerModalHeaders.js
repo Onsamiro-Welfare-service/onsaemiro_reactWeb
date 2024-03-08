@@ -5,6 +5,7 @@ import { Button, Dialog, DialogTitle } from "@mui/material";
 
 import { API } from '../../../../apiLink';
 import { postRequestApi } from '../../../../apiRequest';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 UserAnswerHeaders.propTypes = {
     userData: PropTypes.object,
@@ -26,7 +27,7 @@ export default function UserAnswerHeaders({userData, dateSet, dateValue}){
       const config = { id: userData.id };
   
       try {
-        const response = await postRequestApi(API.getUserLoginCode, config, errMsg, navigate);
+        const response = await postRequestApi(API.getUserLoginCode, config, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
         if (response.status === 200 && response.data.loginCode !== undefined) {
           setLoginCode(response.data.loginCode);
           setLoginCodeOpen(true);
@@ -42,7 +43,7 @@ export default function UserAnswerHeaders({userData, dateSet, dateValue}){
       const errMsg = 'Error : deleteUserProfile';
       const config = { userId: userData.id };
       try {
-        const response = await postRequestApi(API.deleteUserProfile, config ,errMsg, navigate, "DELETE");
+        const response = await postRequestApi(API.deleteUserProfile, config ,errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "DELETE");
         if (response.status === 200) {
           window.location.reload();
         } else {

@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -23,7 +23,7 @@ import ModalModifySurvey from '../sections/@dashboard/survey/modifySurvey';
 // api request
 import { API } from '../apiLink';
 import { getDefaultRequestApi } from '../apiRequest';
-
+import { getCookie } from '../sections/auth/cookie/cookie';
 
 // 메인 함수 
 export default function UserPage() {
@@ -52,27 +52,28 @@ export default function UserPage() {
   const [surveyList, setSurveyList] = useState([]);
 
 
-  useEffect(() => {
-    const fetchSurveyData = async () => {
-      const errMsg = 'Error : [SurveyListpage] fetchSurveyData';
-  
-      try {
-        const categoryResponse = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate);
-        setCategoryList(categoryResponse.data.categoryList);
+  const fetchSurveyData = useCallback(async () => {
+    const errMsg = 'Error : [SurveyListpage] fetchSurveyData';
 
-        setSurveyList([]);
-        categoryResponse.data.categoryList.forEach(async (category) => {
-          const surveyResponse = await getDefaultRequestApi(`${API.getCategorySurveyList}/${category.id}`, errMsg, navigate);
-          // console.log("surveyResponse ",surveyResponse.data);
-          setSurveyList(surveyList => [...surveyList, ...surveyResponse.data.surveyList]);
-        });
-      } catch (error) {
-        console.error(errMsg, error);
-      }
-    };
+    try {
+      const categoryResponse = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+      setCategoryList(categoryResponse.data.categoryList);
+
+      setSurveyList([]);
+      categoryResponse.data.categoryList.forEach(async (category) => {
+        const surveyResponse = await getDefaultRequestApi(`${API.getCategorySurveyList}/${category.id}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+        // console.log("surveyResponse ",surveyResponse.data);
+        setSurveyList(surveyList => [...surveyList, ...surveyResponse.data.surveyList]);
+      });
+    } catch (error) {
+      console.error(errMsg, error);
+    }
+  }, [navigate]);
+  useEffect(() => {
+    
 
     fetchSurveyData();
-  }, [navigate]);
+  }, [fetchSurveyData]);
 
   
 
@@ -108,10 +109,10 @@ export default function UserPage() {
         <Card>
           <Modal open={modalState.status} onClose={closeModal} aria-labelledby="surveyModal">
             <Box>
-              {modalState.val === 'add' && <ModalAddSurvey status={modalState.status} close={closeModal} />}
+              {modalState.val === 'add' && <ModalAddSurvey status={modalState.status} close={closeModal} reload={fetchSurveyData}/>}
               {modalState.val === 'seq' && <ModalSeqSurvey status={modalState.status} surveys={surveyList} categoryList={categoryList} />}
               {modalState.val === 'preview' && <PreviewSurveyModal status={modalState.status} data={surveyData} /> }
-              {modalState.val === 'modify' && <ModalModifySurvey status={modalState.status} data={surveyData} close={closeModal}/> }
+              {modalState.val === 'modify' && <ModalModifySurvey status={modalState.status} data={surveyData} close={closeModal} reload={fetchSurveyData}/> }
             </Box>
           </Modal>
 

@@ -11,6 +11,7 @@ import SeqSurveyForms  from './seqSurveyForms';
 import SeqSurveyButton from './seqSurveyButton';
 import { postRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '800px',
@@ -88,7 +89,7 @@ export default function ModalSeqSurvey({status, surveys, categoryList }) {
 
     try {
       console.log()
-      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate);
+      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
       if (response.status === 200) {
           // 성공적으로 등록
           console.log('[ModifySurveyForm]', response.data);

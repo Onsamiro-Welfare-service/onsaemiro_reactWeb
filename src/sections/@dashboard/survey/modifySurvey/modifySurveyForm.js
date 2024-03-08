@@ -12,6 +12,7 @@ import SurveyInputForm from './modifySurveyInputForm';
 import PreviewSurveyModal from '../previewSurvey/previewSurveyModal';
 import { multiFormRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '600px',
@@ -31,10 +32,11 @@ ModifySurveyForm.propTypes = {
     mode: PropTypes.bool,
     data: PropTypes.object,
     closeModal: PropTypes.func,
+    reload: PropTypes.func,
 }
 
 
-export default function ModifySurveyForm({status, mode, data, closeModal}) {
+export default function ModifySurveyForm({status, mode, data, closeModal, reload}) {
     const navigate = useNavigate();
     const initialInputs = data === null ? {
         id: 1,
@@ -54,7 +56,7 @@ export default function ModifySurveyForm({status, mode, data, closeModal}) {
     const handleSubmit = async() => {
         const errMsg = 'Error : [ModifySurveyForm] handleSubmit';
         const formData = new FormData();
-
+        console.log(inputs);
         formData.append('request', JSON.stringify({
             surveyId: inputs.id,
             question: inputs.question,
@@ -69,25 +71,27 @@ export default function ModifySurveyForm({status, mode, data, closeModal}) {
             }))
         }));
 
-        if (inputs.imageUrl !== null) { // 질문 이미지 추가
+        if (inputs.imageUrl !== null && inputs.imageUrl !== `${data.imageUrl}/0`) { // 질문 이미지 추가
+            console.log(inputs.imageUrl);
             formData.append('images', inputs.imageUrl);
         }  
 
-        inputs.answerList.forEach((answer) => { // 답변 이미지 추가
-            if (answer.imageUrl !== null) {
+        inputs.answerList.forEach((answer, index) => { // 답변 이미지 추가
+            if (answer.imageUrl !== null && answer.imageUrl !== `${data.answerList[index].imageUrl}/${index+1}`) {
+                console.log(answer.imageUrl);
                 formData.append('images', answer.imageUrl);
             }
         });
-
-
+        
         try {
-            const response = await multiFormRequestApi(API.modifySurvey, formData, errMsg, navigate);
+            const response = await multiFormRequestApi(API.modifySurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "PUT");
             if (response.status === 200) {
                 // 성공적으로 등록
                 console.log('[ModifySurveyForm]', response.data);
                 alert('질문이 수정되었습니다.');
 
                 // 입력 초기화
+                reload();
                 setPreview(false); // 미리보기 닫기
                 setInputs(initialInputs);   // 입력 초기화
                 closeModal();

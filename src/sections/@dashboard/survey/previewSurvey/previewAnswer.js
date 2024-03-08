@@ -33,8 +33,8 @@ const AnswerImgStyle = {
 }
 
 PreviewAnswer.propTypes = {
-    txt: PropTypes.string,
-    img: PropTypes.string
+    img: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    txt: PropTypes.string
 }
 
 export default function PreviewAnswer({ txt, img }){
@@ -44,7 +44,7 @@ export default function PreviewAnswer({ txt, img }){
              
             { img!==null &&
                 <Box sx={ AnswerChildStyle }>
-                    <img src={img} alt="Description" style={ AnswerImgStyle } />
+                    <img src={typeof img === "string" ? img:URL.createObjectURL(img)} alt="Description" style={ AnswerImgStyle } />
                 </Box>
             }
             <Typography variant='h6'>{txt}</Typography>

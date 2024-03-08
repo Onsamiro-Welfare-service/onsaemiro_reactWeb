@@ -25,6 +25,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { API } from '../../../apiLink';
 import { postRequestApi } from '../../../apiRequest';
+import { getCookie } from '../../auth/cookie/cookie';
 
 // import { tagList, levelList } from './constants';
 // import CategoryIcon from '../../../components/category/categoryIcon';
@@ -65,11 +66,11 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
     console.log(config);
 
     try {
-      const response = await postRequestApi(API.deleteSurvey , JSON.stringify(config), errMsg, navigate, 'DELETE');
+      const response = await postRequestApi(API.deleteSurvey , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'DELETE');
       if (response.status === 200) {
         console.log('성공');
         setOpenDialog(false); // 다이얼로그 닫기
-        // window.location.reload(); // 페이지 새로고침
+        window.location.reload(); // 페이지 새로고침
         } else {
           console.error(errMsg, '지정되지 않은 에러');
         }

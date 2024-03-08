@@ -76,7 +76,7 @@ export default function DashboardUserRequirement() {
       const params = { managerId: getCookie('managerId') };
   
       try {
-        const response = await getRequestApi(API.getRequirementList, params, errMsg, navigate);
+        const response = await getRequestApi(API.getRequirementList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
         if (response.status === 200 && response.data.requestList !== undefined) {
           setUserRequirement(response.data.requestList.reverse());
         } else {
@@ -91,7 +91,7 @@ export default function DashboardUserRequirement() {
       const params = { departmentId: 2 };
   
       try {
-        const response = await getRequestApi(API.userProfileList, params, errMsg, navigate);
+        const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
         if (response.status === 200 && response.data.userList !== undefined) {
           setUserList(response.data.userList);
         } else {
@@ -145,7 +145,7 @@ export default function DashboardUserRequirement() {
   
     try {
       selected.forEach(async (id) => {
-        const response = await postRequestApi(`${API.deleteRequirement}?requestId=${id}`, null, errMsg, navigate, 'DELETE');
+        const response = await postRequestApi(`${API.deleteRequirement}?requestId=${id}`, null, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'DELETE');
         if (response.status === 200) {
           window.location.reload();
         }

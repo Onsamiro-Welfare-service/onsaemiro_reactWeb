@@ -31,12 +31,13 @@ const style = {
 UserAddModal.propTypes = {
     click: PropTypes.bool,
     close: PropTypes.func,
+    reload: PropTypes.func
 };
 
 
 
 
-export default function UserAddModal({click, close }){
+export default function UserAddModal({click, close, reload }){
     const navigate = useNavigate();
     const [imgURL, setImgURL] = useState(null);
     const [inputData, setInputData] = useState({
@@ -57,13 +58,14 @@ export default function UserAddModal({click, close }){
         }
         
         try {
-          const response = await multiFormRequestApi(API.userProfileCreate, requestData, errMsg, navigate);
+          const response = await multiFormRequestApi(API.userProfileCreate, requestData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
 
           if (response.status === 200) {
             // 성공적으로 등록
             console.log('User Info:', response.data);
             alert('성공적으로 등록되었습니다.');
             close();
+            reload();
           } else {
             console.error(errMsg, '지정되지 않은 에러');
           }

@@ -11,6 +11,7 @@ import SurveyInputForm from './surveyInputForm';
 import PreviewSurveySlide from '../previewSurvey/previewSurveySlide';
 import { getDefaultRequestApi, multiFormRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '600px',
@@ -29,10 +30,11 @@ SurveyForm.propTypes = {
     status: PropTypes.bool,
     mode: PropTypes.bool,
     closeModal: PropTypes.func,
+    reload: PropTypes.func,
 }
 
 
-export default function SurveyForm({status, mode, closeModal}) {
+export default function SurveyForm({status, mode, closeModal, reload}) {
     const navigate = useNavigate();
     const [categorySelect, setCategorySelect] = useState([]);
 
@@ -66,7 +68,7 @@ export default function SurveyForm({status, mode, closeModal}) {
             hasImage: inputs.imageUrl !== null,
             answers: inputs.answers.map(answer => ({
                 answer: answer.answer,
-                hasImage: answer.imageUrl !== null
+                hasImage: answer.imageUrl !== null && answer.imageUrl !== undefined
             }))
         }));
 
@@ -79,16 +81,16 @@ export default function SurveyForm({status, mode, closeModal}) {
                 formData.append('images', answer.imageUrl);
             }
         });
-
-
+        console.log(formData);
         try {
-            const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, );
+            const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             if (response.status === 200) {
                 // 성공적으로 등록
                 console.log('[CreateSurveyForm]', response.data);
                 alert('새로운 질문이 추가되었습니다.');
 
                 // 입력 초기화
+                reload();
                 setPreview(false); // 미리보기 닫기
                 setInputs(initialInputs);   
                 setCategorySelect([]);
@@ -108,7 +110,7 @@ export default function SurveyForm({status, mode, closeModal}) {
           const errMsg = 'Error : getCategoryList';
       
           try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate);
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             console.log(response.data);
             if (response.status === 200 && response.data.categoryList !== undefined) {
                 setCategorySelect(response.data.categoryList);

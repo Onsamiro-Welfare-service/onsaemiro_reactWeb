@@ -14,7 +14,7 @@ import ProfileAvatar from '../../defaultProfileIcon';
 
 
 ProfileImg.propTypes = {
-    img: PropTypes.string,
+    img: PropTypes.object,
     setImg: PropTypes.func,
 };
 
@@ -25,13 +25,16 @@ export default function ProfileImg ({img, setImg}){
     if (img === undefined) { 
         img = null; 
     }
-    const [profilePhoto, setProfilePhoto] = useState(img);
+    const [profilePhoto, setProfilePhoto] = useState(img.imageUrl);
 
     // 사용자가 사진을 선택했을 때 호출될 핸들러
     const handlePhotoChange = (event) => {
         if (event.target.files[0]) {
             setProfilePhoto(URL.createObjectURL(event.target.files[0]));
-            setImg(event.target.files[0]);
+            setImg(event.target.files[0]); // object로 저장
+        } else {
+            setImg(null);
+            console.log('이미지가 없습니다.', img);
         }
     };
 
