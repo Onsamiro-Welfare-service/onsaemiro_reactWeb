@@ -99,10 +99,9 @@ export default function ProfileImg ({url}){
                         left: '320px', 
                         top: '-190px',
                         visibility: profilePhoto ? 'visible' : 'hidden'
-                    }}
-                ><CloseIcon color='black'/>
-                    
-                    </IconButton>
+                    }}>
+                    <CloseIcon color='black'/>
+                </IconButton>
                 
 
             </Box> 

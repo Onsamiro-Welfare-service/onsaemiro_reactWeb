@@ -77,7 +77,7 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
         }  
 
         inputs.answerList.forEach((answer, index) => { // 답변 이미지 추가
-            if (answer.imageUrl !== null && answer.imageUrl !== `${data.answerList[index].imageUrl}/${index+1}`) {
+            if (answer.imageUrl !== null && answer.imageUrl !== '' && answer.imageUrl !== `${data.answerList[index].imageUrl}/${index+1}`) {
                 console.log(answer.imageUrl);
                 formData.append('images', answer.imageUrl);
             }

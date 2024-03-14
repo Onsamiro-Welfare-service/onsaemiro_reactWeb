@@ -39,20 +39,7 @@ export default function UserAnswerHeaders({userData, dateSet, dateValue}){
       }
     };
 
-    const deleteUserProfile = async () => {
-      const errMsg = 'Error : deleteUserProfile';
-      const config = { userId: userData.id };
-      try {
-        const response = await postRequestApi(API.deleteUserProfile, config ,errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "DELETE");
-        if (response.status === 200) {
-          window.location.reload();
-        } else {
-          console.error(errMsg, '지정되지 않은 에러');
-        }
-      } catch (error) {
-        console.error(errMsg, error);
-      }
-    };
+    
 
 
     return (
@@ -61,7 +48,7 @@ export default function UserAnswerHeaders({userData, dateSet, dateValue}){
             <span style={{ fontSize: '20px', marginLeft:'10px', fontWeight:'bold' }}>{userData.id}</span>
             <input type="date" style={{ fontSize:'28px', fontWeight:'bold', border:'none', backgroundColor:'transparent', marginLeft:'20px'}} onChange={dateSet} value={dateValue}/>
             <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px'}} onClick={()=>{getUserLoginCode()}}>로그인코드</Button>
-            <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px', float:'right'}}  color="error" onClick={()=>{deleteUserProfile()}}>삭제하기</Button>
+            
             <Dialog open={loginCodeOpen} onClose={handleClose} sx={{margin: 5, }}>
                 <DialogTitle>{`[ ${loginCode} ]`}</DialogTitle>
             </Dialog>

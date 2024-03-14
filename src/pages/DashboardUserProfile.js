@@ -30,7 +30,7 @@ export default function DashboardUserProfile() {
   // 프로필 리스트를 불러오는 함수
   const getUserProfiles = useCallback(async () => {
     const errMsg = 'Error : getUserProfiles';
-    const params = { departmentId: 2 };
+    const params = { departmentId: getCookie('departmentId') };
     console.log("실행");
     try {
       const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));

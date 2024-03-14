@@ -40,15 +40,16 @@ UserAddModal.propTypes = {
 export default function UserAddModal({click, close, reload }){
     const navigate = useNavigate();
     const [imgURL, setImgURL] = useState(null);
-    const [inputData, setInputData] = useState({
+    const initData = {
       "name": "",
       "managerId": getCookie('managerId'),
-      "departmentId": 0,
+      "departmentId": getCookie('departmentId'),
       "address": "",
       "phoneNumber": "",
       "birth": "2024-01-01",
       "userLevel": 1
-    });
+    }
+    const [inputData, setInputData] = useState(initData);
 
     const submitData = async () => {
         const errMsg = 'Error : getUserProfiles';
@@ -61,9 +62,8 @@ export default function UserAddModal({click, close, reload }){
           const response = await multiFormRequestApi(API.userProfileCreate, requestData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
 
           if (response.status === 200) {
-            // 성공적으로 등록
-            console.log('User Info:', response.data);
             alert('성공적으로 등록되었습니다.');
+            setInputData(initData); // 데이터 초기화
             close();
             reload();
           } else {

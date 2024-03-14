@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Grid  } from "@mui/material";
+import { Box, Grid, FormControlLabel, Typography } from '@mui/material';
 
-
+import Checkbox from '@mui/material/Checkbox';
 
 import AnswerCard from './AnswerCard';
 import { API } from '../../../../../apiLink';
@@ -18,29 +18,20 @@ UserAnswerPanel.propTypes = {
     
 
 export default function UserAnswerPanel({ userId, answerDate }){
-    const [surveyAnswers, setUserSurveyAnswers] = useState([]); 
-    // request API 관련 변수
+    const [surveyAnswers, setUserSurveyAnswers] = useState({ "기본값": []}); 
+    const [showAll, setShowAll] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const getSurveyAnswers = async () => {
         const errMsg = 'Error : getSurveyAnswers';
-        setUserSurveyAnswers([
-            { category: '건강', question: "편안하게 잠을 잘 잤나요?", answer: "네" },
-            { category: '건강', question: "하루 30분 이상 규칙적인 운동을 하셨나요?", answer: "네" },
-            { category: '건강', question: "지금 현재 아픈 곳이 있나요?", answer: "네" },
-            { category: '안전', question: "복용하는 약은 잘 챙겨 먹었나요?", answer: "네" },
-            { category: '안전', question: "안전하게 집에 도착했나요?", answer: "네" },
-            { category: '안전', question: "안전하게 집에 도착했나요?", answer: "네"},
-            { category: '안전', question: "안전하게 집에 도착했나요?", answer: "네"},
-            { category: '통제', question: "안전하게 집에 도착했나요?", answer: "네"},
-            
-        ]);
+
         try {
-            const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/3/${userId}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
-            if (response.status === 200 && response.data.surveyList !== undefined) {
-                // setUserSurveyAnswers(response.data.surveyList);
-                console.log(response.data.surveyList);
+            const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/${userId}/${answerDate}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            if (response.status === 200 && response.data.answerList !== undefined) {
+                setUserSurveyAnswers(response.data.answerList);
+                console.log(response.data.answerList);
             } else {
             console.error(errMsg, '지정되지 않은 에러');
             }
@@ -50,13 +41,31 @@ export default function UserAnswerPanel({ userId, answerDate }){
     };
 
     getSurveyAnswers();
-  }, [navigate, userId]);
+    }, [navigate, userId, answerDate]);
+
+
     return (
         <>
-        <Typography variant='h5' sx={{mb:'15px'}}>{answerDate} 답변</Typography>
-        <Grid container spacing={2}>
-            <AnswerCard surveyData={surveyAnswers} />
-        </Grid>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: '15px' }}>
+                <Typography variant='h5' sx={{mr:'35px'}}>
+                    {answerDate} 답변
+                </Typography>
+                    <FormControlLabel
+                        control={<Checkbox checked={showAll} onChange={() => setShowAll(!showAll)} />}
+                    label="모든 카테고리 보이기"
+                />
+            </Box>
+            <Grid container spacing={2}>
+                {Object.entries(surveyAnswers).map(([category, answers]) => (
+                    (answers.length > 0 || showAll) && (
+                        <AnswerCard key={category} surveyData={answers} category={category} />
+                    )
+                ))}
+                {!showAll && Object.keys(surveyAnswers).every(category => surveyAnswers[category].length === 0) && (
+                    <Typography variant="h6" sx={{ mt: 2, ml: 2 }}>해당 날짜에 대한 사용자 답변이 존재하지 않습니다.</Typography>
+                )}
+                     
+            </Grid>
         </>
     );
 }

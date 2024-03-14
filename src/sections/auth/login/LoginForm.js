@@ -37,7 +37,7 @@ export default function LoginForm() {
         setCookie('accessToken', response.data.accessToken);
         setCookie('refreshToken', response.data.refreshToken);
         setCookie('managerId', response.data.id);
-        // setCookie('departmentId', response.data.departmentId);
+        setCookie('departmentId', response.data.departmentId);
 
         navigate('/dashboard', { replace: true });
         

@@ -88,7 +88,7 @@ export default function DashboardUserRequirement() {
     };
     const getUserList = async () => {
       const errMsg = 'Error : getUserList';
-      const params = { departmentId: 2 };
+      const params = { departmentId: getCookie('departmentId') };
   
       try {
         const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));

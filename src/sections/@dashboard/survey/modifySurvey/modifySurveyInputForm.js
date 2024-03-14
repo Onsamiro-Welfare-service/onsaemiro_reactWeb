@@ -10,6 +10,8 @@ import {
 } from '@mui/material';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const spanStyle = {
     fontSize: '18px', 
@@ -24,7 +26,7 @@ SurveyInputForm.propTypes = {
 }
 
 export default function SurveyInputForm({inputs, setInputs}) {    
-    // console.log('SurveyInputForm --- inputs', inputs);
+    console.log('SurveyInputForm --- inputs', inputs);
     const fileInputRefs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()]);
 
     const handleFileChange = (index) => (event) => {
@@ -33,18 +35,27 @@ export default function SurveyInputForm({inputs, setInputs}) {
         console.log(file);
         if (!file) return;
         
-        // const fileUrl = URL.createObjectURL(file);
-        if (index === -1) {
-            // 질문의 파일 변경
-            console.log(file);
+        if (index === -1) { // 질문의 파일 변경
             setInputs({ ...inputs, imageUrl: file });
-        } else {
-            // 답변의 파일 변경
+        } else {// 답변의 파일 변경
             const newAnswers = [...inputs.answerList];
             newAnswers[index].imageUrl = file;
             setInputs({ ...inputs, answerList: newAnswers });
         }
     };
+
+    const handleDeleteFile = (index) => () => {
+        console.log('실행', index);
+        if (index === -1) { // 질문의 파일 삭제
+            setInputs({ ...inputs, imageUrl: null });
+        } else { // 답변의 파일 삭제
+            const newAnswers = [...inputs.answerList];
+            newAnswers[index].imageUrl = '';
+            setInputs({ ...inputs, answerList: newAnswers });
+        }
+        console.log(inputs);
+    };
+
 
     const handleTextChange = (index) => (event) => {
         const newText = event.target.value;
@@ -91,27 +102,32 @@ export default function SurveyInputForm({inputs, setInputs}) {
                 <Grid item xs={12}>
                     <span style={spanStyle}>질문 내용</span> 
                     <span style={{...spanStyle, fontSize:'12px'}}>*필수입력 사항입니다.</span>
-                <TextField
-                    variant='outlined'
-                    label='질문'
-                    sx={{ width: '90%' }}
-                    value={inputs.question}
-                    onChange={handleTextChange(-1)}
-                />
-                <input
-                    type="file"
-                    ref={fileInputRefs.current[0]}
-                    onChange={handleFileChange(-1)}
-                    style={{ display: 'none' }}
-                />
-                <IconButton onClick={() => fileInputRefs.current[0].current.click()}>
-                    {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
-                    {inputs.imageUrl ? (
-                            <img src={typeof inputs.imageUrl === 'string' ? inputs.imageUrl:URL.createObjectURL(inputs.imageUrl) } alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
-                            ) : (
-                            <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
-                        )}
-                </IconButton>
+                    <TextField
+                        variant='outlined'
+                        label='질문'
+                        sx={{ width: '85%' }}
+                        value={inputs.question}
+                        onChange={handleTextChange(-1)}
+                    />
+                    <input
+                        type="file"
+                        ref={fileInputRefs.current[0]}
+                        onChange={handleFileChange(-1)}
+                        style={{ display: 'none' }}
+                    />
+                    <IconButton onClick={() => fileInputRefs.current[0].current.click()}>
+                        {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
+                        {inputs.imageUrl ? (
+                                <img src={typeof inputs.imageUrl === 'string' ? inputs.imageUrl:URL.createObjectURL(inputs.imageUrl) } alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
+                                ) : (
+                                <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
+                            )}
+                    </IconButton>
+                    {inputs.imageUrl && (
+                        <IconButton sx={{ position: 'relative', left:'-5px', top:'2px', color:  'black' }} onClick={handleDeleteFile(-1)}>
+                            <CloseIcon sx={{ fontSize: '15px'}} />
+                        </IconButton>
+                    )}
                 </Grid>
 
             {/* 답변 입력 */}
@@ -123,7 +139,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                             <TextField 
                                 variant='outlined'
                                 label={`답변 ${index + 1}`}
-                                sx={{ width: '90%' }}
+                                sx={{ width: '85%' }}
                                 value={answer.description}
                                 onChange={handleTextChange(index)}
                             />
@@ -143,6 +159,16 @@ export default function SurveyInputForm({inputs, setInputs}) {
                                     <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
                                 )}
                             </IconButton>
+
+                            {inputs.answerList[index].imageUrl &&
+                                <IconButton sx={{ position: 'relative', left:'-5px', top:'2px', color:  'black' }} 
+                                    onClick={() => {
+                                        const newAnswers = [...inputs.answerList];
+                                        newAnswers[index].imageUrl = '';
+                                        setInputs({ ...inputs, answerList: newAnswers });}}>
+                                    <CloseIcon sx={{ fontSize: '15px'}} />
+                                </IconButton>
+                            }
                         </Box>
                     ))}
                 </Grid>     
