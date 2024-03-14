@@ -41,7 +41,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
     const initialInputs =  {
         question: "",
         categoryId: 0,
-        userLevel: 0,
+        userLevel: 1,
         type: 0,
         imageUrl: null,
         answers: [
@@ -81,7 +81,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
                 formData.append('images', answer.imageUrl);
             }
         });
-        console.log(formData);
+
         try {
             const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             if (response.status === 200) {

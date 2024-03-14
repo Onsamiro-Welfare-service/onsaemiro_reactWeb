@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { TextField, Box, Container } from '@mui/material';
+import { TextField, Box, Container, Slider } from '@mui/material';
 
 ModifyForm.propTypes = {
     userData: PropTypes.object.isRequired,
@@ -50,21 +50,22 @@ export default function ModifyForm({ userData, setUserData }) {
                     margin="normal"
                     fullWidth
                     variant="standard"
+                    sx={{ mb: 2}}
                     inputProps={{ maxLength: 11, pattern: "\\d{11}" }}
                     placeholder="01012345678"
                     helperText="전화번호를 - 빼고 입력해주세요.  (예: 01012345678)"
                     value={userData.phoneNumber}
                     onChange={handleChange('phoneNumber')}
                 />
-                <TextField
-                    id="level-input"
+                <span style={{ color:'#637381', lineHeight: '1.4375em', fontSize: '14px', fontWeight: '400', marginTop: '5px'}}>중증도 단계:  { userData.userLevel }</span>   
+                <Slider
                     label="중증도"
-                    type="number"
-                    margin="normal"
-                    fullWidth
-                    variant="standard"
                     value={userData.userLevel}
                     onChange={handleChange('userLevel')}
+                    valueLabelDisplay="auto"
+                    step={1}
+                    min={1}
+                    max={2}
                 />
             </Box>
         </Container>

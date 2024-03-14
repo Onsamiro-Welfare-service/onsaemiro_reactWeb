@@ -109,7 +109,7 @@
                         
                         <Box sx={{ height:'90%', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                           {Array.from({length: imageLength }).map((_, index) => (
-                            <img key={`image-${index}`} src={`${imageUrl}/${index}`} alt={name} style={{display: 'block', margin: 'auto', width: '30%', border:'1px solid black', marginBottom: 10}} />
+                            <img key={`image-${index}`} src={`${imageUrl}/${index}`} alt={name} style={{display: 'block', margin: 'auto', width: '30%', marginBottom: 10}} />
                           ))}
                         </Box>
                         <Box sx={{ backgroundColor:'#f1f1f1', borderRadius:'5px', padding: 1, margin: 1}}>

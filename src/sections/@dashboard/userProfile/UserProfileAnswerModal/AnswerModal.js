@@ -17,7 +17,7 @@ import UserAnswerHeader from './AnswerModalHeaders';
 import UserAnswerModifyProfile from './ModifyPanel/ModifyProfile';
 import ModifyForm from './ModifyPanel/ModifyForm';
 
-import { multiFormRequestApi } from '../../../../apiRequest';
+import { multiFormRequestApi, postRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
 import { getCookie } from '../../../auth/cookie/cookie';
 
@@ -76,9 +76,6 @@ export default function UserAnswerModal({ click, close, data, reload }){
 
   const handleModify = async() => {
     const errMsg = 'Error : handleModify';
-    console.log('imgUrl:', imgUrl);
-    console.log('initData:', data);
-    console.log('userData:', userData);
     if (data === userData) { 
       alert('변경된 사항이 없습니다.');
       return; 
@@ -111,6 +108,21 @@ export default function UserAnswerModal({ click, close, data, reload }){
       console.error(errMsg, error);
     }
   }
+
+  const deleteUserProfile = async () => {
+    const errMsg = 'Error : deleteUserProfile';
+    const config = { userId: userData.id };
+    try {
+      const response = await postRequestApi(API.deleteUserProfile, config ,errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "DELETE");
+      if (response.status === 200) {
+        window.location.reload();
+      } else {
+        console.error(errMsg, '지정되지 않은 에러');
+      }
+    } catch (error) {
+      console.error(errMsg, error);
+    }
+  };
 
   
   return (
@@ -152,17 +164,19 @@ export default function UserAnswerModal({ click, close, data, reload }){
                     <span style={{ fontSize: '18px', fontWeight:'bold' }}>프로필 사진</span>
                     <UserAnswerModifyProfile img={imgUrl}  setImg={setImgUrl}  />
                   </Grid>
+                  
                   <Grid item xs={7}>
                     <span style={{ fontSize: '18px', fontWeight:'bold' }}>사용자 정보</span>
                     <ModifyForm userData={userData} setUserData={setUserData} />
                   </Grid>
-                  <Grid item xs={10} />
+                  <Grid item xs={10} mt={5} >
+                    <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px', float:'left'}}  color="error" onClick={()=>{deleteUserProfile()}}> 프로필 삭제</Button>
+                  </Grid>
                   <Grid item xs={2} mt={5}>
-                  <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px'}} onClick={handleModify}>변경하기</Button>
+                    <Button variant='outlined' sx={{ ml:'15px', mb:'10px', fontSize: '20px'}} onClick={handleModify}>변경하기</Button>
                   </Grid>
                 </Grid>
-                
-                
+
               </TabPanel>
             </TabContext>
           </Box>
