@@ -55,18 +55,20 @@
     }};
 
     useEffect(() => {
-      if (requireList.length === 0) setRequireList(filteredUsers);
-    }, [requireList, filteredUsers]);
+      setRequireList(filteredUsers);
+    }, [filteredUsers]);
     return (
       <TableBody>
-        {requireList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+        { requireList && 
+        requireList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
           const { id, name, description, isChecked, uploadDate, imageUrl, imageLength, userId } = row; // 요구사항 정보
           const date = new Date(uploadDate); // 시간 형태로 변환
           const koreanTime = new Date(date.getTime() + (9 * 60 * 60 * 1000)); // 한국 시간으로 변환
           const uploadTime = koreanTime.toISOString().replace('T', ' ').substring(0, 19); // 업로드 시간
           const isRowSelected = selected.includes(id); // 선택된 행인지 확인
           const isRowExpanded = !!expandedRows[id]; // 행이 확장되었는지 확인
-          const user = userData.find((user)=> user.id === userId);
+          const user = userData.find((user) => user.id === userId) ?? {};
+          
 
           return (
             <React.Fragment key={id}>
@@ -83,7 +85,7 @@
                 </TableCell>
                 <TableCell component="th" scope="row" padding="none">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar alt={name} src={`${user.imageUrl}/0`} />
+                    <Avatar alt={name} src={user?.imageUrl ? `${user.imageUrl}0` : undefined} />
                     <Typography variant="subtitle2" noWrap>
                       {user.userName}
                     </Typography>

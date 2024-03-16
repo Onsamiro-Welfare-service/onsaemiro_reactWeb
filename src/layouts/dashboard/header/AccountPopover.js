@@ -26,52 +26,41 @@ import { API } from '../../../apiLink';
 
 // ----------------------------------------------------------------------
 export default function AccountPopover() {
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
-
-  const [open, setOpen] = useState(false);
-  let logoutChk = false;
+  
   const handleOpen = (event) => {
-    setOpen(event.currentTarget);
+    setAnchorEl(event.currentTarget);
   };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const isOpen = Boolean(anchorEl);
 
   // 로그아웃 처리하는 API
-  const requestLogout = async() => {
+  const logoutUser = async (navigate) => {
     const manageId = getCookie("managerId");
     const accessTkn = getCookie("accessToken");
-
-    await axios.post(API.manageLogout, 
-      { "managerId": manageId },
-      { headers: {
-          'Authorization': `Bearer ${accessTkn}` 
-      }
-    }).then(() => {
-      logoutChk = true;
-    }).catch((error) => {
-      console.log('[Error] Logout Api request:',error);
-      if(error.name === 'AxiosError'){
-        console.log('토큰으로 인한 AxiosError 발생. 로그아웃 처리함');
-        logoutChk = true;
-      } else {
-        logoutChk = false;
-      }
-    });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // 버튼이 눌리면 로그아웃 처리
-  const handleLogout = async() => {
-    await requestLogout();
-    if(logoutChk){
-      setOpen(null);
+  
+    try {
+      await axios.post(API.manageLogout, { "managerId": manageId }, {
+        headers: { 'Authorization': `Bearer ${accessTkn}` }
+      });
+      // Logout successful
       rmCookie();
       alert("로그아웃 되었습니다.");
       navigate('/login', { replace: true });
-    } else {
+    } catch (error) {
+      console.log('[Error] Logout Api request:', error);
+      // Logout failed
       alert("로그아웃 실패. 다시 요청해주세요");
     }
   };
+
+  const handleLogout = async () => {
+    await logoutUser(navigate);
+  };
+
 
   return (
     <>
@@ -79,7 +68,7 @@ export default function AccountPopover() {
         onClick={handleOpen}
         sx={{
           p: 0,
-          ...(open && {
+          ...(isOpen && {
             '&:before': {
               zIndex: 1,
               content: "''",
@@ -96,23 +85,11 @@ export default function AccountPopover() {
       </IconButton>
 
       <Popover
-        open={open}
-        anchorEl={open}
+        open={isOpen}
+        anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 0,
-            mt: 1.5,
-            ml: 0.75,
-            width: 180,
-            '& .MuiMenuItem-root': {
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>

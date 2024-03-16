@@ -102,13 +102,11 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
         },
         data: body
     };
-    // console.log("Sending API request:", config);
 
     try {
         const response = await axios(config); // axios에 설정 객체를 직접 전달
         return response;
-        
-        
+
     } catch (error) {
         // 오류 처리 로직
         if (error.response && error.response.status === 401) {
@@ -144,7 +142,6 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
         },
         data: body
     };
-    // console.log("Sending API request:", config);
 
     try {
         const response = await axios(config); // axios에 설정 객체를 직접 전달
@@ -178,40 +175,3 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
     }
 };
 
-// export const deleteDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refreshTkn) => {
-//     const config = {
-//         method: 'DELETE', // HTTP 메소드 (GET, POST 등)
-//         url: apiUrl, // API URL
-//         headers: {
-//             'Content-Type':  'application/json', // 컨텐트 타입multipart/form-data
-//             'Authorization': `Bearer ${token}` // 인증 토큰
-//         }
-//     };
-//     // console.log("Sending API request:", config);
-
-//     try {
-//         const response = await axios(config); // axios에 설정 객체를 직접 전달
-//         if (response.status === 200) {
-//             return response;
-//         }
-//         return response.data;
-        
-//     } catch (error) {
-//         // 오류 처리 로직
-//         if (error.response && error.response.status === 401) {
-//             const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
-
-//             if (refreshResponse.status === 200) {
-//                 setCookie('accessToken', refreshResponse.data.accessToken);
-//                 setCookie('refreshToken', refreshResponse.data.refreshToken);
-//                 return postRequestApi(apiUrl, errMsg, navigate, token);
-//             }
-//             console.error(errMsg, ': Need to login again.');
-//             rmCookie();
-//             navigate('/login', { replace: true });
-//         } else {
-//             console.error(errMsg, error);
-//         }
-//         return undefined;
-//     }
-// };
