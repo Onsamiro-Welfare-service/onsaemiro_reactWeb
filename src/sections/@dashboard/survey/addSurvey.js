@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import SurveyForm from './surveyForm/surveyForm';
+import SurveyForm from './addSurvey/surveyForm';
 
 ModalAddSurvey.propTypes = {
     status: PropTypes.bool,

@@ -31,7 +31,7 @@ export default function UserAnswerPanel({ userId, answerDate }){
             const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/${userId}/${answerDate}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             if (response.status === 200 && response.data.answerList !== undefined) {
                 setUserSurveyAnswers(response.data.answerList);
-                console.log(response.data.answerList);
+                // console.log(response.data.answerList);
             } else {
             console.error(errMsg, '지정되지 않은 에러');
             }

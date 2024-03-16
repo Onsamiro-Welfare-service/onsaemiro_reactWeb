@@ -33,7 +33,7 @@ export default function LoginForm() {
       const response = await axios.post(API.loginAdmin, config);
 
       if(response.status === 200){
-        console.log(response.data);
+        // console.log(response.data);
         setCookie('accessToken', response.data.accessToken);
         setCookie('refreshToken', response.data.refreshToken);
         setCookie('managerId', response.data.id);

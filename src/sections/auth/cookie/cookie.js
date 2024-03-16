@@ -4,7 +4,7 @@ const cookies = new Cookies();
 
 export const setCookie = (name, value, options) => {
   cookies.set(name, value, { ...options, path: '/' });
-  console.log(`쿠키 "${name}"에 저장된 값: ${value}`);
+  // console.log(`쿠키 "${name}"에 저장된 값: ${value}`);
 };
 
 export const getCookie = (name) => cookies.get(name);

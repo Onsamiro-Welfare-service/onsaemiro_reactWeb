@@ -34,6 +34,7 @@ export default function CategorySelect({category, setCategory, categoryList}) {
                         defaultValue={''}
                         label='카테고리'
                         onChange={(e) =>  setCategory(e.target.value)}>
+                        <MenuItem value={''}>선택하기</MenuItem>
                         {categoryList.map((option) => (
                         <MenuItem key={option.id} value={String(option.id)}>
                             {option.name}

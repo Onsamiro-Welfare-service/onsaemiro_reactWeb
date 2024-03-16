@@ -25,7 +25,7 @@ export const API = {
     "userSurveyAnswer": `${baseURL}/survey/answer`, // 유저 답변 페이지 받아오기
 
     // 카테고리 요청 API
-    "getCategoryList": `${baseURL}/survey/category/get`, // 카테고리 리스트 받아오기
+    
     "getCategorySurveyList": `${baseURL}/survey/get/category`, // 카테고리별 설문 리스트 받아오기
 
     // 질문 페이지 요청 API
@@ -39,4 +39,10 @@ export const API = {
     "getNewRequirementList": `${baseURL}/request/get/new`, // 새로운 요구사항 리스트 받아오기
     "checkRequirement": `${baseURL}/request/check`, // 요구사항 확인
     "deleteRequirement": `${baseURL}/request/delete`, // 요구사항 삭제
+
+    // 카테고리 요청 API
+    "createCategory": `${baseURL}/survey/category/management`, // 카테고리 추가
+    "modifyCategory": `${baseURL}/survey/category/management/change`, // 카테고리 수정
+    "deleteCategory": `${baseURL}/survey/category/management/delete`, // 카테고리 삭제
+    "getCategoryList": `${baseURL}/survey/category/get`, // 카테고리 리스트 받아오기
 };

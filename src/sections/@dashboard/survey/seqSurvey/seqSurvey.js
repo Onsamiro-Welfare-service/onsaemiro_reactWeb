@@ -41,7 +41,7 @@ export default function ModalSeqSurvey({status, surveys, categoryList }) {
   // 카테고리 선택 시 해당 카테고리에 해당하는 질문만 표시
   useEffect(() => {
     if (selectedCategory === '') {
-      setDisplayedSurveyList(surveyData);
+      setDisplayedSurveyList([]);
     } else {
       const filteredList = surveyData.filter(item => item.categoryId === Number(selectedCategory));
       if (filteredList.length === 0) 
@@ -88,8 +88,7 @@ export default function ModalSeqSurvey({status, surveys, categoryList }) {
     };
 
     try {
-      console.log()
-      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'PUT');
       if (response.status === 200) {
           // 성공적으로 등록
           console.log('[ModifySurveyForm]', response.data);
