@@ -58,7 +58,7 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
   };
   
   const navigate = useNavigate();
-  const handleCloseDialog = async() => { // 삭제 다이얼로그 닫기 delete request
+  const handleDeleteSurvey = async() => { // 삭제 다이얼로그 닫기 delete request
     const errMsg = 'Error : [SurveyListForm] handleDeleteSurvey';
     const config = {
       surveyId: deleteSurveyData.id,
@@ -172,7 +172,7 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
 
       <Dialog
         open={openDialog}
-        onClose={handleCloseDialog}
+        onClose={handleDeleteSurvey}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -183,10 +183,10 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>취소</Button>
+          <Button onClick={() => setOpenDialog(false)}>취소</Button>
           <Button onClick={() => {
             console.log('삭제 로직 실행');
-            handleCloseDialog();
+            handleDeleteSurvey();
           }} autoFocus>
             삭제
           </Button>

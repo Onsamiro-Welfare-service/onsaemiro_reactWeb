@@ -103,7 +103,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                     onChange={handleFileChange(-1)}
                     style={{ display: 'none' }}
                 />
-                <IconButton onClick={() => fileInputRefs.current[0].current.click()}>
+                <IconButton onClick={() => fileInputRefs.current[0].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
                     {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
                     {inputs.imageUrl!==null ? (
                             <img src={URL.createObjectURL(inputs.imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
@@ -132,7 +132,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                                 onChange={handleFileChange(index)}
                                 style={{ display: 'none' }}
                             />
-                            <IconButton onClick={() => fileInputRefs.current[index+1].current.click()}>
+                            <IconButton onClick={() => fileInputRefs.current[index+1].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
                                 {inputs.answers[index].imageUrl ? (
                                     <img src={URL.createObjectURL(inputs.answers[index].imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
                                     ) : (

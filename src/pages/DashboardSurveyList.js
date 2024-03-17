@@ -70,10 +70,16 @@ export default function UserPage() {
     }
   }, [navigate]);
   useEffect(() => {
-    
+    const isLogin = () => {
+      const accessTkn = getCookie("accessToken");
+      if (!accessTkn) {
+        navigate('/login', { replace: true });
+      }
+    }
+    isLogin();
 
     fetchSurveyData();
-  }, [fetchSurveyData]);
+  }, [fetchSurveyData, navigate]);
 
   
 

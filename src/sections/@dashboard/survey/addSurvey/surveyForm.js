@@ -66,7 +66,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
             question: inputs.question,
             categoryId: inputs.categoryId,
             userLevel: inputs.userLevel,
-            type: inputs.type,
+            type: 1,
             hasImage: inputs.imageUrl !== null,
             answers: inputs.answers.map(answer => ({
                 answer: answer.answer,
@@ -97,10 +97,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
                 setInputs(initialInputs);   
                 setCategorySelect([]);
                 closeModal();
-              } else {
-                console.error(errMsg, '지정되지 않은 에러');
-                alert('질문 추가에 실패했습니다. 다시 시도해주세요');
-              }
+              } 
         } catch (error) {
             console.error(errMsg, error);
             alert('질문 추가에 실패했습니다. 다시 시도해주세요');
@@ -138,7 +135,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
             <Box sx={{width: '532px',height: '673px', overflow:'hidden'}}>
                 <Box sx={{display:slidePreview? 'none':'block'}}>
                     <span style={{fontSize: '24px', fontWeight:'bold'}}>{mode ? '새로운 질문 생성하기':'질문 수정하기'}</span>
-                    <Button variant='outlined' sx={{float:'right', margin:'5px',}} display={mode ? 'block':'none'}>설정</Button>
+                    <Button variant='outlined' sx={{float:'right', margin:'5px',}} display={mode ? 'block':'none'} disabled>설정</Button>
 
                     <SurveySelectForm inputs={inputs} setInputs={setInputs} category={categorySelect}/>
                     <SurveyInputForm inputs={inputs} setInputs={setInputs}/>

@@ -101,6 +101,14 @@ export default function DashboardUserRequirement() {
         console.error(errMsg, error);
       }
     };
+
+    const isLogin = () => {
+      const accessTkn = getCookie("accessToken");
+      if (!accessTkn) {
+        navigate('/login', { replace: true });
+      }
+    }
+    isLogin();
     getUserList();
     getUserRequirements();
   }, [navigate]);

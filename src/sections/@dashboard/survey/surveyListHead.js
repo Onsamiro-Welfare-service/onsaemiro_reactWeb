@@ -26,7 +26,7 @@ export default function SurveyHead({addClick, seqClick, categoryClick }){
             <Button variant="outlined" startIcon={<CategoryIcon />} onClick={categoryClick}>
               카테고리
             </Button>
-            <Button variant="outlined" startIcon={<SwapVertIcon />} onClick={seqClick}>
+            <Button variant="outlined" startIcon={<SwapVertIcon />} onClick={seqClick} disabled>
               순서변경
             </Button>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} align="right" onClick={addClick} >
