@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState, useCallback  } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -10,7 +10,7 @@ import {
 import SurveySelectForm from './modifySurveySelectForm';
 import SurveyInputForm from './modifySurveyInputForm';
 import PreviewSurveyModal from '../previewSurvey/previewSurveyModal';
-import { multiFormRequestApi } from '../../../../apiRequest';
+import { multiFormRequestApi, getRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
 import { getCookie } from '../../../auth/cookie/cookie';
 
@@ -49,37 +49,47 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
     }: data;
     
     const [inputs, setInputs] = useState(initialInputs);
+    const [prevInputs, setPrevInputs] = useState(null);
 
     const [modalPreview, setPreview] = useState(false);
     const prevClick = () => setPreview(!modalPreview);
 
+
+    const valuesChanged = useCallback((current, previous) => 
+        Object.keys(current).some(key => JSON.stringify(current[key]) !== JSON.stringify(previous[key])),
+        []);
+    
     const handleSubmit = async() => {
         const errMsg = 'Error : [ModifySurveyForm] handleSubmit';
         const formData = new FormData();
-        console.log(inputs);
+    
+        if (!valuesChanged(inputs, prevInputs)) { return; } // 변경된 값이 없으면 실행하지 않음
+
         formData.append('request', JSON.stringify({
             surveyId: inputs.id,
             question: inputs.question,
             categoryId: inputs.categoryId,
-            level: inputs.level,
+            level: inputs.level !== prevInputs.level ? inputs.level : 0,
             // type: inputs.type,
-            questionImage: inputs.imageUrl !== null,
+            questionImage: inputs.imageUrl !== prevInputs.imageUrl,
             answers: inputs.answerList.map(answer => ({
                 answerId: answer.id,
                 answers: answer.description,
-                imageCk: answer.imageUrl !== null
+                imageCk: answer.imageUrl !== prevInputs.answerList[inputs.answerList.indexOf(answer)].imageUrl,
             }))
         }));
 
         if (inputs.imageUrl !== null && inputs.imageUrl !== `${data.imageUrl}/0`) { // 질문 이미지 추가
-            console.log(inputs.imageUrl);
-            formData.append('images', inputs.imageUrl);
+            if (inputs.imageUrl !== prevInputs.imageUrl){
+                formData.append('images', inputs.imageUrl);
+            }
         }  
 
         inputs.answerList.forEach((answer, index) => { // 답변 이미지 추가
             if (answer.imageUrl !== null && answer.imageUrl !== '' && answer.imageUrl !== `${data.answerList[index].imageUrl}/${index+1}`) {
-                console.log(answer.imageUrl);
-                formData.append('images', answer.imageUrl);
+                if (answer.imageUrl !== prevInputs.answerList[inputs.answerList.indexOf(answer)].imageUrl){
+                    formData.append('images', answer.imageUrl);
+                }
             }
         });
         
@@ -103,14 +113,23 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
             console.error(errMsg, error);
             alert('질문 수정에 실패했습니다. 다시 시도해주세요');
         }
-        
-        // 여기서 입력 데이터 처리
-        // console.log("수정", inputs); // 예: 입력된 데이터를 콘솔에 출력
-        // 서버로 데이터 전송 또는 기타 처리
-        // const tt = mode ? '새로운 질문이 추가되었습니다.' : '질문이 수정되었습니다.';
-        // alert(tt);
-        
     };
+
+    useEffect(() => {
+        const fetchPrevData = async () => {
+          // 이전 데이터를 가져오는 로직
+          try {
+            const response = await getRequestApi(`${API.getSurveyData}/${data.id}`, null, 'Error Message', navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            setPrevInputs(response.data);
+          } catch (error) {
+            console.error('Error fetching previous data', error);
+          }
+        };
+    
+        if (data) {
+          fetchPrevData();
+        }
+    }, [data, navigate]);
 
     return (
         <Box sx={style} display={status ? 'block':'none'}>

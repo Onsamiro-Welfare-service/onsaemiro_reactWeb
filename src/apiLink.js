@@ -33,6 +33,7 @@ export const API = {
     "modifySurvey": `${baseURL}/survey/management/change`, // 설문 수정
     "deleteSurvey": `${baseURL}/survey/management/delete`, // 설문 삭제
     "changeSurveyOrder": `${baseURL}/survey/management/num/change`, // 질문 순서 변경
+    "getSurveyData": `${baseURL}/survey/get/id`, // 설문 데이터 조회
 
     // 유저 요구사항 관련 API
     "getRequirementList": `${baseURL}/request/get/all/bymanager`, // 요구사항 리스트 조회
