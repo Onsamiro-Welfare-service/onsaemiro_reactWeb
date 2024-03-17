@@ -79,7 +79,7 @@ export default function SignUpForm() {
     const response = await axios.post(API.manageRegister, manageData);
     if(response.status === 200){
       alert("성공적으로 회원가입이 되었습니다."); // 관리자의 승인을 기다려주세요
-      navigate('/dashboard', { replace: true });
+      navigate('/login', { replace: true });
     }else{
       console.log('[Error : registerManager] Regist: Response Status - ', response.status);
     }

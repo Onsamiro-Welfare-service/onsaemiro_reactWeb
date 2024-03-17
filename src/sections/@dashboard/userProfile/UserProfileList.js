@@ -7,7 +7,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import AccessibleIcon from '@mui/icons-material/Accessible';
-import RecentActorsIcon from '@mui/icons-material/RecentActors';
+// import RecentActorsIcon from '@mui/icons-material/RecentActors';
 // components
 import { Card, Typography, Box, Grid } from '@mui/material';
 
@@ -68,12 +68,12 @@ export default function UserProfiles({ sx, data, ...other }) {
           
         </Grid>
 
-        <Box sx={{ display: 'flex', alignItems: 'normal', width:'90%', mb: 1 }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'normal', width:'90%', mb: 1 }}>
           <RecentActorsIcon fontSize='small' sx={{mr:1}} />
           <Typography color="text.secondary" variant="body2" sx={{ maxWidth:'200px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}> 
             {data.id}
           </Typography>
-        </Box>
+        </Box> */}
 
         <Box sx={{ display: 'flex', alignItems: 'normal', width:'90%', mb: 1 }}>
           <LocationOnIcon fontSize='small' sx={{mr:1}} />

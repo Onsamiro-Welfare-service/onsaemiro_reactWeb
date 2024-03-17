@@ -14,7 +14,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
-import { getCookie } from '../../../sections/auth/cookie/cookie';
+// import { getCookie } from '../../../sections/auth/cookie/cookie';
 // ----------------------------------------------------------------------
 
 const NAV_WIDTH = 280;
@@ -68,7 +68,7 @@ export default function Nav({ openNav, onCloseNav }) {
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {`관리자ID: ${getCookie('managerId')}`}
+                {`관리자ID`}
               </Typography>
             </Box>
           </StyledAccount>
