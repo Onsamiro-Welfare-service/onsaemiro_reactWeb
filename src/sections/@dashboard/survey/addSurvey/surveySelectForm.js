@@ -72,6 +72,7 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
             <Grid item xs={4}>
                 <span style={{fontSize: '18px', fontWeight:'bold', lineHeight:'2.7'}}>질문 종류</span>
             </Grid>
+            
             <Grid item xs={8}>
                 <FormControl sx={{width:'70%'}}>
                     <InputLabel id="select-label">선택하기</InputLabel>
@@ -80,9 +81,9 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
                         label='선택하기'
                         onChange={selectedType}>
                         <MenuItem value={0}>선택하기</MenuItem>
-                        <MenuItem value={1}>선택형(2항)</MenuItem>
-                        <MenuItem value={2}>선택형(3항)</MenuItem>
-                        <MenuItem value={3}>선택형(4항)</MenuItem>
+                        <MenuItem value={1}>객관식(2항)</MenuItem>
+                        <MenuItem value={2}>객관식(3항)</MenuItem>
+                        {/* <MenuItem value={3}>선택형(4항)</MenuItem> */}
                     </Select>
                 </FormControl>
             </Grid>

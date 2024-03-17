@@ -98,7 +98,7 @@
                   </Label>
                 </TableCell>
 
-                <TableCell align="left">{description}</TableCell>              
+                <TableCell align="left">{description !== "" ? description:"텍스트가 없는 항목입니다."}</TableCell>              
                 <TableCell align="left">{uploadTime}</TableCell>
               </TableRow>
 
@@ -114,8 +114,8 @@
                             <img key={`image-${index}`} src={`${imageUrl}/${index}`} alt={name} style={{display: 'block', margin: 'auto', width: '30%', marginBottom: 10}} />
                           ))}
                         </Box>
-                        <Box sx={{ backgroundColor:'#f1f1f1', borderRadius:'5px', padding: 1, margin: 1}}>
-                          <Typography variant="h6" gutterBottom component="div">{description}</Typography>
+                        <Box sx={{ backgroundColor:'#f1f1f1', borderRadius:'5px', padding: 1, margin: 1, color: description !== "" ? 'black':'gray'}}>
+                          <Typography variant="h6" gutterBottom component="div">{description !== "" ? description:"텍스트가 없는 항목입니다."}</Typography>
                         </Box>
                       </Box>
                     </Collapse>

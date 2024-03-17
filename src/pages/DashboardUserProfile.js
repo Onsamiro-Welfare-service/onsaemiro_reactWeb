@@ -45,8 +45,15 @@ export default function DashboardUserProfile() {
   }, [navigate]);
   
   useEffect(() => {
+    const isLogin = () => {
+      const accessTkn = getCookie("accessToken");
+      if (!accessTkn) {
+        navigate('/login', { replace: true });
+      }
+    }
+    isLogin();
     getUserProfiles();
-  }, [getUserProfiles]);
+  }, [getUserProfiles, navigate]);
 
   const handleAddModalOpen = () => setModalUserAdd(true);
   const handleAddModalClose = () => setModalUserAdd(false);
