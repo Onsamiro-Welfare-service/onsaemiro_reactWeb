@@ -3,76 +3,64 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
-import account from '../../../_mock/account';
 import { rmCookie, getCookie } from '../../../sections/auth/cookie/cookie';
 import { API } from '../../../apiLink';
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
-];
+// const MENU_OPTIONS = [
+//   {
+//     label: 'Home',
+//     icon: 'eva:home-fill',
+//   },
+//   {
+//     label: 'Profile',
+//     icon: 'eva:person-fill',
+//   },
+//   {
+//     label: 'Settings',
+//     icon: 'eva:settings-2-fill',
+//   },
+// ];
 
 // ----------------------------------------------------------------------
 export default function AccountPopover() {
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
-
-  const [open, setOpen] = useState(null);
-  let logoutChk = false;
+  
   const handleOpen = (event) => {
-    setOpen(event.currentTarget);
+    setAnchorEl(event.currentTarget);
   };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const isOpen = Boolean(anchorEl);
 
   // 로그아웃 처리하는 API
-  const requestLogout = async() => {
+  const logoutUser = async (navigate) => {
     const manageId = getCookie("managerId");
     const accessTkn = getCookie("accessToken");
-    console.log(manageId);
-    console.log(accessTkn);
-    await axios.post(API.manageLogout, 
-      { "managerId": manageId },
-      { headers: {
-          'Authorization': `Bearer ${accessTkn}` 
-      }
-    }).then(() => {
-      logoutChk = true;
-    }).catch((error) => {
-      console.log('[Error] Logout Api request:',error);
-      if(error.name === 'AxiosError'){
-        console.log('토큰으로 인한 AxiosError 발생. 로그아웃 처리함');
-        logoutChk = true;
-      } else {
-        logoutChk = false;
-      }
-    });
-  };
-
-  // 버튼이 눌리면 로그아웃 처리
-  const handleClose = async() => {
-    await requestLogout();
-    if(logoutChk){
-      setOpen(null);
-      rmCookie('accessToken');
-      rmCookie('refreshToken');
-      rmCookie('managerId');
+  
+    try {
+      await axios.post(API.manageLogout, { "managerId": manageId }, {
+        headers: { 'Authorization': `Bearer ${accessTkn}` }
+      });
+      // Logout successful
+      rmCookie();
       alert("로그아웃 되었습니다.");
       navigate('/login', { replace: true });
-    } else {
+    } catch (error) {
+      console.log('[Error] Logout Api request:', error);
+      // Logout failed
       alert("로그아웃 실패. 다시 요청해주세요");
     }
   };
+
+  const handleLogout = async () => {
+    await logoutUser(navigate);
+  };
+
 
   return (
     <>
@@ -80,7 +68,7 @@ export default function AccountPopover() {
         onClick={handleOpen}
         sx={{
           p: 0,
-          ...(open && {
+          ...(isOpen && {
             '&:before': {
               zIndex: 1,
               content: "''",
@@ -93,51 +81,39 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar alt="photoURL" />
       </IconButton>
 
       <Popover
-        open={Boolean(open)}
-        anchorEl={open}
+        open={isOpen}
+        anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 0,
-            mt: 1.5,
-            ml: 0.75,
-            width: 180,
-            '& .MuiMenuItem-root': {
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            관리자 계정
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+           온새미로 프로필
           </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Stack sx={{ p: 1 }}>
+        {/* <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label}>  
               {option.label}
             </MenuItem>
           ))}
-        </Stack>
+        </Stack> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
-          Logout
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
+          로그아웃
         </MenuItem>
       </Popover>
     </>

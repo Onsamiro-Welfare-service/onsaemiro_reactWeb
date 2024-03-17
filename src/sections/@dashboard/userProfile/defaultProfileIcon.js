@@ -22,7 +22,7 @@ export default function ProfileAvatar({ profilePhoto, id, width, height, sx }) {
     let bgColor;
     const randomPastelColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
     
-    if (profilePhoto === null) {
+    if (profilePhoto === null || profilePhoto === "") {
       // profilePhoto가 null일 때 어두운 회색 배경과 ImageSearchIcon
       // avatarContent = <HelpOutlineIcon sx={{ width: '50%', height: '50%', color: 'white' }} />;
       // bgColor = randomPastelColor;

@@ -1,6 +1,8 @@
 // @mui
+// import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useState } from 'react'; 
+import { useNavigate } from 'react-router-dom';
 
 // icons
 
@@ -8,6 +10,9 @@ import { useState } from 'react';
 import { Box, Typography, Modal, Button } from "@mui/material";
 import FormComponent from './AddModalInputForms';
 import ProfileImg from './AddModalProfilePhoto';
+import { getCookie } from '../../../auth/cookie/cookie';
+import { multiFormRequestApi } from '../../../../apiRequest';
+import { API } from '../../../../apiLink';
 
 
 const style = {
@@ -26,35 +31,47 @@ const style = {
 UserAddModal.propTypes = {
     click: PropTypes.bool,
     close: PropTypes.func,
+    reload: PropTypes.func
 };
 
 
 
 
-export default function UserAddModal({click, close }){
+export default function UserAddModal({click, close, reload }){
+    const navigate = useNavigate();
     const [imgURL, setImgURL] = useState(null);
-    const submitData = () => {
-        const name = document.getElementById("name-input").value;
-        const address = document.getElementById("address-input").value;
-        const birth = document.getElementById("birth-input").value;
-        const phone = document.getElementById("phone-input").value;
-        const level = document.getElementById("level-input").value;
-        // const img = document.getElementById("profilePhoto_filebtn").value;
-        // const imgURL = URL.createObjectURL(img[0]);
-        const data = {
-            "request": {
-              "userName": name,
-              "userAddress": address,
-              "level": level,
-              "userBirth": birth,
-              "managerId": 0,
-              "phoneNumber": phone,
-              "department": 0
-            },
-            "images": imgURL
-        };
-        console.log(data);
-          
+    const initData = {
+      "name": "",
+      "managerId": getCookie('managerId'),
+      "departmentId": getCookie('departmentId'),
+      "address": "",
+      "phoneNumber": "",
+      "birth": "2024-01-01",
+      "userLevel": 1
+    }
+    const [inputData, setInputData] = useState(initData);
+
+    const submitData = async () => {
+        const errMsg = 'Error : getUserProfiles';
+        const requestData = {
+          request: JSON.stringify(inputData),
+          images: imgURL
+        }
+        
+        try {
+          const response = await multiFormRequestApi(API.userProfileCreate, requestData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+
+          if (response.status === 200) {
+            alert('성공적으로 등록되었습니다.');
+            setInputData(initData); // 데이터 초기화
+            close();
+            reload();
+          } else {
+            console.error(errMsg, '지정되지 않은 에러');
+          }
+        } catch (error) {
+          console.error(errMsg, error);
+        }
     };
 
     return (
@@ -69,7 +86,7 @@ export default function UserAddModal({click, close }){
             <Box sx={style} id="profileAdd">
                 <Typography id="modal-modal-title" variant="h5" component="h2">사용자 프로필 추가 </Typography>
                 <ProfileImg url={setImgURL} />
-                <FormComponent />
+                <FormComponent data={inputData} setData={setInputData}/>
 
                 <Button variant="contained" 
                     onClick={ submitData }

@@ -20,10 +20,10 @@ export default function ProfileImg ({url}){
     const [profilePhoto, setProfilePhoto] = useState(null);
 
     // 사용자가 사진을 선택했을 때 호출될 핸들러
-    const handlePhotoChange = (event) => {
+    const handlePhotoChange = async (event) => {
         if (event.target.files[0]) {
             setProfilePhoto(URL.createObjectURL(event.target.files[0]));
-            url(URL.createObjectURL(event.target.files[0]));
+            url(event.target.files[0]);
         }
     };
 
@@ -34,14 +34,6 @@ export default function ProfileImg ({url}){
             fileInput.click();
         }
     };
-
-
-    // const sparkle = keyframes`
-    //     0% { opacity: 1; }
-    //     50% { opacity: 0.5; }
-    //     100% { opacity: 1; }
-    // `;
-
     return (
         <>
           
@@ -99,24 +91,6 @@ export default function ProfileImg ({url}){
                     }}
                 />
 
-                {/* <Button id="profilePhoto_defaultBtn"
-                    variant='outlined' 
-                    sx={{
-                        display: profilePhoto ? 'none' : 'block',
-                        color: 'rgb(234,155,179)',
-                        borderColor: 'rgb(234,155,179)',
-                        ':hover':{
-                            backgroundColor: 'rgb(234,155,179)',
-                            borderColor: 'rgb(234,155,179)',
-                            color: 'white'
-                        },
-                        position: 'absolute',
-                        float:'right',
-                        top: '210px',
-                        left: '420px'
-                    }}
-                    onClick={() => setProfilePhoto('default')}>
-                사진 없음</Button> */}
 
                 <IconButton id="profilePhoto_deleteBtn"
                     onClick={() => setProfilePhoto(null)} 
@@ -125,10 +99,9 @@ export default function ProfileImg ({url}){
                         left: '320px', 
                         top: '-190px',
                         visibility: profilePhoto ? 'visible' : 'hidden'
-                    }}
-                ><CloseIcon color='black'/>
-                    
-                    </IconButton>
+                    }}>
+                    <CloseIcon color='black'/>
+                </IconButton>
                 
 
             </Box> 

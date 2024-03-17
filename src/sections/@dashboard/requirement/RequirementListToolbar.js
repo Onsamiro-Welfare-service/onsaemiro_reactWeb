@@ -57,6 +57,7 @@ export default function RequirementListToolbar({ numSelected, filterName, onFilt
         <StyledSearch
           value={filterName}
           onChange={onFilterName}
+          disabled
           placeholder="Search Requirement..."
           startAdornment={
             <InputAdornment position="start">

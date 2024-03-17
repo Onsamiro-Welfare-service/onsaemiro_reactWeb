@@ -25,14 +25,12 @@ PreviewSurveyModal.propTypes = {
 }
 
 export default function PreviewSurveyModal({status, data}) {
-
-  return (
-    <Box sx={style} display={status ? 'block':'none'}>
-        <Box sx={{width: '532px',height: '673px', overflow:'hidden'}}>
-            <PreviewSurvey data={data} />
+    // console.log('PreviewSurveyModal:', data);
+    return (
+        <Box sx={style} display={status ? 'block':'none'}>
+            <Box sx={{width: '532px',height: '673px', overflow:'hidden'}}>
+                <PreviewSurvey data={data} />
+            </Box>
         </Box>
-    </Box>
-         
-
   );
 }

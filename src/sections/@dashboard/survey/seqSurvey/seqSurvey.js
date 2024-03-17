@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 
 import { useEffect, useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 
-import { testSurveyList, initialSurveyData } from '../constants';
+import {  initialSurveyData } from '../constants';
 
 import CategorySelect from './seqSurveyCategorySelect';
 import SeqSurveyForms  from './seqSurveyForms'; 
 import SeqSurveyButton from './seqSurveyButton';
+import { postRequestApi } from '../../../../apiRequest';
+import { API } from '../../../../apiLink';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '800px',
@@ -25,25 +28,27 @@ const style = {
 
 ModalSeqSurvey.propTypes = {
     status: PropTypes.bool,
+    surveys: PropTypes.array,
+    categoryList: PropTypes.array,
 }
 
-export default function ModalSeqSurvey({status}) {
-  const [surveyData, setSurveyData] = useState(testSurveyList); // 전체 질문 목록
+export default function ModalSeqSurvey({status, surveys, categoryList }) {
+  const [surveyData, setSurveyData] = useState(surveys); // 전체 질문 목록
   const [displayedSurveyList, setDisplayedSurveyList] = useState([]); // 표시된 질문 목록
-  const [selectedCategory, setSelectedCategory] = useState(0); // 선택된 카테고리
+  const [selectedCategory, setSelectedCategory] = useState(''); // 선택된 카테고리
   const [confirmOpen, setConfirmOpen] = useState(false);
   
   // 카테고리 선택 시 해당 카테고리에 해당하는 질문만 표시
   useEffect(() => {
     if (selectedCategory === '') {
-      setDisplayedSurveyList(initialSurveyData);
+      setDisplayedSurveyList([]);
     } else {
-      const filteredList = surveyData.filter(item => item.category === selectedCategory);
+      const filteredList = surveyData.filter(item => item.categoryId === Number(selectedCategory));
       if (filteredList.length === 0) 
         setDisplayedSurveyList(
           initialSurveyData.map(item => ({
             ...item,
-            question: { ...item.question, text: '선택된 카테고리에 해당하는 질문이 없습니다.' }
+            question: '선택된 카테고리에 해당하는 질문이 없습니다.' 
           }))
         );
       else 
@@ -71,10 +76,35 @@ export default function ModalSeqSurvey({status}) {
   };
 
   // 대화 상자에서 "확인" 선택 시
-  const handleConfirm = () => {  
-    console.log('변경 완료');
-    setConfirmOpen(false);
-  };
+  const navigate = useNavigate();
+  const handleConfirm = async() => {  
+    const errMsg = 'Error : [ModalSeqSurvey] handleConfirm';
+    const config = {
+      surveyNum: displayedSurveyList.map(data => ({
+        id: data.id,
+        surveyNum: data.surveyNum
+      })),
+      level: displayedSurveyList.length > 0 ? displayedSurveyList[0].level : 0
+    };
+
+    try {
+      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'PUT');
+      if (response.status === 200) {
+          // 성공적으로 등록
+          console.log('[ModifySurveyForm]', response.data);
+
+          // 입력 초기화
+          console.log('변경 완료', displayedSurveyList);
+          alert('변경 완료');
+          setConfirmOpen(false);
+        } else {
+          console.error(errMsg, '지정되지 않은 에러');
+          alert('순서 변경에 실패했습니다. 다시 시도해주세요');
+        }
+  } catch (error) {
+      console.error(errMsg, error);
+      alert('순서 변경에 실패했습니다. 다시 시도해주세요');
+  }};
 
   // 대화 상자에서 "취소" 선택 시
   const handleClose = () => {   
@@ -86,7 +116,7 @@ export default function ModalSeqSurvey({status}) {
       <span style={{fontSize: '24px', fontWeight:'bold'}}>질문 순서 변경하기</span>
 
       {/* 카테고리 선택 */}
-      <CategorySelect category={selectedCategory} setCategory={setSelectedCategory} />
+      <CategorySelect category={selectedCategory} setCategory={setSelectedCategory} categoryList={categoryList} />
       
       {/* 질문 목록 */}
       <SeqSurveyForms display={displayedSurveyList} move={moveItem} />

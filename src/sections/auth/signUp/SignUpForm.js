@@ -47,46 +47,46 @@ export default function SignUpForm() {
 
   const registerManager = async() => { // 회원가입 요청
     // 여기에 회원가입 완료 관련 코드 입력
-    const hashPwd = CryptoJS.SHA256(inputData.pwdData).toString(CryptoJS.enc.Base64);
+  const hashPwd = CryptoJS.SHA256(inputData.pwdData).toString(CryptoJS.enc.Base64);
 
-    const manageData = {
-      "name": inputData.name,
-      "username": inputData.loginId,
-      "password": hashPwd,
-      "email": inputData.email,
-      "departmentId": inputData.department
+  const manageData = {
+    "name": inputData.name,
+    "username": inputData.loginId,
+    "password": hashPwd,
+    "email": inputData.email,
+    "departmentId": inputData.department
+  }
+
+  // 회원가입 요청 전 빈칸 체크(입력값을 통해 사전 유효성 검사 진행)
+  setValidate(prevState => ({
+    ...prevState, // 이전 상태의 다른 값들을 그대로 유지
+    name_valid: prevState.name_valid || inputData.name.length === 0, // 이름이 빈칸 체크
+    loginId_valid: prevState.loginId_valid || inputData.loginId.length === 0, // 아이디가 빈칸 체크
+    pwdData_valid: prevState.pwdData_valid || inputData.pwdData.length === 0, // 비밀번호가 빈칸 체크
+    pwdConfirm_valid: prevState.pwdConfirm_valid || (inputData.pwdData !== inputData.pwdConfirm), // 비밀번호 확인이 유효한지 체크
+    department_valid: prevState.department_valid || inputData.department.length === 0, // 부서가 빈칸 체크
+    email_valid: prevState.email_valid || inputData.email.length === 0 // 이메일이 빈칸 체크
+  }));
+  
+  
+
+  // 모든 필드가 유효한지 확인
+  const validateCheck = Object.values(validate).some(value => value === true);
+  if(validateCheck) {console.log('회원가입 조건 충족이 안됨 : ', validate);return;}
+  
+  console.log('manageData : ', manageData);
+  try {
+    const response = await axios.post(API.manageRegister, manageData);
+    if(response.status === 200){
+      alert("성공적으로 회원가입이 되었습니다."); // 관리자의 승인을 기다려주세요
+      navigate('/login', { replace: true });
+    }else{
+      console.log('[Error : registerManager] Regist: Response Status - ', response.status);
     }
-
-    // 회원가입 요청 전 빈칸 체크(입력값을 통해 사전 유효성 검사 진행)
-    setValidate(prevState => ({
-      ...prevState, // 이전 상태의 다른 값들을 그대로 유지
-      name_valid: prevState.name_valid || inputData.name.length === 0, // 이름이 빈칸 체크
-      loginId_valid: prevState.loginId_valid || inputData.loginId.length === 0, // 아이디가 빈칸 체크
-      pwdData_valid: prevState.pwdData_valid || inputData.pwdData.length === 0, // 비밀번호가 빈칸 체크
-      pwdConfirm_valid: prevState.pwdConfirm_valid || (inputData.pwdData !== inputData.pwdConfirm), // 비밀번호 확인이 유효한지 체크
-      department_valid: prevState.department_valid || inputData.department.length === 0, // 부서가 빈칸 체크
-      email_valid: prevState.email_valid || inputData.email.length === 0 // 이메일이 빈칸 체크
-    }));
-    
-    
-
-    // 모든 필드가 유효한지 확인
-    const validateCheck = Object.values(validate).some(value => value === true);
-    if(validateCheck) {console.log('회원가입 조건 충족이 안됨 : ', validate);return;}
-    
-    console.log('manageData : ', manageData);
-    try {
-      const response = await axios.post(API.manageRegister, manageData);
-      if(response.status === 200){
-        alert("성공적으로 회원가입이 되었습니다."); // 관리자의 승인을 기다려주세요
-        navigate('/dashboard', { replace: true });
-      }else{
-        console.log('[Error : registerManager] Regist: Response Status - ', response.status);
-      }
-    } catch(err){
-      console.log('[Error : registerManager] Regist:',err);
-    }
-  };
+  } catch(err){
+    console.log('[Error : registerManager] Regist:',err);
+  }
+};
 
  
   // 부서 리스트 받아오기
@@ -110,7 +110,7 @@ export default function SignUpForm() {
   const postloginIdDoubleCheck = async() => {
     // console.log('postloginIdDoubleCheck', inputData.loginId);
     try {
-      const response = await axios.post(API.LoginIdCheck, {managerId: inputData.loginId});
+      const response = await axios.post(API.manageDoubleCheck, {managerUsername: inputData.loginId});
       if(response.status === 200){
         setValidate({...validate, loginDoubleCheck: false}); // 아이디 중복체크 
         console.log(response.data);

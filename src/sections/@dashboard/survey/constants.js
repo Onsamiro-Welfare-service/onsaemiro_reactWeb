@@ -29,7 +29,7 @@ export const TestCategoryArr = {
 
 export const initialSurveyData = [
     {
-      category: -1,
+      categoryId: -1,
       level: 1,
       type: '1',
       question: { text: '선택된 카테고리가 없습니다.', fileUrl: null },

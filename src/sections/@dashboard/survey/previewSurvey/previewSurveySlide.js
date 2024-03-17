@@ -12,11 +12,19 @@ PreviewSurveySlide.propTypes = {
 }
 
 export default function PreviewSurveySlide({status, data}) {
+  const newData = {
+    question: data.question,
+    imageUrl: data.imageUrl ? URL.createObjectURL(data.imageUrl) : null,
+    answerList: data.answers.map(answer => ({
+      description: answer.answer,
+      imageUrl: answer.imageUrl ? URL.createObjectURL(answer.imageUrl) : null,
+    }))
+  }
 
   return (
     <Slide direction="up" in={status} mountOnEnter unmountOnExit >
       <Box>
-        <PreviewSurvey data={data} /> 
+        <PreviewSurvey data={newData} /> 
       </Box>
     </Slide>
   );

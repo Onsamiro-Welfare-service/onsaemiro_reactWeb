@@ -17,14 +17,16 @@ const QuestionParentStyle = {
     textAlign:'center', 
 }
 const QuestionChildStyle = {
+    width:'100%', 
+    height:'80%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '15px'
 }
 const QuestionImgStyle = { 
-    width: '50%', 
-    height: '50%', 
+    width: '90%', 
+    height: '90%', 
     marginTop: 6,
     objectFit: 'contain',
     objectPosition: 'center' 
@@ -32,17 +34,17 @@ const QuestionImgStyle = {
 
 
 PreviewQuestion.propTypes = {
-    txt: PropTypes.string,
-    img: PropTypes.string
+    img: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    txt: PropTypes.string
 }
 
 export default function PreviewQuestion({ txt, img }){
     return(
         
         <Box sx={ QuestionParentStyle }>
-        { img &&
+        { img!==null &&
             <Box sx={ QuestionChildStyle }>
-                <img src={img} alt="Description" style={ QuestionImgStyle } />
+                <img src={typeof img === "string" ? img:URL.createObjectURL(img)} alt="Description" style={ QuestionImgStyle } />
             </Box>
         }
         <Typography variant='h6'>{txt}</Typography>

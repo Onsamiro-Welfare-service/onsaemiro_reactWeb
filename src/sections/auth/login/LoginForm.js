@@ -11,7 +11,7 @@ import { API } from '../../../apiLink';
 import { setCookie, getCookie } from '../cookie/cookie'; 
 
 // ----------------------------------------------------------------------
-
+ 
 export default function LoginForm() {
   const navigate = useNavigate();
 
@@ -24,36 +24,29 @@ export default function LoginForm() {
 
   // 로그인 요청 API - POST
   const loginManager = async() => {
-
-    // 로그인 요청 전 데이터 무결성 확인
-    setIdStatus(loginId.length === 0);
-    setPwdStatus(loginPwd.length === 0);
-    if(idStatus || pwdStatus) return;
-
-    // 데이터 이상 없을 시 로그인 요청
-    console.log('loginId : ', loginId, 'loginPwd : ', CryptoJS.SHA256(loginPwd).toString(CryptoJS.enc.Base64));
+    const config = {
+      "username": loginId,
+      "password": CryptoJS.SHA256(loginPwd).toString(CryptoJS.enc.Base64)
+    }
 
     try {
-      const response = await axios.post(API.loginAdmin, 
-        {
-          "username": loginId,
-          "password": CryptoJS.SHA256(loginPwd).toString(CryptoJS.enc.Base64)
-        }
-      );
+      const response = await axios.post(API.loginAdmin, config);
+
       if(response.status === 200){
-        console.log(response.data);
+        // console.log(response.data);
         setCookie('accessToken', response.data.accessToken);
         setCookie('refreshToken', response.data.refreshToken);
         setCookie('managerId', response.data.id);
-        
+        setCookie('departmentId', response.data.departmentId);
+
         navigate('/dashboard', { replace: true });
-        
         
       }else{
         console.log('[Error : loginManager]: Response Status - ', response.status);
       }
     } catch(err){
       console.log('[Error : loginManager]:',err);
+      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
   };
 
@@ -80,7 +73,7 @@ export default function LoginForm() {
           label="아이디" 
           error={idStatus}
           helperText={idStatus ? "아이디를 입력해주세요":""}
-          onBlur={(e)=> {
+          onChange={(e)=> {
             setLoginId(e.target.value);
             if(e.target.value.length !== 0){
               setIdStatus(false);
@@ -97,7 +90,7 @@ export default function LoginForm() {
           error={pwdStatus}
           helperText={pwdStatus ? "비밀번호를 입력해주세요":""}
           type={showPassword ? 'text' : 'password'}
-          onBlur={(e)=> {
+          onChange={(e)=> {
             setLoginPwd(e.target.value);
             if(e.target.value.length !== 0){
               setPwdStatus(false);

@@ -1,94 +1,122 @@
-import { TextField, Box, Container } from '@mui/material';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, TextField, Box, Container, Grid, Slider, Stack, Typography } from '@mui/material';
+import { API } from '../../../../apiLink';
 
+ProfileInputForm.propTypes = {
+    data: PropTypes.object.isRequired,
+    setData: PropTypes.func.isRequired
+};
 
-// "level": 0,
+export default function ProfileInputForm({ data, setData }) {
+    const [departmentList, setDepartmentList] = useState([]);
 
-// "managerId": 0,
-// "department": 0
+    useEffect(() => {
+        const getDepartmentList = async () => { // API 호출 함수
+            try {
+                const response = await axios.get(API.departmentGetList, { headers: { 'Content-Type': 'application/json' }});
+                if (response.status === 200) {
+                    setDepartmentList(response.data.data);
+                } else {
+                    console.error('[Error : getDepartmentList]: Response Status - ', response.status);
+                }
+            } catch (err) {
+                console.error('[Error : getDepartmentList]: ', err);
+            }
+        };
 
-export default function ProfileInputForm(){
-  
+        getDepartmentList();
+    }, []);
+
+    const handleChange = (prop) => (event) => {
+        setData({ ...data, [prop]: event.target.value });
+    };
+
     return (
-      <Container id="form" maxWidth="sm" 
-            sx={{ 
-                width: '484px',
-                position: 'relative',
-                top: '-10px' 
-            }}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          
-          <TextField
-            id="name-input"
-            label="이름(성함)"
-            type="text"
-            margin="normal"
-            fullWidth
-            // value={values.name}
-            // onChange={handleChange('name')}
-          />
-          <TextField
-            id="address-input"
-            label="주소"
-            type="text"
-            margin="normal"
-            fullWidth
-            // value={values.address}
-            // onChange={handleChange('address')}
-          />
-          <TextField
-            id="birth-input"
-            label="생년월일"
-            type="date"
-            margin="normal"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            // value={values.birth}
-            // onChange={handleChange('birth')}
-          />
-          <TextField
-            id="phone-input"
-            label="전화번호"
-            type="tel"
-            margin="normal"
-            fullWidth
-            inputProps={{
-                maxLength: 11,
-                pattern: "\\d{11}" // 숫자 11자리를 의미하는 정규식
-              }}
-              placeholder="01012345678"
-              helperText="전화번호를 - 빼고 입력해주세요.  (예: 01012345678)"
-            // 입력 값 변화를 다루는 핸들러 함수 (필요한 경우)
-            // onChange={(e) => {
-            //   // 입력 값이 숫자 11자리가 아닐 경우에 대한 처리
-            //   const {value} = e.target.value;
-            //   if (!value.match(/^\d{0,11}$/)) {
-            //       alert("전화번호를 다시 확인해주세요!");
-            //   }
-            // }}
-            // value={values.phone}
-            // onChange={handleChange('phone')}
-          />
-          
-          <TextField
-            id="level-input"
-            label="중증도"
-            type='string'
-            margin="normal"
-            fullWidth
-            // value={values.phone}
-            // onChange={handleChange('phone')}
-          />
-          
-          
-        </Box>
-      </Container>
+        <Container maxWidth="sm" sx={{ width: '484px', height:'435px', position: 'relative', top: '-10px' }}>
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                <Stack spacing={2}>
+                    <TextField
+                        id="name-input"
+                        label="이름(성함)"
+                        type="text"
+                        margin="normal"
+                        fullWidth
+                        value={data.name}
+                        onChange={handleChange('name')}
+                    />
+                    <TextField
+                        id="address-input"
+                        label="주소"
+                        type="text"
+                        margin="normal"
+                        fullWidth
+                        value={data.address}
+                        onChange={handleChange('address')}
+                    />
+                    <TextField
+                        id="birth-input"
+                        label="생년월일"
+                        type="date"
+                        margin="normal"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        value={data.birth}
+                        onChange={handleChange('birth')}
+                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="select-label">소속 선택:</InputLabel>
+                        <Select
+                            labelId="select-label"
+                            id="select"
+                            value={data.departmentId || ''}
+                            onChange={handleChange('departmentId')}
+                        >
+                            <MenuItem value="">선택하세요</MenuItem>
+                            {departmentList.map((option) => (
+                                <MenuItem key={option.id} value={option.id}>
+                                    {option.departmentName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        id="phone-input"
+                        label="전화번호"
+                        type="tel"
+                        margin="normal"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={data.phoneNumber}
+                        onChange={(e) => setData({...data, phoneNumber: e.target.value})}
+                        inputProps={{
+                            maxLength: 11,
+                            pattern: "010\\d{8}" // "010"으로 시작하고, 그 뒤에 숫자 8개가 오는 패턴
+                        }}
+                        placeholder="01012345678"
+                        helperText="전화번호를 - 없이 입력해주세요. 예: 01012345678"
+                    />
+                    <Grid container spacing={1} alignItems="center">
+                        <Grid item xs={5}>
+                            <Typography variant="subtitle1" gutterBottom>중증도 단계:</Typography>
+                        </Grid>
+                        <Grid item xs={7}>
+                            <Slider
+                                aria-label="level"
+                                value={data.userLevel}
+                                onChange={handleChange('userLevel')}
+                                valueLabelDisplay="auto"
+                                step={1}
+                                min={1}
+                                max={2}
+                            />
+                        </Grid>
+                    </Grid>
+                </Stack>
+            </Box>
+        </Container>
     );
 }
-  

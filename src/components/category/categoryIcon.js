@@ -6,15 +6,12 @@ CategoryIcon.propTypes = {
     category: PropTypes.string,
 }
 
-
-
-
-
 export default function CategoryIcon({category}){
     return(
         <>
-        <Box sx={{
-                width:'60px',
+        <Box 
+            sx={{
+                width:'fit-content', // '100px
                 height:'40px',
                 border:'2px solid black',
                 color:'black',
@@ -22,9 +19,10 @@ export default function CategoryIcon({category}){
                 fontSize:'20px',
                 borderRadius:'10px',
                 textAlign:'center',
-                paddingTop:'4px',
-                mb:'15px'
-            }}>{category}</Box>
+                padding: '5px',
+                mb:'15px'}}>
+            {category}
+        </Box>
         </>
     );
 }

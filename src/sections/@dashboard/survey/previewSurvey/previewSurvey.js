@@ -25,15 +25,15 @@ export default function PreviewSurvey({ data }) {
   return (
     <Box sx={{ backgroundColor:'lightblue', padding:3 }}>
           
-        <PreviewQuestion txt={data.question.text} img={data.question.fileUrl} />
+        <PreviewQuestion txt={data.question} img={data.imageUrl} />
 
         <Box sx={{ marginTop: '20px', display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
 
             {/* 미리보기 오류 처리 */}
 
             {/* 선택형 미리보기 */}
-            { data.answers.map((answer, index) => (
-                <PreviewAnswer key={index} txt={answer.text} img={answer.fileUrl} />
+            { data.answerList.map((answer, index) => (
+                <PreviewAnswer key={index} txt={answer.description} img={answer.imageUrl} />
             ))}
             
         </Box>

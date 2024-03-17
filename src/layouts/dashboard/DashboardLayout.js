@@ -33,12 +33,14 @@ export default function DashboardLayout() {
 
   useEffect(() => {
     const accessTkn = getCookie("accessToken");
-    if(accessTkn === null || accessTkn === undefined){
+    // const refreshTkn = getCookie("refreshToken");
+    if(accessTkn === null && accessTkn === undefined){
       console.log("DashboardLayout.js : 로그인 권한이 없습니다");
+      
       // alert('로그인 권한이 없습니다!');
       navigate('/login', { replace: true });
     }
-  }, [navigate]); // 의존성 배열에 navigate를 추가하여 navigate 함수가 변경될 때만 useEffect를 다시 실행
+  }, [navigate]);
 
   return (
     <StyledRoot>
