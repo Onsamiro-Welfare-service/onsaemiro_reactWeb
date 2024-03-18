@@ -200,7 +200,7 @@ export default function DashboardUserRequirement() {
   return (
     <>
       <Helmet>
-        <title> User Requirement | Minimal UI </title>
+        <title> 사용자 요구사항 | 온새미로 </title>
       </Helmet>
 
       <Container>
