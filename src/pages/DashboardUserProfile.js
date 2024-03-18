@@ -70,7 +70,7 @@ export default function DashboardUserProfile() {
   return (
     <>
       <Helmet>
-        <title>프로필 페이지 | 온새미로</title>
+        <title> 프로필 관리 | 온새미로</title>
       </Helmet>
 
       { modalUserAdd && <UserAddModal click={modalUserAdd} close={handleAddModalClose} reload={getUserProfiles}/>}

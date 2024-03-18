@@ -102,7 +102,7 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> 요구사항 | 온새미로 </title>
+        <title> 질문 관리 | 온새미로 </title>
       </Helmet>
 
       <Container>
