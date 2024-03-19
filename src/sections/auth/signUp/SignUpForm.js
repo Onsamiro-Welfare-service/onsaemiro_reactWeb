@@ -97,7 +97,6 @@ export default function SignUpForm() {
           'Content-Type': 'application/json'
       }});
       if(response.status === 200){
-        // console.log('getDepartmentList:', response.data);
         setdepartmentList(response.data.data);
       }else{
         console.log('[Error : getDepartmentList]: Response Status - ', response.status);
@@ -108,12 +107,15 @@ export default function SignUpForm() {
   };
 
   const postloginIdDoubleCheck = async() => {
-    // console.log('postloginIdDoubleCheck', inputData.loginId);
     try {
       const response = await axios.post(API.manageDoubleCheck, {managerUsername: inputData.loginId});
       if(response.status === 200){
-        setValidate({...validate, loginDoubleCheck: false}); // 아이디 중복체크 
-        console.log(response.data);
+        if(response.data === true){
+          setValidate({...validate, loginDoubleCheck: false});
+        } else {
+          alert("이미 사용중인 아이디입니다.");
+          setValidate({...validate, loginDoubleCheck: true});
+        }
       }else{
         console.log('[Error : loginDoubleCheck]: Response Status - ', response.status);
       } 
