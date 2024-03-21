@@ -62,6 +62,14 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
         const errMsg = 'Error : [CreateSurveyForm] handleSubmit';
         const formData = new FormData();
 
+        if (inputs.userLevel === 1) {
+            const allAnswersHaveImages = inputs.answers.every(answer => answer.imageUrl !== null && answer.imageUrl !== undefined);
+            if (inputs.imageUrl === null || !allAnswersHaveImages) {
+                alert('모든 질문과 답변에는 이미지가 포함되어야 합니다.');
+                return;
+            }
+        }
+
         formData.append('request', JSON.stringify({
             question: inputs.question,
             categoryId: inputs.categoryId,
