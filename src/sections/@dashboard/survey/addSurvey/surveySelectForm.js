@@ -90,7 +90,7 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
             
             {/* 중증도 선택 */}
             <Grid item xs={4}>
-                <span style={{fontSize: '18px', fontWeight:'bold', lineHeight:'2.7'}}>중증도 단계</span>                
+                <span style={{fontSize: '18px', fontWeight:'bold', lineHeight:'2.7'}}>중증도</span>                
             </Grid>
             <Grid item xs={8} mt={1.5}>
                 <Slider
