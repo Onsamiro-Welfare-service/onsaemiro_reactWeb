@@ -15,7 +15,7 @@ import { API } from '../../../../apiLink';
 import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
-    width: '600px',
+    width: '630px',
     height: '770px',
     position: 'absolute',
     top: '50%',
@@ -140,7 +140,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
 
     return (
         <Box sx={style} display={status ? 'block':'none'}>
-            <Box sx={{width: '532px',height: '673px', overflow:'hidden'}}>
+            <Box sx={{width: '562px',height: '673px', overflow:'hidden'}}>
                 <Box sx={{display:slidePreview? 'none':'block'}}>
                     <span style={{fontSize: '24px', fontWeight:'bold'}}>{mode ? '새로운 질문 생성하기':'질문 수정하기'}</span>
                     <Button variant='outlined' sx={{float:'right', margin:'5px',}} display={mode ? 'block':'none'} disabled>설정</Button>
