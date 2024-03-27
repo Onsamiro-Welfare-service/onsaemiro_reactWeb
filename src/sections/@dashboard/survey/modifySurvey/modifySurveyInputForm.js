@@ -142,7 +142,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                     <span style={spanStyle}>답변 내용</span> 
                     <span style={{...spanStyle, fontSize:'12px'}}>*필수입력 사항입니다.</span> 
                     <Box sx={{ 
-                        maxHeight:'220px', 
+                        maxHeight:'200px', 
                         overflowY:'auto',
                         '&:: -webkit-scrollbar':{
                             display: 'none'
