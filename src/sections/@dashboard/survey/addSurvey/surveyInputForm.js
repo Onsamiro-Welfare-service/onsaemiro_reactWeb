@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
     Box,
@@ -28,7 +28,8 @@ SurveyInputForm.propTypes = {
 }
 
 export default function SurveyInputForm({inputs, setInputs}) {    
-    const fileInputRefs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef()]);
+    const [fileInputRefs, setFileInputRefs] = useState([React.createRef(), React.createRef(), React.createRef()]);
+    
     const [answerCount, setAnswerCount] = useState(2); // 답변 개수
     const [addAlertSnackbar, setAddAlertSnackbar] = useState(false); // 답변 추가 알림창
 
@@ -63,6 +64,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
     const handleAddAnswer = () => {
         if (answerCount < 8){ 
             setAnswerCount(answerCount + 1)
+            setFileInputRefs([...fileInputRefs, React.createRef()]);
         } else {
             setAddAlertSnackbar(true);
         }
@@ -72,6 +74,11 @@ export default function SurveyInputForm({inputs, setInputs}) {
         const newAnswers = inputs.answers.filter((_, i) => i !== index);
         setInputs({ ...inputs, answers: newAnswers });
         setAnswerCount(answerCount - 1);
+
+        if (answerCount > 2){
+            const newFileInputRefs = fileInputRefs.filter((_, i) => i !== index+1);
+            setFileInputRefs(newFileInputRefs);
+        }
     };
 
     const handleSnackbarClose = () => {
@@ -113,11 +120,11 @@ export default function SurveyInputForm({inputs, setInputs}) {
                 />
                 <input
                     type="file"
-                    ref={fileInputRefs.current[0]}
+                    ref={fileInputRefs[0]}
                     onChange={handleFileChange(-1)}
                     style={{ display: 'none' }}
                 />
-                <IconButton onClick={() => fileInputRefs.current[0].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
+                <IconButton onClick={() => fileInputRefs[0].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
                     {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
                     {inputs.imageUrl!==null ? (
                         <img src={URL.createObjectURL(inputs.imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
@@ -148,11 +155,11 @@ export default function SurveyInputForm({inputs, setInputs}) {
                             />
                             <input
                                 type="file"
-                                ref={fileInputRefs.current[index+1]}
+                                ref={fileInputRefs[index+1]}
                                 onChange={handleFileChange(index)}
                                 style={{ display: 'none' }}
                             />
-                            <IconButton onClick={() => fileInputRefs.current[index+1].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
+                            <IconButton onClick={() => fileInputRefs[index+1].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
                                 {inputs.answers[index].imageUrl ? (
                                     <img src={URL.createObjectURL(inputs.answers[index].imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
                                     ) : (
@@ -168,7 +175,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
 
                     
                     <Typography onClick={() => handleAddAnswer()} sx={{ cursor:'pointer', color:'#2e63ff', marginTop:'20px', mb: '20px', fontWeight:'bold', textDecoration:'underline' }}>
-                        추가하기 {/* <AddToPhotosIcon sx={{ pt:'2px', width: '20px', height: '20px'}}/> */}
+                        추가하기 
                     </Typography>
 
                     <Snackbar open={addAlertSnackbar} onClose={handleSnackbarClose} autoHideDuration={5000} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>

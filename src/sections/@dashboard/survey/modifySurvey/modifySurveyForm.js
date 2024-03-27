@@ -56,8 +56,8 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
 
 
     const valuesChanged = useCallback((current, previous) => 
-        Object.keys(current).some(key => JSON.stringify(current[key]) !== JSON.stringify(previous[key])),
-        []);
+        Object.keys(current).some(key => JSON.stringify(current[key]) !== JSON.stringify(previous[key]))
+    ,[]);
     
     const handleSubmit = async() => {
         const errMsg = 'Error : [ModifySurveyForm] handleSubmit';
@@ -65,6 +65,15 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
     
         if (!valuesChanged(inputs, prevInputs)) { return; } // 변경된 값이 없으면 실행하지 않음
 
+        if (inputs.userLevel === 1) {
+            const allAnswersHaveImages = inputs.answerList.every(answer => answer && answer.imageUrl);
+            if (inputs.imageUrl === null || !allAnswersHaveImages) {
+                alert('모든 질문과 답변에는 이미지가 포함되어야 합니다.');
+                return;
+            }
+        }
+
+        console.log(inputs.answerList);
         formData.append('request', JSON.stringify({
             surveyId: inputs.id,
             question: inputs.question,
@@ -75,7 +84,7 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
             answers: inputs.answerList.map(answer => ({
                 answerId: answer.id,
                 answers: answer.description,
-                imageCk: answer.imageUrl !== prevInputs.answerList[inputs.answerList.indexOf(answer)].imageUrl,
+                imageCk: answer.imageUrl !== null
             }))
         }));
 
@@ -96,14 +105,10 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
         try {
             const response = await multiFormRequestApi(API.modifySurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "PUT");
             if (response.status === 200) {
-                // 성공적으로 등록
-                console.log('[ModifySurveyForm]', response.data);
                 alert('질문이 수정되었습니다.');
-
-                // 입력 초기화
                 reload();
-                setPreview(false); // 미리보기 닫기
-                setInputs(initialInputs);   // 입력 초기화
+                setPreview(false); 
+                setInputs(initialInputs);
                 closeModal();
               } else {
                 console.error(errMsg, '지정되지 않은 에러');
@@ -116,8 +121,7 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
     };
 
     useEffect(() => {
-        const fetchPrevData = async () => {
-          // 이전 데이터를 가져오는 로직
+        const fetchPrevData = async () => { // 이전 데이터를 가져오는 로직
           try {
             const response = await getRequestApi(`${API.getSurveyData}/${data.id}`, null, 'Error Message', navigate, getCookie('accessToken'), getCookie('refreshToken'));
             setPrevInputs(response.data);

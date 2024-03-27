@@ -27,19 +27,14 @@ AddSurveySelectForm.propTypes = {
 
 
 export default function AddSurveySelectForm({inputs, setInputs, category}) {
-    
     const selectedCategory = (event) => {
-        // console.log('selectedCategory', event.target.value);
         setInputs({ ...inputs, categoryId: Number(event.target.value)});
     };
 
-    
-    // const [surveyType, setSurveyType] = useState('');
     const selectedType = (event) => {
         setInputs({ ...inputs, type: event.target.value});
     }
 
-    // const [level, setLevel] = useState(null);
     const levelChange = (event) => {
         setInputs({ ...inputs, userLevel: event.target.value});
     }
@@ -81,8 +76,7 @@ export default function AddSurveySelectForm({inputs, setInputs, category}) {
                         label='선택하기'
                         onChange={selectedType}>
                         <MenuItem value={0}>선택하기</MenuItem>
-                        <MenuItem value={1}>객관식(2항)</MenuItem>
-                        <MenuItem value={2}>객관식(3항)</MenuItem>
+                        <MenuItem value={1}>객관식</MenuItem>
                         {/* <MenuItem value={3}>선택형(4항)</MenuItem> */}
                     </Select>
                 </FormControl>
