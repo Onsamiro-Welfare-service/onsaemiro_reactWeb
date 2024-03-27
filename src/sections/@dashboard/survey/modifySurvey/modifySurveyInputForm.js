@@ -193,7 +193,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                                 </IconButton>
                             }
 
-                            <IconButton onClick={() => handleRemoveAnswer(index)} className="answerButton" sx={{ display:'none' }}>
+                            <IconButton onClick={() => handleRemoveAnswer(index)}  sx={{ display:'none' }}>{/* className="answerButton" */}
                                 <CloseIcon sx={{ width: '20px', height: '20px'}}/>
                             </IconButton>
                         </Box>
