@@ -10,24 +10,25 @@ PreviewSurvey.propTypes = {
 }
 
 export default function PreviewSurvey({ data }) {
-//   let answerType;
-//   switch(data.type){
-//     case 1:
-//     case 2:
-//     case 3:
-//       answerType = 0;
-//       break;
-//     // 다른 질문 형식있으면 여기에 추가하고 본문에 스타일 추가
-//     default:
-//       answerType = -1;
-//   }
-
   return (
-    <Box sx={{ backgroundColor:'lightblue', padding:3 }}>
-          
+    <Box sx={{ width: '400px', height:'660px', backgroundColor:'lightblue', padding:3, ml:'81px', overflow: 'hidden' }}>
+        
         <PreviewQuestion txt={data.question} img={data.imageUrl} />
 
-        <Box sx={{ marginTop: '20px', display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
+        <Box sx={{ 
+          gap: 1, 
+          height:'auto',
+          flexWrap:'wrap',
+          display: 'flex', 
+          marginTop: '20px', 
+          marginBottom: '20px',
+          justifyContent:'left', 
+          maxHeight: '250px',
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': {
+            display: 'none', 
+          },
+        }}>
 
             {/* 미리보기 오류 처리 */}
 

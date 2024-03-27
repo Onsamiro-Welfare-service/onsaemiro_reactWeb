@@ -96,7 +96,6 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
             const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             if (response.status === 200) {
                 // 성공적으로 등록
-                console.log('[CreateSurveyForm]', response.data);
                 alert('새로운 질문이 추가되었습니다.');
 
                 // 입력 초기화
@@ -140,7 +139,7 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
 
     return (
         <Box sx={style} display={status ? 'block':'none'}>
-            <Box sx={{width: '532px',height: '673px', overflow:'hidden'}}>
+            <Box sx={{ width: '532px', height: '673px', overflow:'hidden'}}>
                 <Box sx={{display:slidePreview? 'none':'block'}}>
                     <span style={{fontSize: '24px', fontWeight:'bold'}}>{mode ? '새로운 질문 생성하기':'질문 수정하기'}</span>
                     <Button variant='outlined' sx={{float:'right', margin:'5px',}} display={mode ? 'block':'none'} disabled>설정</Button>
@@ -151,8 +150,8 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
             
                 <PreviewSurveySlide status={slidePreview} data={inputs} />
             </Box>
-            <Button variant='contained' sx={{float:'right', mt:'15px'}} onClick={handleSubmit}  disabled={inputs.type === 0}>{mode ? '추가하기':'수정하기'}</Button>
-            <Button variant='outlined' sx={{width:'88px', float:'right', mt:'15px', mr:'10px'}} onClick={prevClick} disabled={inputs.type === 0}>{slidePreview? '닫기':'미리보기'}</Button>
+            <Button variant='contained' sx={{ float:'right', mt:'15px'}} onClick={handleSubmit}  disabled={inputs.type === 0}>{mode ? '추가하기':'수정하기'}</Button>
+            <Button variant='outlined' sx={{ width:'88px', float:'right', mt:'15px', mr:'10px'}} onClick={prevClick} disabled={inputs.type === 0}>{slidePreview? '닫기':'미리보기'}</Button>
         </Box>
     ); 
 }

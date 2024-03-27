@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
 
-import React, { useRef,useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
     Box,
     Grid,
-    IconButton,
+    Alert,
+    Snackbar,
     TextField,
+    Typography,
+    IconButton,
 } from '@mui/material';
 
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import ClearIcon from '@mui/icons-material/Clear';
+import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 
 const spanStyle = {
     fontSize: '18px', 
@@ -24,17 +28,17 @@ SurveyInputForm.propTypes = {
 }
 
 export default function SurveyInputForm({inputs, setInputs}) {    
-    const fileInputRefs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()]);
+    const [fileInputRefs, setFileInputRefs] = useState([React.createRef(), React.createRef(), React.createRef()]);
+    
+    const [answerCount, setAnswerCount] = useState(2); // 답변 개수
+    const [addAlertSnackbar, setAddAlertSnackbar] = useState(false); // 답변 추가 알림창
 
     const handleFileChange = (index) => (event) => {
-        console.log(index);
         const file = event.target.files[0];
         if (!file) return;
-        console.log(file);
-        // const fileUrl = URL.createObjectURL(file);
+
         if (index === -1) {
             // 질문의 파일 변경
-            // console.log(file);
             setInputs({ ...inputs, imageUrl: file });
         } else {
             // 답변의 파일 변경
@@ -56,25 +60,42 @@ export default function SurveyInputForm({inputs, setInputs}) {
             setInputs({ ...inputs, answers: newAnswers });
         }
     };
+
+    const handleAddAnswer = () => {
+        if (answerCount < 8){ 
+            setAnswerCount(answerCount + 1)
+            setFileInputRefs([...fileInputRefs, React.createRef()]);
+        } else {
+            setAddAlertSnackbar(true);
+        }
+    }
+
+    const handleRemoveAnswer = (index) => {
+        const newAnswers = inputs.answers.filter((_, i) => i !== index);
+        setInputs({ ...inputs, answers: newAnswers });
+        setAnswerCount(answerCount - 1);
+
+        if (answerCount > 2){
+            const newFileInputRefs = fileInputRefs.filter((_, i) => i !== index+1);
+            setFileInputRefs(newFileInputRefs);
+        }
+    };
+
+    const handleSnackbarClose = () => {
+        setAddAlertSnackbar(false);
+    };
+    
     
     useEffect(() => {
-        let count;
-        // console.log(inputs.type);
-        switch(inputs.type){ 
-            case 1: count = 2; break;
-            case 2: count = 3; break;
-            case 3: count = 4; break;
-            default: ;
-        }
-        const updatedAnswers = inputs.answers.slice(0, count); // answers 배열 조절
+        const updatedAnswers = inputs.answers.slice(0, answerCount); // answers 배열 조절
     
         // 필요한 경우 배열 확장
-        while (updatedAnswers.length < count) {
+        while (updatedAnswers.length < answerCount) {
           updatedAnswers.push({ answer: '', imageUrl: null });
         }
     
         setInputs((prevInputs) => ({ ...prevInputs, answers: updatedAnswers }));// eslint-disable-next-line
-      }, [inputs.type, inputs.answers.length]); 
+      }, [inputs.type, inputs.answers.length, answerCount]); 
     
     return (
         <Box sx={{
@@ -91,7 +112,7 @@ export default function SurveyInputForm({inputs, setInputs}) {
                     <span style={spanStyle}>질문 내용</span> 
                     <span style={{...spanStyle, fontSize:'12px'}}>*필수입력 사항입니다.</span>
                 <TextField
-                    variant='outlined'
+                    variant='standard'
                     label='질문'
                     sx={{ width: '90%' }}
                     value={inputs.question}
@@ -99,17 +120,17 @@ export default function SurveyInputForm({inputs, setInputs}) {
                 />
                 <input
                     type="file"
-                    ref={fileInputRefs.current[0]}
+                    ref={fileInputRefs[0]}
                     onChange={handleFileChange(-1)}
                     style={{ display: 'none' }}
                 />
-                <IconButton onClick={() => fileInputRefs.current[0].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
+                <IconButton onClick={() => fileInputRefs[0].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
                     {/* <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/> */}
                     {inputs.imageUrl!==null ? (
-                            <img src={URL.createObjectURL(inputs.imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
-                            ) : (
-                            <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
-                        )}
+                        <img src={URL.createObjectURL(inputs.imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
+                        ) : (
+                        <InsertPhotoOutlinedIcon sx={{ width: '30px', height: '30px'}}/>
+                    )}
                 </IconButton>
                 </Grid>
 
@@ -118,29 +139,48 @@ export default function SurveyInputForm({inputs, setInputs}) {
                     <span style={spanStyle}>답변 내용</span> 
                     <span style={{...spanStyle, fontSize:'12px'}}>*필수입력 사항입니다.</span> 
                     {inputs.answers.map((answer, index) => (
-                        <Box key={index+1} mt={2}>
+                        <Box key={index+1} sx={{ 
+                            display: 'flex',
+                            marginTop: 2,
+                            '&:hover .answerButton': { 
+                                display: 'flex' 
+                            }
+                        }}>
                             <TextField 
-                                variant='outlined'
+                                variant='standard'
                                 label={`답변 ${index + 1}`}
-                                sx={{ width: '90%' }}
+                                sx={{ width: '85%' }}
                                 value={answer.description}
                                 onChange={handleTextChange(index)}
                             />
                             <input
                                 type="file"
-                                ref={fileInputRefs.current[index+1]}
+                                ref={fileInputRefs[index+1]}
                                 onChange={handleFileChange(index)}
                                 style={{ display: 'none' }}
                             />
-                            <IconButton onClick={() => fileInputRefs.current[index+1].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
+                            <IconButton onClick={() => fileInputRefs[index+1].current.click()} sx={{ display:inputs.userLevel === 1 ? '':'none'}}>
                                 {inputs.answers[index].imageUrl ? (
                                     <img src={URL.createObjectURL(inputs.answers[index].imageUrl)} alt="Description" style={{ width: 30, height: 30, marginTop: 6 }} />
                                     ) : (
-                                    <AddPhotoAlternateIcon sx={{ width: '30px', height: '30px'}}/>
+                                    <InsertPhotoOutlinedIcon sx={{ width: '30px', height: '30px' }}/>
                                 )}
+                            </IconButton>
+
+                            <IconButton onClick={() => handleRemoveAnswer(index)} className="answerButton" sx={{ display:'none' }}>
+                                <ClearIcon sx={{ width: '20px', height: '20px'}}/>
                             </IconButton>
                         </Box>
                     ))}
+
+                    
+                    <Typography onClick={() => handleAddAnswer()} sx={{ cursor:'pointer', color:'#2e63ff', marginTop:'20px', mb: '20px', fontWeight:'bold', textDecoration:'underline' }}>
+                        추가하기 
+                    </Typography>
+
+                    <Snackbar open={addAlertSnackbar} onClose={handleSnackbarClose} autoHideDuration={5000} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+                        <Alert severity="warning">질문 개수가 최대입니다.</Alert>
+                    </Snackbar>
                 </Grid>     
             </Grid>     
         </Box>
