@@ -1,15 +1,72 @@
 import PropTypes from 'prop-types';
-import { TextField, Box, Container, Slider } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Container, TextField, Slider, Select, MenuItem, Checkbox, ListItemText, InputLabel, Divider, Button } from '@mui/material';
+
+import { API } from '../../../../../apiLink';
+import { getDefaultRequestApi, postRequestApi } from '../../../../../apiRequest';
+import { getCookie } from '../../../../auth/cookie/cookie';
+
 
 ModifyForm.propTypes = {
     userData: PropTypes.object.isRequired,
     setUserData: PropTypes.func.isRequired,
 };
 
-export default function ModifyForm({ userData, setUserData }) {
+export default function ModifyForm({ userData, setUserData,  }) { 
+    console.log('categoryList', userData);
+    const navigate = useNavigate();
+    const [selectedOptions, setSelectedOptions] = useState(userData.categoryList.map(category => category.id));
+    const [categoryList, setCategoryList] = useState([{}]); //
+
     const handleChange = (prop) => (event) => {
         setUserData({ ...userData, [prop]: event.target.value });
     };
+
+    const handleSelectChange = (event) => {
+        setSelectedOptions(event.target.value);
+        
+    };
+
+    const handleSetCategory = async () => {
+        const errMsg = 'Error : handleSetCategory';
+        const requestData = {
+            userId: userData.id,
+            categoryIdList: selectedOptions
+        };
+        try {
+            const response = await postRequestApi(API.userCategoryCreate, JSON.stringify(requestData), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            if (response.status === 200) {
+                alert('카테고리가 설정되었습니다.');
+                location.reload();
+            } else {
+                console.error(errMsg, '지정되지 않은 에러');
+            }
+        } catch (error) {
+            console.error(errMsg, error);
+        }
+    };
+
+    const getCategoryList = async () => {
+        const errMsg = 'Error : getCategoryList';
+        try {
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+
+            if (response.status === 200 && response.data.categoryList !== undefined) {
+                setCategoryList(response.data.categoryList);
+            } else {
+            console.error(errMsg, '지정되지 않은 에러');
+            }
+        } catch (error) {
+            console.error(errMsg, error);
+        }
+    };
+
+    useEffect(() => {
+        getCategoryList();
+        
+    }, []);
+
     return (
         <Container id="form" maxWidth="sm" sx={{ width: '484px' }}>
             <Box sx={{ position: 'relative', left: '-25%' }}>
@@ -59,6 +116,7 @@ export default function ModifyForm({ userData, setUserData }) {
                 />
                 <span style={{ color:'#637381', lineHeight: '1.4375em', fontSize: '14px', fontWeight: '400', marginTop: '5px'}}>중증도 단계:  { userData.userLevel }</span>   
                 <Slider
+                    
                     label="중증도"
                     value={userData.userLevel}
                     onChange={handleChange('userLevel')}
@@ -67,6 +125,25 @@ export default function ModifyForm({ userData, setUserData }) {
                     min={1}
                     max={2}
                 />
+                <Divider sx={{ mt: 3, mb: 3, borderWidth: 1, borderColor: 'gray' }} />
+                <InputLabel id="multiple-checkbox-label">카테고리 설정</InputLabel>
+                <Select
+                    multiple
+                    value={selectedOptions}
+                    onChange={handleSelectChange}
+                    displayEmpty 
+                    renderValue={() =>
+                        "카테고리를 선택해주세요."
+                      }
+                >
+                    {categoryList.map((category, index) => (
+                        <MenuItem key={index} value={category.id}>
+                            <Checkbox checked={selectedOptions.includes(category.id)} />
+                            <ListItemText primary={category.name} />
+                        </MenuItem>
+                    ))}
+                </Select> 
+                <Button sx={{ float: 'right', mt: '5px', fontSize: '15px' }} onClick={()=>handleSetCategory()}>카테고리 설정</Button>              
             </Box>
         </Container>
     );

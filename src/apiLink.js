@@ -27,6 +27,7 @@ export const API = {
     "modifyCategory": `${baseURL}/survey/category/management/change`, // 카테고리 수정
     "deleteCategory": `${baseURL}/survey/category/management/delete`, // 카테고리 삭제
     "getCategoryList": `${baseURL}/survey/category/get`, // 카테고리 리스트 조회
+    "userCategoryCreate": `${baseURL}/member/user/management/add/category`, // 유저 카테고리 업데이트
 
     // 질문 관련 API
     "createSurvey": `${baseURL}/survey/management/add`, // 설문 추가
