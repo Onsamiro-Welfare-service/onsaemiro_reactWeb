@@ -71,6 +71,7 @@ export default function UserAnswerModal({ click, close, data, reload }){
   // 유저 프로필 데이터 관련 변수
   const [imgUrl, setImgUrl] = useState({ imageUrl: `${data.imageUrl}0`});
   const [userData, setUserData] = useState(data);
+  //  const [userCategory, setUserCategory] = useState(data.categoryList); 
 
   const navigate = useNavigate();
 

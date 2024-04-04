@@ -1,16 +1,24 @@
-import PropTypes from 'prop-types';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { FormControl, InputLabel, MenuItem, Select, TextField, Box, Container, Grid, Slider, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Container, Stack, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Slider, Grid, Divider, Checkbox, ListItemText } from '@mui/material';
+
 import { API } from '../../../../apiLink';
+import { getDefaultRequestApi } from '../../../../apiRequest';
+import { getCookie } from '../../../auth/cookie/cookie';
 
 ProfileInputForm.propTypes = {
     data: PropTypes.object.isRequired,
-    setData: PropTypes.func.isRequired
+    setData: PropTypes.func.isRequired,
+    selectedCategory: PropTypes.array.isRequired,
+    setSelectedCategory: PropTypes.func.isRequired
 };
 
-export default function ProfileInputForm({ data, setData }) {
+export default function ProfileInputForm({ data, setData, selectedCategory, setSelectedCategory }) {
+    const navigate = useNavigate();
     const [departmentList, setDepartmentList] = useState([]);
+    const [categoryList, setCategoryList] = useState([{}]); 
 
     useEffect(() => {
         const getDepartmentList = async () => { // API 호출 함수
@@ -26,15 +34,35 @@ export default function ProfileInputForm({ data, setData }) {
             }
         };
 
+        const getCategoryList = async () => {
+            const errMsg = 'Error : getCategoryList';
+            try {
+                const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+    
+                if (response.status === 200 && response.data.categoryList !== undefined) {
+                    setCategoryList(response.data.categoryList);
+                } else {
+                console.error(errMsg, '지정되지 않은 에러');
+                }
+            } catch (error) {
+                console.error(errMsg, error);
+            }
+        };
+
         getDepartmentList();
+        getCategoryList();
     }, []);
 
     const handleChange = (prop) => (event) => {
         setData({ ...data, [prop]: event.target.value });
     };
+    const handleSelectChange = (event) => {
+        setSelectedCategory(event.target.value);
+    };
 
+   
     return (
-        <Container maxWidth="sm" sx={{ width: '484px', height:'435px', position: 'relative', top: '-10px' }}>
+        <Container maxWidth="sm" sx={{ width: '484px', height:'435px', position: 'relative', top: '-10px', pb: 3,  overflowY:'scroll', '&::-webkit-scrollbar': { display: 'none' }}}>
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
                 <Stack spacing={2}>
                     <TextField
@@ -99,6 +127,27 @@ export default function ProfileInputForm({ data, setData }) {
                         placeholder="01012345678"
                         helperText="전화번호를 - 없이 입력해주세요. 예: 01012345678"
                     />
+                    
+
+                    <Divider sx={{ mt: 3, mb: 3, borderWidth: 1, borderColor: 'gray' }} />
+
+                    <Select
+                        multiple
+                        value={selectedCategory}
+                        onChange={handleSelectChange}
+                        displayEmpty 
+                        renderValue={() =>
+                            "카테고리를 선택해주세요."
+                        }
+                    >
+                        {categoryList.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                                <Checkbox checked={selectedCategory.includes(category.id)} />
+                                <ListItemText primary={category.name} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+
                     <Grid container spacing={1} alignItems="center">
                         <Grid item xs={5}>
                             <Typography variant="subtitle1" gutterBottom>중증도 단계:</Typography>

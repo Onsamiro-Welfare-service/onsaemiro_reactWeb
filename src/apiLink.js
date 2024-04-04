@@ -1,5 +1,6 @@
-// const baseURL = `https://test.onsaemiro.site/api`; // 기본 api 주소
-const baseURL = `https://onsaemiro.site/api`;
+
+const baseURL = `https://onsaemiro.site/api`; // Base URL
+
 export const API = {
     // 회원 관련 API
     "manageRegister": `${baseURL}/member/register/manager`, // 관리자 회원가입
@@ -27,6 +28,7 @@ export const API = {
     "modifyCategory": `${baseURL}/survey/category/management/change`, // 카테고리 수정
     "deleteCategory": `${baseURL}/survey/category/management/delete`, // 카테고리 삭제
     "getCategoryList": `${baseURL}/survey/category/get`, // 카테고리 리스트 조회
+    "userCategoryCreate": `${baseURL}/member/user/management/add/category`, // 유저 카테고리 업데이트
 
     // 질문 관련 API
     "createSurvey": `${baseURL}/survey/management/add`, // 설문 추가
@@ -40,6 +42,4 @@ export const API = {
     "getNewRequirementList": `${baseURL}/request/get/new`, // 새로운 요구사항 리스트 조회
     "checkRequirement": `${baseURL}/request/check`, // 요구사항 확인
     "deleteRequirement": `${baseURL}/request/delete`, // 요구사항 삭제
-
-    
 };
