@@ -48,11 +48,6 @@ export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refre
                 const token = refreshResponse.data.accessToken;
                 const refreshTkn = refreshResponse.data.refreshToken;
 
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
                 setCookie('accessToken', token);
                 setCookie('refreshToken', refreshTkn);
                 return getRequestApi(apiUrl, body, errMsg, navigate, token, refreshTkn);
@@ -100,11 +95,11 @@ export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refr
                 const token = refreshResponse.data.accessToken;
                 const refreshTkn = refreshResponse.data.refreshToken;
 
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
+                // if (token === null || refreshTkn === null) {
+                //     console.log('토큰 요청 에러. 로그아웃합니다');
+                //     rmCookie();
+                //     navigate('/login', { replace: true });
+                // }
                 setCookie('accessToken', token);
                 setCookie('refreshToken', refreshTkn);
                 return getDefaultRequestApi(apiUrl, errMsg, navigate, token, refreshTkn);
@@ -148,11 +143,11 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
                 const token = refreshResponse.data.accessToken;
                 const refreshTkn = refreshResponse.data.refreshToken;
 
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
+                // if (token === null || refreshTkn === null) {
+                //     console.log('토큰 요청 에러. 로그아웃합니다');
+                //     rmCookie();
+                //     navigate('/login', { replace: true });
+                // }
                 setCookie('accessToken', token);
                 setCookie('refreshToken', refreshTkn);
                 return postRequestApi(apiUrl, body, errMsg, navigate, method_, token);
