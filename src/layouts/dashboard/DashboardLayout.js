@@ -3,7 +3,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Header from './header';
 import Nav from './nav';
-import { getCookie } from '../../sections/auth/cookie/cookie';
+import { getCookie, rmCookie } from '../../sections/auth/cookie/cookie';
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -40,7 +40,10 @@ export default function DashboardLayout() {
       // alert('로그인 권한이 없습니다!');
       navigate('/login', { replace: true });
     }
-  }, [navigate]);
+
+    window.addEventListener('beforeunload',rmCookie());
+
+  }, [navigate, rmCookie]);
 
   return (
     <StyledRoot>
