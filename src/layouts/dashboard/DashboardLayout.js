@@ -3,7 +3,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Header from './header';
 import Nav from './nav';
-import { getCookie, rmCookie } from '../../sections/auth/cookie/cookie';
+import { getCookie } from '../../sections/auth/cookie/cookie';
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -41,14 +41,9 @@ export default function DashboardLayout() {
       navigate('/login', { replace: true });
     }
 
-    window.addEventListener('beforeunload',()=>{
-      // eslint-disable-next-line no-restricted-globals
-      if(window.confirm('로그아웃하시겠습니까?')){
-        rmCookie();
-      }
-    });
+    
 
-  }, [navigate, rmCookie]);
+  }, [navigate]);
 
   return (
     <StyledRoot>
