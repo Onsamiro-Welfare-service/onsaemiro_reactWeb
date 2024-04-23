@@ -1,8 +1,18 @@
 // API 호출 함수
 import axios from 'axios';
+// import { Cookies } from 'react-cookie';
 import { API } from './apiLink';
 import { setCookie, rmCookie } from './sections/auth/cookie/cookie'; 
 
+
+// const cookies = new Cookies();
+
+// function rmCookie(){
+//     cookies.remove('accessToken', { path: '/' });
+//     cookies.remove('refreshToken', { path: '/' });
+//     cookies.remove('managerId', { path: '/' });
+//     cookies.remove('departmentId', { path: '/' });
+// }
 
 export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn) => {
     const config = {
@@ -17,6 +27,12 @@ export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refre
 
     try {
         const response = await axios(config); // axios에 설정 객체를 직접 전달
+        if (response.status === 500) {
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
+        }
+
         if (response.status === 200) {
             return response;
         }
@@ -32,17 +48,15 @@ export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refre
                 const token = refreshResponse.data.accessToken;
                 const refreshTkn = refreshResponse.data.refreshToken;
 
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
                 setCookie('accessToken', token);
                 setCookie('refreshToken', refreshTkn);
                 return getRequestApi(apiUrl, body, errMsg, navigate, token, refreshTkn);
             }
         } else {
             console.log(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
@@ -61,6 +75,11 @@ export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refr
     try {
         const response = await axios(config); // axios에 설정 객체를 직접 전달
         // console.log('1', response.data.categoryList);
+        if (response.status === 500) {
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
+        }
         if (response.status === 200) {
             return response;
         }
@@ -76,17 +95,20 @@ export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refr
                 const token = refreshResponse.data.accessToken;
                 const refreshTkn = refreshResponse.data.refreshToken;
 
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
+                // if (token === null || refreshTkn === null) {
+                //     console.log('토큰 요청 에러. 로그아웃합니다');
+                //     rmCookie();
+                //     navigate('/login', { replace: true });
+                // }
                 setCookie('accessToken', token);
                 setCookie('refreshToken', refreshTkn);
                 return getDefaultRequestApi(apiUrl, errMsg, navigate, token, refreshTkn);
             }
         } else {
             console.log(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
@@ -105,6 +127,11 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
 
     try {
         const response = await axios(config); // axios에 설정 객체를 직접 전달
+        if (response.status === 500) {
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
+        }
         return response;
 
     } catch (error) {
@@ -116,17 +143,20 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
                 const token = refreshResponse.data.accessToken;
                 const refreshTkn = refreshResponse.data.refreshToken;
 
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
+                // if (token === null || refreshTkn === null) {
+                //     console.log('토큰 요청 에러. 로그아웃합니다');
+                //     rmCookie();
+                //     navigate('/login', { replace: true });
+                // }
                 setCookie('accessToken', token);
                 setCookie('refreshToken', refreshTkn);
                 return postRequestApi(apiUrl, body, errMsg, navigate, method_, token);
             }
         } else {
             console.error(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
@@ -145,6 +175,11 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
 
     try {
         const response = await axios(config); // axios에 설정 객체를 직접 전달
+        if (response.status === 500) {
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
+        }
         if (response.status === 200) {
             return response;
         }
@@ -170,6 +205,9 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
             }
         } else {
             console.error(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }

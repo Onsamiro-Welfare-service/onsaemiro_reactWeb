@@ -14,13 +14,13 @@ export default function DashboardUserProfile() {
   const navigate = useNavigate();
   const [userProfiles, setUserProfiles] = useState([ // 프로필 리스트
     {
-      "id": 5,
-      "userName": "임시유저1",
-      "userAddress": "string",
-      "userLevel": 0,
-      "userBirth": "string",
-      "imageUrl": "https://source.unsplash.com/random",
-      "phoneNumber": "string"
+      "id": 0,
+      "userName": "로그아웃 해주세요",
+      "userAddress": "",
+      "userLevel": -1,
+      "userBirth": "",
+      "imageUrl": "",
+      "phoneNumber": ""
     }
   ]);
   const [modalUserAdd, setModalUserAdd] = useState(false);
