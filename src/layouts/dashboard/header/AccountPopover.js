@@ -47,14 +47,15 @@ export default function AccountPopover() {
         headers: { 'Authorization': `Bearer ${accessTkn}` }
       });
       // Logout successful
-      rmCookie();
-      alert("로그아웃 되었습니다.");
-      navigate('/login', { replace: true });
+      
     } catch (error) {
       console.log('[Error] Logout Api request:', error);
-      // Logout failed
-      alert("로그아웃 실패. 다시 요청해주세요");
+
     }
+
+    rmCookie();
+    alert("로그아웃 되었습니다.");
+    navigate('/login', { replace: true });
   };
 
   const handleLogout = async () => {
