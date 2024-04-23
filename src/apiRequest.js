@@ -43,6 +43,9 @@ export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refre
             }
         } else {
             console.log(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
@@ -87,6 +90,9 @@ export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refr
             }
         } else {
             console.log(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
@@ -127,6 +133,9 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
             }
         } else {
             console.error(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
@@ -170,6 +179,9 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
             }
         } else {
             console.error(errMsg, error);
+            console.log('토큰 요청 에러. 로그아웃합니다');
+            rmCookie();
+            navigate('/login', { replace: true });
         }
         return undefined;
     }
