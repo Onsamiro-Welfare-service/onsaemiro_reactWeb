@@ -41,7 +41,12 @@ export default function DashboardLayout() {
       navigate('/login', { replace: true });
     }
 
-    window.addEventListener('beforeunload',rmCookie());
+    window.addEventListener('beforeunload',()=>{
+      // eslint-disable-next-line no-restricted-globals
+      if(window.confirm('로그아웃하시겠습니까?')){
+        rmCookie();
+      }
+    });
 
   }, [navigate, rmCookie]);
 
