@@ -1,8 +1,18 @@
 // API 호출 함수
 import axios from 'axios';
+import { Cookies } from 'react-cookie';
 import { API } from './apiLink';
-import { setCookie, rmCookie } from './sections/auth/cookie/cookie'; 
+import { setCookie } from './sections/auth/cookie/cookie'; 
 
+
+const cookies = new Cookies();
+
+function removeCookies(){
+    cookies.remove('accessToken', { path: '/' });
+    cookies.remove('refreshToken', { path: '/' });
+    cookies.remove('managerId', { path: '/' });
+    cookies.remove('departmentId', { path: '/' });
+}
 
 export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn) => {
     const config = {
@@ -34,7 +44,7 @@ export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refre
 
                 if (token === null || refreshTkn === null) {
                     console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
+                    removeCookies();
                     navigate('/login', { replace: true });
                 }
                 setCookie('accessToken', token);
@@ -44,7 +54,7 @@ export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refre
         } else {
             console.log(errMsg, error);
             console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
+            removeCookies();
             navigate('/login', { replace: true });
         }
         return undefined;
@@ -81,7 +91,7 @@ export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refr
 
                 if (token === null || refreshTkn === null) {
                     console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
+                    removeCookies();
                     navigate('/login', { replace: true });
                 }
                 setCookie('accessToken', token);
@@ -91,7 +101,7 @@ export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refr
         } else {
             console.log(errMsg, error);
             console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
+            removeCookies();
             navigate('/login', { replace: true });
         }
         return undefined;
@@ -124,7 +134,7 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
 
                 if (token === null || refreshTkn === null) {
                     console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
+                    removeCookies();
                     navigate('/login', { replace: true });
                 }
                 setCookie('accessToken', token);
@@ -134,7 +144,7 @@ export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refr
         } else {
             console.error(errMsg, error);
             console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
+            removeCookies();
             navigate('/login', { replace: true });
         }
         return undefined;
@@ -170,7 +180,7 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
 
                 if (token === null || refreshTkn === null) {
                     console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
+                    removeCookies();
                     navigate('/login', { replace: true });
                 }
                 setCookie('accessToken', token);
@@ -180,7 +190,7 @@ export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token,
         } else {
             console.error(errMsg, error);
             console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
+            removeCookies();
             navigate('/login', { replace: true });
         }
         return undefined;
