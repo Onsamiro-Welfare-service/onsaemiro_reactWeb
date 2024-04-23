@@ -38,6 +38,7 @@ export default function ModifyForm({ userData, setUserData,  }) {
             const response = await postRequestApi(API.userCategoryCreate, JSON.stringify(requestData), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
             if (response.status === 200) {
                 alert('카테고리가 설정되었습니다.');
+                // eslint-disable-next-line no-restricted-globals
                 location.reload();
             } else {
                 console.error(errMsg, '지정되지 않은 에러');
