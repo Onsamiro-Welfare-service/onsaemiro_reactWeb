@@ -1,5 +1,5 @@
 
-const baseURL = `https://onsaemiro.site/api`; // Base URL
+const baseURL = `https://onsaemiro.site/api`;
 
 export const API = {
     // 회원 관련 API

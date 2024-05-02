@@ -39,7 +39,8 @@ export default function DashboardLayout() {
       
       // alert('로그인 권한이 없습니다!');
       navigate('/login', { replace: true });
-    }
+    }    
+
   }, [navigate]);
 
   return (
