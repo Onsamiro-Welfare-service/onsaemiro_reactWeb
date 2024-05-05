@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
+
 import { Box, Grid, FormControlLabel, Typography } from '@mui/material';
 
 import Checkbox from '@mui/material/Checkbox';
@@ -8,7 +11,7 @@ import Checkbox from '@mui/material/Checkbox';
 import AnswerCard from './AnswerCard';
 import { API } from '../../../../../apiLink';
 import { getDefaultRequestApi } from '../../../../../apiRequest';
-import { getCookie } from '../../../../auth/cookie/cookie';
+// import { getCookie } from '../../../../auth/cookie/cookie';
 
 UserAnswerPanel.propTypes = {
     userId: PropTypes.number,
@@ -25,22 +28,31 @@ export default function UserAnswerPanel({ userId, answerDate }){
 
     useEffect(() => {
         const getSurveyAnswers = async () => {
-        const errMsg = 'Error : getSurveyAnswers';
-
-        try {
-            const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/${userId}/${answerDate}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
-            if (response.status === 200 && response.data.answerList !== undefined) {
-                setUserSurveyAnswers(response.data.answerList);
-                // console.log(response.data.answerList);
-            } else {
-            console.error(errMsg, '지정되지 않은 에러');
+            const errMsg = 'Error : getSurveyAnswers';
+            try {
+                const cookies = new Cookies();
+                const accessTkn = await cookies.get('accessToken');
+                const refreshTkn = await cookies.get('refreshToken');
+        
+                // 쿠키 값이 undefined인 경우, 사용자에게 알리고 로그인 페이지로 리다이렉션
+                if (!accessTkn || !refreshTkn) {
+                    console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                    alert('로그아웃 되었습니다.');
+                    navigate('/login', { replace: true });
+                    return;
+                }
+                const response = await getDefaultRequestApi(`${API.userSurveyAnswer}/${userId}/${answerDate}`, errMsg, navigate, accessTkn, refreshTkn);
+                if (response.status === 200 && response.data.answerList !== undefined) {
+                    setUserSurveyAnswers(response.data.answerList);
+                } else {
+                console.error(errMsg, '지정되지 않은 에러');
+                }
+            } catch (error) {
+                console.log(errMsg, error);
             }
-        } catch (error) {
-            console.log(errMsg, error);
-        }
-    };
+        };
 
-    getSurveyAnswers();
+        getSurveyAnswers();
     }, [navigate, userId, answerDate]);
 
 

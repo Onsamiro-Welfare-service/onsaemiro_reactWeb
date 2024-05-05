@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react'; // useEffect 
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 
 // icons
 
@@ -19,7 +20,7 @@ import ModifyForm from './ModifyPanel/ModifyForm';
 
 import { multiFormRequestApi, postRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 
 const style = {
@@ -97,7 +98,16 @@ export default function UserAnswerModal({ click, close, data, reload }){
     }
 
     try {
-      const response = await multiFormRequestApi(API.userProfileUpdate, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "PUT");
+      const cookies = new Cookies();
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken'); // 
+      if (!accessTkn || !refreshTkn) {
+        console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+        alert('로그아웃 되었습니다.');
+        navigate('/login', { replace: true });
+        return;
+    }
+      const response = await multiFormRequestApi(API.userProfileUpdate, formData, errMsg, navigate, accessTkn, refreshTkn, "PUT");
       if (response.status === 200) {
         alert('성공적으로 변경되었습니다.');
         reload();
@@ -113,8 +123,18 @@ export default function UserAnswerModal({ click, close, data, reload }){
   const deleteUserProfile = async () => {
     const errMsg = 'Error : deleteUserProfile';
     const config = { userId: userData.id };
+    
     try {
-      const response = await postRequestApi(API.deleteUserProfile, config ,errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "DELETE");
+      const cookies = new Cookies();
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken'); // 
+      if (!accessTkn || !refreshTkn) {
+        console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+        alert('로그아웃 되었습니다.');
+        navigate('/login', { replace: true });
+        return;
+      }
+      const response = await postRequestApi(API.deleteUserProfile, config ,errMsg, navigate, accessTkn, refreshTkn, "DELETE");
       if (response.status === 200) {
         window.location.reload();
       } else {

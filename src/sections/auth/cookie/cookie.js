@@ -3,10 +3,7 @@ import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
 
 export const setCookie = (name, value, options) => {
-  
-  const expires = new Date();
-  expires.setTime(expires.getTime() + (10 * 1000));
-  cookies.set(name, value, { ...options, path: '/', expires });
+  cookies.set(name, value, { ...options, path: '/' });
   // console.log(`쿠키 "${name}"에 저장된 값: ${value}`);
 };
 

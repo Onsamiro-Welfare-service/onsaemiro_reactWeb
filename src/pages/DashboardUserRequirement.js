@@ -2,6 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
+
 // @mui
 import {
   Card,
@@ -22,7 +25,7 @@ import RequirementListNotFound from '../sections/@dashboard/requirement/requirem
 // import RequirementListPopover from '../sections/@dashboard/requirement/requirementListPopover';
 import { API } from '../apiLink';
 import { getRequestApi, postRequestApi } from '../apiRequest';
-import { getCookie } from '../sections/auth/cookie/cookie';
+// import { getCookie } from '../sections/auth/cookie/cookie';
 
 
 const TABLE_HEAD = [
@@ -71,12 +74,21 @@ export default function DashboardUserRequirement() {
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
+    const cookies = new Cookies();
     const getUserRequirements = async () => {
+      
       const errMsg = 'Error : getUserRequirements';
-      const params = { managerId: getCookie('managerId') };
-  
+      const params = { managerId: cookies.get('managerId') };
+      
       try {
-        const response = await getRequestApi(API.getRequirementList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+        const accessTkn = await cookies.get('accessToken');
+        const refreshTkn = await cookies.get('refreshToken');
+        if (!accessTkn || !refreshTkn) {
+          console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+          navigate('/login', { replace: true });
+          return;
+        }
+        const response = await getRequestApi(API.getRequirementList, params, errMsg, navigate, accessTkn, refreshTkn);
         if (response.status === 200 && response.data.requestList !== undefined) {
           setUserRequirement(response.data.requestList.reverse());
         } else {
@@ -88,10 +100,18 @@ export default function DashboardUserRequirement() {
     };
     const getUserList = async () => {
       const errMsg = 'Error : getUserList';
-      const params = { departmentId: getCookie('departmentId') };
+      const params = { departmentId: cookies.get('departmentId') };
   
       try {
-        const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+        const accessTkn = await cookies.get('accessToken');
+        const refreshTkn = await cookies.get('refreshToken');
+        if (!accessTkn || !refreshTkn) {
+          console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+          navigate('/login', { replace: true });
+          return;
+        }
+
+        const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, accessTkn, refreshTkn);
         if (response.status === 200 && response.data.userList !== undefined) {
           setUserList(response.data.userList);
         } else {
@@ -103,7 +123,7 @@ export default function DashboardUserRequirement() {
     };
 
     const isLogin = () => {
-      const accessTkn = getCookie("accessToken");
+      const accessTkn = cookies.get("accessToken");
       if (!accessTkn) {
         navigate('/login', { replace: true });
       }
@@ -112,15 +132,7 @@ export default function DashboardUserRequirement() {
     getUserList();
     getUserRequirements();
   }, [navigate]);
-  // const [open, setOpen] = useState(null);
-  // 메뉴 열기
-  // const handleOpenMenu = (event) => {
-  //   setOpen(event.currentTarget);
-  // };
-  // 메뉴 닫기
-  // const handleCloseMenu = () => {
-  //   setOpen(null);
-  // };
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState('asc');
@@ -149,11 +161,19 @@ export default function DashboardUserRequirement() {
   };
   // 삭제 관련 함수
   const handleDelete = async() => {
+    const cookies = new Cookies();
     const errMsg = 'Error : [deleteRequirement]';
-  
+    
     try {
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken'); // accessTkn, refreshTkn
+      if (!accessTkn || !refreshTkn) {
+        console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+        navigate('/login', { replace: true });
+        return;
+    }
       selected.forEach(async (id) => {
-        const response = await postRequestApi(`${API.deleteRequirement}?requestId=${id}`, null, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'DELETE');
+        const response = await postRequestApi(`${API.deleteRequirement}?requestId=${id}`, null, errMsg, navigate, accessTkn, refreshTkn, 'DELETE');
         if (response.status === 200) {
           window.location.reload();
         }

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
 import { Avatar, Box, Dialog, IconButton, Typography, TextField } from '@mui/material';
 
 import ClearIcon from '@mui/icons-material/Clear';
@@ -10,7 +12,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { postRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink'
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 CategoryList.propTypes = {
     categories: PropTypes.array,
@@ -65,7 +67,17 @@ export default function CategoryList({ categories, reload }) {
         formData.append('categoryId', id);
 
         try {
-            const response = await postRequestApi(API.modifyCategory, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'),'PUT');
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken');
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+
+            const response = await postRequestApi(API.modifyCategory, formData, errMsg, navigate, accessTkn, refreshTkn,'PUT');
             if (response.status === 200) {
                 reload(); // Reload categories to reflect the change
             } else {
@@ -100,7 +112,11 @@ export default function CategoryList({ categories, reload }) {
         const errMsg = 'Error : getCategoryList';
 
         try {
-        const response = await postRequestApi(API.deleteCategory, { categoryId: id },errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'DELETE');
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken');
+
+            const response = await postRequestApi(API.deleteCategory, { categoryId: id },errMsg, navigate, accessTkn, refreshTkn, 'DELETE');
         if (response.status === 200) {
             reload();
         } else {
@@ -113,51 +129,55 @@ export default function CategoryList({ categories, reload }) {
 
   return (
     <>
-        {categories.length === 0 ? (
-            <Typography sx={{ mt: 2 }}>카테고리가 존재하지 않습니다.</Typography>
-        ) : (
-            categories.map((category) => (
-                <Box key={category.id} sx={{ ...categoryListStyle, alignItems: 'center' }}>
-                    <Avatar
-                        src={`${category.imageUrl}0`}
-                        alt={category.name}
-                        sx={{ width: 50, height: 50, mr: 2 }}
-                        onClick={() => handleAvatarClick(`${category.imageUrl}0`)}
-                    />
-                    {editStates[category.id] && editStates[category.id].isEditing ? (
-                        <TextField
-                            value={editStates[category.id].tempName}
-                            onChange={(e) => handleChange(category.id, e.target.value)}
-                            variant="outlined"
-                            size="small"
-                            sx={{ flexGrow: 1, mr: 2 }}
+        <Box sx={{ overflowY: 'scroll',  '&::-webkit-scrollbar': { display: 'none' }}}>
+            {categories.length === 0 ? (
+                <Typography sx={{ mt: 2 }}>카테고리가 존재하지 않습니다.</Typography>
+            ) : (
+                categories.map((category) => (
+                    <Box key={category.id} sx={{ ...categoryListStyle, alignItems: 'center' }}>
+                        <Avatar
+                            src={`${category.imageUrl}0`}
+                            alt={category.name}
+                            sx={{ width: 50, height: 50, mr: 2 }}
+                            onClick={() => handleAvatarClick(`${category.imageUrl}0`)}
                         />
-                    ) : (
-                        <Typography sx={{ flexGrow: 1 }}>{category.name}</Typography>
-                    )}
-                    {editStates[category.id] && editStates[category.id].isEditing ? (
-                        <>
-                            <IconButton onClick={() => handleSave(category.id)}>
-                                <CheckIcon />
+                        {editStates[category.id] && editStates[category.id].isEditing ? (
+                            <TextField
+                                value={editStates[category.id].tempName}
+                                onChange={(e) => handleChange(category.id, e.target.value)}
+                                variant="outlined"
+                                size="small"
+                                sx={{ flexGrow: 1, mr: 2 }}
+                            />
+                        ) : (
+                            <Typography sx={{ flexGrow: 1 }}>{category.name}</Typography>
+                        )}
+                        {editStates[category.id] && editStates[category.id].isEditing ? (
+                            <>
+                                <IconButton onClick={() => handleSave(category.id)}>
+                                    <CheckIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleCancel(category.id, category.name)}>
+                                    <ClearIcon />
+                                </IconButton>
+                            </>
+                        ) : (
+                            <IconButton onClick={() => handleEdit(category.id)}>
+                                <EditIcon />
                             </IconButton>
-                            <IconButton onClick={() => handleCancel(category.id, category.name)}>
-                                <ClearIcon />
-                            </IconButton>
-                        </>
-                    ) : (
-                        <IconButton onClick={() => handleEdit(category.id)}>
-                            <EditIcon />
+                        )}
+                        <IconButton onClick={() => deleteCategory(category.id)}>
+                            <DeleteForeverIcon />
                         </IconButton>
-                    )}
-                    <IconButton onClick={() => deleteCategory(category.id)}>
-                        <DeleteForeverIcon />
-                    </IconButton>
-                </Box>
-            ))
-        )}
+                    </Box>
+                ))
+            )}
+        </Box>
 
         <Dialog open={openDialog} onClose={handleCloseDialog}>
             <img src={selectedImageUrl} alt="Preview" style={{ maxWidth: '100%', height: 'auto' }} />
-        </Dialog></>
+        </Dialog>
+        
+    </>
   );
 }

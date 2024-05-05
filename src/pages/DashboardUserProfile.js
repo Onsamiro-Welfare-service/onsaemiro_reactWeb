@@ -1,13 +1,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
+
+
 
 import { Grid, Container, Typography, Button, Stack } from '@mui/material';
 import Iconify from '../components/iconify';
 import { UserProfiles, UserAddModal, UserAnswerModal } from '../sections/@dashboard/userProfile';
 import { getRequestApi } from '../apiRequest';
 import { API } from '../apiLink';
-import { getCookie } from '../sections/auth/cookie/cookie';
+// import { getCookie } from '../sections/auth/cookie/cookie';
 
 
 export default function DashboardUserProfile() {
@@ -29,11 +33,14 @@ export default function DashboardUserProfile() {
 
   // 프로필 리스트를 불러오는 함수
   const getUserProfiles = useCallback(async () => {
+    const cookies = new Cookies();
     const errMsg = 'Error : getUserProfiles';
-    const params = { departmentId: getCookie('departmentId') };
-    console.log("실행");
+    const params = { departmentId: cookies.get('departmentId') };
     try {
-      const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+      
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken'); // accessTkn, refreshTkn
+      const response = await getRequestApi(API.userProfileList, params, errMsg, navigate, accessTkn, refreshTkn);
       if (response.status === 200 && response.data.userList !== undefined) {
         setUserProfiles(response.data.userList);
       } else {
@@ -46,7 +53,8 @@ export default function DashboardUserProfile() {
   
   useEffect(() => {
     const isLogin = () => {
-      const accessTkn = getCookie("accessToken");
+      const cookies = new Cookies();
+      const accessTkn = cookies.get("accessToken");
       if (!accessTkn) {
         navigate('/login', { replace: true });
       }

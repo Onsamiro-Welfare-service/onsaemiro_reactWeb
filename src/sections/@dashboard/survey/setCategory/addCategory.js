@@ -42,7 +42,15 @@ export default function AddCategory({ reload }) {
         }
 
         try {
-            const response = await multiFormRequestApi(API.createCategory, requestData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            const accessTkn = await getCookie('accessToken');
+            const refreshTkn = await getCookie('refreshToken'); // 
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+            const response = await multiFormRequestApi(API.createCategory, requestData, errMsg, navigate,accessTkn, refreshTkn);
 
             if (response.status === 200) {
                 setImageUrl('');

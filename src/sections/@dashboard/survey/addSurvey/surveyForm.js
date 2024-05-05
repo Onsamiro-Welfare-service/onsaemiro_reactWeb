@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
+
 import {
     Box,
     Button
@@ -12,7 +15,7 @@ import PreviewSurveySlide from '../previewSurvey/previewSurveySlide';
 
 import { getDefaultRequestApi, multiFormRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '600px',
@@ -93,7 +96,16 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
         });
 
         try {
-            const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken'); // accessTkn, refreshTkn
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+            const response = await multiFormRequestApi(API.createSurvey, formData, errMsg, navigate, accessTkn, refreshTkn);
             if (response.status === 200) {
                 // 성공적으로 등록
                 alert('새로운 질문이 추가되었습니다.');
@@ -113,22 +125,32 @@ export default function SurveyForm({status, mode, closeModal, reload}) {
 
     useEffect(() => {
         const getCategoryList = async () => {
-          const errMsg = 'Error : getCategoryList';
-      
-          try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
-            console.log(response.data);
-            if (response.status === 200 && response.data.categoryList !== undefined) {
-                setCategorySelect(response.data.categoryList);
-                if (!response.data.categoryList.some(category => category.id === inputs.categoryId)) {
-                    setInputs(inputs => ({ ...inputs, categoryId: '' }));
-                  }
-            } else {
-              console.error(errMsg, '지정되지 않은 에러');
+            const errMsg = 'Error : getCategoryList';
+            try {
+                const cookies = new Cookies();
+                const accessTkn = await cookies.get('accessToken');
+                const refreshTkn = await cookies.get('refreshToken');
+        
+                // 쿠키 값이 undefined인 경우, 사용자에게 알리고 로그인 페이지로 리다이렉션
+                if (!accessTkn || !refreshTkn) {
+                    console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                    alert('로그아웃 되었습니다.');
+                    navigate('/login', { replace: true });
+                    return;
+                }
+                const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, accessTkn, refreshTkn);
+                
+                if (response.status === 200 && response.data.categoryList !== undefined) {
+                    setCategorySelect(response.data.categoryList);
+                    if (!response.data.categoryList.some(category => category.id === inputs.categoryId)) {
+                        setInputs(inputs => ({ ...inputs, categoryId: '' }));
+                    }
+                } else {
+                console.error(errMsg, '지정되지 않은 에러');
+                }
+            } catch (error) {
+                console.error(errMsg, error);
             }
-          } catch (error) {
-            console.error(errMsg, error);
-          }
         };
     
         getCategoryList();

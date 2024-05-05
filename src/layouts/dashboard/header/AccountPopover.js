@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
-import { rmCookie, getCookie } from '../../../sections/auth/cookie/cookie';
+// import { getCookie } from '../../../sections/auth/cookie/cookie'; // rmCookie
 import { API } from '../../../apiLink';
 // ----------------------------------------------------------------------
 
@@ -39,8 +40,9 @@ export default function AccountPopover() {
 
   // 로그아웃 처리하는 API
   const logoutUser = async (navigate) => {
-    const manageId = getCookie("managerId");
-    const accessTkn = getCookie("accessToken");
+    const cookies = new Cookies();
+    const manageId = cookies.get("managerId");
+    const accessTkn = cookies.get("accessToken");
   
     try {
       await axios.post(API.manageLogout, { "managerId": manageId }, {
@@ -53,7 +55,7 @@ export default function AccountPopover() {
 
     }
 
-    rmCookie();
+    // rmCookie();
     alert("로그아웃 되었습니다.");
     navigate('/login', { replace: true });
   };

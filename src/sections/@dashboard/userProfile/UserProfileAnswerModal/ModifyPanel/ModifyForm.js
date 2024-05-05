@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
+
 import { Box, Container, TextField, Slider, Select, MenuItem, Checkbox, ListItemText, InputLabel, Divider, Button } from '@mui/material';
 
 import { API } from '../../../../../apiLink';
 import { getDefaultRequestApi, postRequestApi } from '../../../../../apiRequest';
-import { getCookie } from '../../../../auth/cookie/cookie';
+// import { getCookie } from '../../../../auth/cookie/cookie';
 
 
 ModifyForm.propTypes = {
@@ -35,7 +38,16 @@ export default function ModifyForm({ userData, setUserData,  }) {
             categoryIdList: selectedOptions
         };
         try {
-            const response = await postRequestApi(API.userCategoryCreate, JSON.stringify(requestData), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken'); // 
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+            const response = await postRequestApi(API.userCategoryCreate, JSON.stringify(requestData), errMsg, navigate, accessTkn, refreshTkn);
             if (response.status === 200) {
                 alert('카테고리가 설정되었습니다.');
                 // eslint-disable-next-line no-restricted-globals
@@ -50,8 +62,19 @@ export default function ModifyForm({ userData, setUserData,  }) {
 
     const getCategoryList = async () => {
         const errMsg = 'Error : getCategoryList';
+        
         try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken');
+    
+            // 쿠키 값이 undefined인 경우, 사용자에게 알리고 로그인 페이지로 리다이렉션
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, accessTkn, refreshTkn);
 
             if (response.status === 200 && response.data.categoryList !== undefined) {
                 setCategoryList(response.data.categoryList);
@@ -65,7 +88,7 @@ export default function ModifyForm({ userData, setUserData,  }) {
 
     useEffect(() => {
         getCategoryList();
-        
+    // eslint-disable-next-line
     }, []);
 
     return (

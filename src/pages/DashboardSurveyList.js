@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 // @mui
 import {
   Card,
@@ -23,29 +24,18 @@ import ModalSetCategory from '../sections/@dashboard/survey/setCategory/setCateg
 // api request
 import { API } from '../apiLink';
 import { getDefaultRequestApi } from '../apiRequest';
-import { getCookie } from '../sections/auth/cookie/cookie';
+
+
+
 
 // 메인 함수 
 export default function UserPage() {
-  // 질문 리스트 헤더 및 하단 툴바 비활성화 (페이지네이션 기능 추가 예정)
-  // const [page, setPage] = useState(0);
+  
   const [filterName, setFilterName] = useState('');
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-  // const handleChangeRowsPerPage = (event) => {
-  //   setPage(0);
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  // };
 
   const handleFilterByName = () => {  
   ;setFilterName('');
   };
-  // const handleFilterByName = (event) => {
-  //  setPage(0);
-  //  setFilterName(event.target.value);
-  //  };
 
   const navigate = useNavigate();
   const [categoryList, setCategoryList] = useState([{id: ''}]);
@@ -56,22 +46,33 @@ export default function UserPage() {
     const errMsg = 'Error : [SurveyListpage] fetchSurveyData';
 
     try {
-      const categoryResponse = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+      const cookies = new Cookies();
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken');
+
+      // 쿠키 값이 undefined인 경우, 사용자에게 알리고 로그인 페이지로 리다이렉션
+      if (!accessTkn || !refreshTkn) {
+          console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+          navigate('/login', { replace: true });
+          return;
+      }
+      const categoryResponse = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, accessTkn , refreshTkn );
       setCategoryList(categoryResponse.data.categoryList);
 
       setSurveyList([]);
       categoryResponse.data.categoryList.forEach(async (category) => {
-        const surveyResponse = await getDefaultRequestApi(`${API.getCategorySurveyList}/${category.id}`, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+        const surveyResponse = await getDefaultRequestApi(`${API.getCategorySurveyList}/${category.id}`, errMsg, navigate, accessTkn , refreshTkn);
         // console.log("surveyResponse ",surveyResponse.data);
         setSurveyList(surveyList => [...surveyList, ...surveyResponse.data.surveyList]);
       });
     } catch (error) {
       console.error(errMsg, error);
     }
-  }, [navigate]);
+  }, [navigate, setCategoryList, setSurveyList]);
   useEffect(() => {
     const isLogin = () => {
-      const accessTkn = getCookie("accessToken");
+      const cookies = new Cookies();
+      const accessTkn = cookies.get("accessToken");
       if (!accessTkn) {
         navigate('/login', { replace: true });
       }

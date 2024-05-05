@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useCallback  } from 'react';
 import {  Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-
+import { Cookies } from 'react-cookie';
 
 import CategoryList from './categoryList';
 import AddCategory from './addCategory';
 
 import { getDefaultRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink'
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '800px',
@@ -23,7 +22,8 @@ const style = {
     boxShadow: 24,
     p: 4,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    
 };
 
 export default function ModalSetCategory() {
@@ -32,10 +32,22 @@ export default function ModalSetCategory() {
 
     const getCategoryList = useCallback(async () => {
         const errMsg = 'Error : getCategoryList';
-
+    
         try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
-            if (response.status === 200 && response.data.categoryList !== undefined) {
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken');
+    
+            // 쿠키 값이 undefined인 경우, 사용자에게 알리고 로그인 페이지로 리다이렉션
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+    
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, accessTkn, refreshTkn);
+            if (response && response.status === 200 && response.data.categoryList !== undefined) {
                 setCategories(response.data.categoryList);
             } else {
                 console.error(errMsg, '지정되지 않은 에러');
@@ -43,7 +55,7 @@ export default function ModalSetCategory() {
         } catch (error) {
             console.error(errMsg, error);
         }
-    }, [navigate]);
+    }, [navigate, setCategories]);
 
     useEffect(() => {
         getCategoryList();
