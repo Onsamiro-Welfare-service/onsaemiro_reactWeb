@@ -1,5 +1,6 @@
 // const baseURL = `https://test.onsaemiro.site/api`; // 기본 api 주소
 const baseURL = `https://onsaemiro.site/api`;
+
 export const API = {
     // 회원 관련 API
     "manageRegister": `${baseURL}/member/register/manager`, // 관리자 회원가입
@@ -41,6 +42,4 @@ export const API = {
     "getNewRequirementList": `${baseURL}/request/get/new`, // 새로운 요구사항 리스트 조회
     "checkRequirement": `${baseURL}/request/check`, // 요구사항 확인
     "deleteRequirement": `${baseURL}/request/delete`, // 요구사항 삭제
-
-    
 };
