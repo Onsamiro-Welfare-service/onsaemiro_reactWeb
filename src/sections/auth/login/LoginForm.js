@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 import CryptoJS from 'crypto-js';
 // @mui
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Typography } from '@mui/material';
@@ -8,11 +9,12 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
 import { API } from '../../../apiLink';
-import { setCookie, getCookie } from '../cookie/cookie'; 
+// import { setCookie, getCookie } from '../cookie/cookie'; 
 
 // ----------------------------------------------------------------------
  
 export default function LoginForm() {
+  const cookies = new Cookies();
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -34,10 +36,14 @@ export default function LoginForm() {
 
       if(response.status === 200){
         // console.log(response.data);
-        setCookie('accessToken', response.data.accessToken);
-        setCookie('refreshToken', response.data.refreshToken);
-        setCookie('managerId', response.data.id);
-        setCookie('departmentId', response.data.departmentId);
+        cookies.set('accessToken', response.data.accessToken, { path: '/' });
+        cookies.set('refreshToken', response.data.refreshToken, { path: '/' });
+        cookies.set('managerId', response.data.id, { path: '/' });
+        cookies.set('departmentId', response.data.departmentId, { path: '/' });
+        // setCookie('accessToken', response.data.accessToken);
+        // setCookie('refreshToken', response.data.refreshToken);
+        // setCookie('managerId', response.data.id);
+        // setCookie('departmentId', response.data.departmentId);
 
         navigate('/dashboard', { replace: true });
         
@@ -57,8 +63,12 @@ export default function LoginForm() {
 
   useEffect(() => {
     // const accTkn = getCookie('accessToken');
-    const rfshTkn = getCookie('refreshToken');
-    if(rfshTkn !== null && rfshTkn !== undefined){
+    const rfshTkn = cookies.get('refreshToken');
+    if(!rfshTkn && (rfshTkn === '' || rfshTkn === undefined)){
+      cookies.remove('accessToken', { path: '/' });
+      cookies.remove('refreshToken', { path: '/' });
+    }
+    if(rfshTkn){
       alert("로그인 되었습니다");
       navigate('/dashboard', { replace: true });
     }

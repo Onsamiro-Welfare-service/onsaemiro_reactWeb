@@ -1,4 +1,4 @@
-
+// const baseURL = `https://test.onsaemiro.site/api`; // 기본 api 주소
 const baseURL = `https://onsaemiro.site/api`;
 
 export const API = {
@@ -11,7 +11,7 @@ export const API = {
     "loginAdmin": `${baseURL}/member/auth/login/manager`, // 관리자 로그인
     "manageLogout": `${baseURL}/member/manager/manager/logout`, // 로그아웃
     "refreshToken": `${baseURL}/member/auth/newtoken`, // 토큰 재발급
-
+ 
     // 유저 프로필 관련 API
     "userProfileList": `${baseURL}/member/user/management/department/get`, // 유저 프로필 리스트 조회
     "userProfileCreate": `${baseURL}/member/register/user`, // 유저 프로필 등록
