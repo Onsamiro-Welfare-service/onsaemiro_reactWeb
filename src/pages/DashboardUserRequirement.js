@@ -125,6 +125,7 @@ export default function DashboardUserRequirement() {
     const isLogin = () => {
       const accessTkn = cookies.get("accessToken");
       if (!accessTkn) {
+        alert('로그인을 다시 해주세요!');
         navigate('/login', { replace: true });
       }
     }

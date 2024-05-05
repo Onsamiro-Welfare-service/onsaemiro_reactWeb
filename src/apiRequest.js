@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { Cookies } from 'react-cookie';
 import { API } from './apiLink';
-import { setCookie } from './sections/auth/cookie/cookie'; // rmCookie
+// import { setCookie } from './sections/auth/cookie/cookie'; // rmCookie
 
 const handleApiResponse = async (response) => {
     if (response.status === 200) {
@@ -16,22 +17,35 @@ const handleApiResponse = async (response) => {
 };
 
 const refreshTokenIfNeeded = async (refreshTkn, navigate) => {
+    const cookies = new Cookies();
+    console.log('토큰 재요청 실행');
     try {
         const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
         if (refreshResponse.status === 200) {
             const newToken = refreshResponse.data.accessToken;
             const newRefreshTkn = refreshResponse.data.refreshToken;
-            setCookie('accessToken', newToken);
-            setCookie('refreshToken', newRefreshTkn);
+
+            cookies.set('accessToken', newToken, { path: '/' });
+            cookies.set('refreshToken', newRefreshTkn, { path: '/' });
+            
             return { newToken, newRefreshTkn };
         }
         console.log('토큰이 만료되었습니다. 로그아웃합니다.');
-        // rmCookie();
+
+        cookies.remove('accessToken', { path: '/' });
+        cookies.remove('refreshToken', { path: '/' });
+        cookies.remove('managerId', { path: '/' });
+        cookies.remove('departmentId', { path: '/' });
+        alert('로그아웃되었습니다. 다시 로그인해주세요!');
         navigate('/login', { replace: true });
         return null;
     } catch(error) {
         console.error('토큰 갱신 실패:', error);
-        // rmCookie();
+        cookies.remove('accessToken', { path: '/' });
+        cookies.remove('refreshToken', { path: '/' });
+        cookies.remove('managerId', { path: '/' });
+        cookies.remove('departmentId', { path: '/' });
+        alert('로그아웃되었습니다. 다시 로그인해주세요!');
         navigate('/login', { replace: true });  
         return null;
     }

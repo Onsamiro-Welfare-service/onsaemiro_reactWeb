@@ -55,7 +55,10 @@ export default function AccountPopover() {
 
     }
 
-    // rmCookie();
+    cookies.remove('accessToken', { path: '/' });
+    cookies.remove('refreshToken', { path: '/' });
+    cookies.remove('managerId', { path: '/' });
+    cookies.remove('departmentId', { path: '/' });
     alert("로그아웃 되었습니다.");
     navigate('/login', { replace: true });
   };
