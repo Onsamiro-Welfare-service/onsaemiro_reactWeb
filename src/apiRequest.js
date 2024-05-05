@@ -1,215 +1,125 @@
-// API 호출 함수
 import axios from 'axios';
-// import { Cookies } from 'react-cookie';
+import { Cookies } from 'react-cookie';
 import { API } from './apiLink';
-import { setCookie, rmCookie } from './sections/auth/cookie/cookie'; 
+// import { setCookie } from './sections/auth/cookie/cookie'; // rmCookie
 
+const handleApiResponse = async (response) => {
+    if (response.status === 200) {
+        return response;
+    } 
+    if (response.status === 500) {
+        console.log('서버 에러입니다.');
+        return undefined;
+    }
+    
+    throw new Error(`Unexpected status code: ${response.status}`);
+    
+};
 
-// const cookies = new Cookies();
+const refreshTokenIfNeeded = async (refreshTkn, navigate) => {
+    const cookies = new Cookies();
+    console.log('토큰 재요청 실행');
+    try {
+        const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
+        if (refreshResponse.status === 200) {
+            const newToken = refreshResponse.data.accessToken;
+            const newRefreshTkn = refreshResponse.data.refreshToken;
 
-// function rmCookie(){
-//     cookies.remove('accessToken', { path: '/' });
-//     cookies.remove('refreshToken', { path: '/' });
-//     cookies.remove('managerId', { path: '/' });
-//     cookies.remove('departmentId', { path: '/' });
-// }
+            cookies.set('accessToken', newToken, { path: '/' });
+            cookies.set('refreshToken', newRefreshTkn, { path: '/' });
+            
+            return { newToken, newRefreshTkn };
+        }
+        console.log('토큰이 만료되었습니다. 로그아웃합니다.');
+
+        cookies.remove('accessToken', { path: '/' });
+        cookies.remove('refreshToken', { path: '/' });
+        cookies.remove('managerId', { path: '/' });
+        cookies.remove('departmentId', { path: '/' });
+        alert('로그아웃되었습니다. 다시 로그인해주세요!');
+        navigate('/login', { replace: true });
+        return null;
+    } catch(error) {
+        console.error('토큰 갱신 실패:', error);
+        cookies.remove('accessToken', { path: '/' });
+        cookies.remove('refreshToken', { path: '/' });
+        cookies.remove('managerId', { path: '/' });
+        cookies.remove('departmentId', { path: '/' });
+        alert('로그아웃되었습니다. 다시 로그인해주세요!');
+        navigate('/login', { replace: true });  
+        return null;
+    }
+    
+    
+};
+
+const makeApiRequest = async (config, errMsg, navigate, refreshTkn, retryFunction) => {
+    try {
+        const response = await axios(config);
+        if (response.status !== 200) {
+            throw new Error(`Unexpected status code: ${response.status}`);
+        }
+        return handleApiResponse(response);
+    } catch (error) {
+        console.log(errMsg);
+        if (error.response && error.response.status === 401) {
+            const tokens = await refreshTokenIfNeeded(refreshTkn, navigate);
+            if (tokens) {
+                return retryFunction();
+            }
+        }
+        console.error(errMsg, error);
+        return undefined;
+    }
+};
 
 export const getRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn) => {
     const config = {
-        method: "GET", // HTTP 메소드 (GET, POST 등)
-        url: apiUrl, // API URL
+        method: "GET",
+        url: apiUrl,
         headers: {
-            'Content-Type':  'application/json', // 컨텐트 타입multipart/form-data
-            'Authorization': `Bearer ${token}` // 인증 토큰
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         params: body
     };
-
-    try {
-        const response = await axios(config); // axios에 설정 객체를 직접 전달
-        if (response.status === 500) {
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-
-        if (response.status === 200) {
-            return response;
-        }
-        
-        return response.data;
-        
-    } catch (error) {
-        // 오류 처리 로직
-        if (error.response && error.response.status === 401) {
-            const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
-
-            if (refreshResponse.status === 200) {
-                const token = refreshResponse.data.accessToken;
-                const refreshTkn = refreshResponse.data.refreshToken;
-
-                setCookie('accessToken', token);
-                setCookie('refreshToken', refreshTkn);
-                return getRequestApi(apiUrl, body, errMsg, navigate, token, refreshTkn);
-            }
-        } else {
-            console.log(errMsg, error);
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        return undefined;
-    }
+    return makeApiRequest(config, errMsg, navigate, refreshTkn, () => getRequestApi(apiUrl, body, errMsg, navigate, token, refreshTkn));
 };
+
 export const getDefaultRequestApi = async (apiUrl, errMsg, navigate, token, refreshTkn) => {
     const config = {
-        method: "GET", // HTTP 메소드 (GET, POST 등)
-        url: apiUrl, // API URL
+        method: "GET",
+        url: apiUrl,
         headers: {
-            'Content-Type':  'application/json', // 컨텐트 타입multipart/form-data
-            'Authorization': `Bearer ${token}` // 인증 토큰
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     };
-    // console.log("Sending API request:", config);
-
-    try {
-        const response = await axios(config); // axios에 설정 객체를 직접 전달
-        // console.log('1', response.data.categoryList);
-        if (response.status === 500) {
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        if (response.status === 200) {
-            return response;
-        }
-        return response.data;
-        
-    } catch (error) {
-        // 오류 처리 로직
-        console.log('여기선 뭘까', error.response);
-        if (error.response && error.response.status === 401) {
-            const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
-
-            if (refreshResponse.status === 200) {
-                const token = refreshResponse.data.accessToken;
-                const refreshTkn = refreshResponse.data.refreshToken;
-
-                // if (token === null || refreshTkn === null) {
-                //     console.log('토큰 요청 에러. 로그아웃합니다');
-                //     rmCookie();
-                //     navigate('/login', { replace: true });
-                // }
-                setCookie('accessToken', token);
-                setCookie('refreshToken', refreshTkn);
-                return getDefaultRequestApi(apiUrl, errMsg, navigate, token, refreshTkn);
-            }
-        } else {
-            console.log(errMsg, error);
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        return undefined;
-    }
+    return makeApiRequest(config, errMsg, navigate, refreshTkn, () => getDefaultRequestApi(apiUrl, errMsg, navigate, token, refreshTkn));
 };
 
-export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn, method_="POST") => {
+export const postRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn, method_ = "POST") => {
     const config = {
-        method: method_, // HTTP 메소드 (GET, POST 등)
-        url: apiUrl, // API URL
+        method: method_,
+        url: apiUrl,
         headers: {
-            'Content-Type':  'application/json', // 컨텐트 타입multipart/form-data
-            'Authorization': `Bearer ${token}` // 인증 토큰
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         data: body
     };
-
-    try {
-        const response = await axios(config); // axios에 설정 객체를 직접 전달
-        if (response.status === 500) {
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        return response;
-
-    } catch (error) {
-        // 오류 처리 로직
-        if (error.response && error.response.status === 401) {
-            const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
-
-            if (refreshResponse.status === 200) {
-                const token = refreshResponse.data.accessToken;
-                const refreshTkn = refreshResponse.data.refreshToken;
-
-                // if (token === null || refreshTkn === null) {
-                //     console.log('토큰 요청 에러. 로그아웃합니다');
-                //     rmCookie();
-                //     navigate('/login', { replace: true });
-                // }
-                setCookie('accessToken', token);
-                setCookie('refreshToken', refreshTkn);
-                return postRequestApi(apiUrl, body, errMsg, navigate, method_, token);
-            }
-        } else {
-            console.error(errMsg, error);
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        return undefined;
-    }
+    return makeApiRequest(config, errMsg, navigate, refreshTkn, () => postRequestApi(apiUrl, body, errMsg, navigate, token, refreshTkn, method_));
 };
 
-export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn, method_="POST") => {
+export const multiFormRequestApi = async (apiUrl, body, errMsg, navigate, token, refreshTkn, method_ = "POST") => {
     const config = {
-        method: method_, // HTTP 메소드 (GET, POST 등)
-        url: apiUrl, // API URL
+        method: method_,
+        url: apiUrl,
         headers: {
-            'Content-Type':  'multipart/form-data', // 컨텐트 타입
-            'Authorization': `Bearer ${token}` // 인증 토큰
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
         },
         data: body
     };
-
-    try {
-        const response = await axios(config); // axios에 설정 객체를 직접 전달
-        if (response.status === 500) {
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        if (response.status === 200) {
-            return response;
-        }
-        return response.data;
-        
-    } catch (error) {
-        // 오류 처리 로직
-        if (error.response && error.response.status === 401) {
-            const refreshResponse = await axios.post(API.refreshToken, { refreshToken: refreshTkn });
-
-            if (refreshResponse.status === 200) {
-                const token = refreshResponse.data.accessToken;
-                const refreshTkn = refreshResponse.data.refreshToken;
-
-                if (token === null || refreshTkn === null) {
-                    console.log('토큰 요청 에러. 로그아웃합니다');
-                    rmCookie();
-                    navigate('/login', { replace: true });
-                }
-                setCookie('accessToken', token);
-                setCookie('refreshToken', refreshTkn);
-                return multiFormRequestApi(apiUrl, body, errMsg, navigate, token, method_);
-            }
-        } else {
-            console.error(errMsg, error);
-            console.log('토큰 요청 에러. 로그아웃합니다');
-            rmCookie();
-            navigate('/login', { replace: true });
-        }
-        return undefined;
-    }
+    return makeApiRequest(config, errMsg, navigate, refreshTkn, () => multiFormRequestApi(apiUrl, body, errMsg, navigate, token, refreshTkn, method_));
 };
-

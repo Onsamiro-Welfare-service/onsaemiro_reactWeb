@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { Cookies } from 'react-cookie';
 
 import {  initialSurveyData } from '../constants';
 
@@ -11,7 +12,7 @@ import SeqSurveyForms  from './seqSurveyForms';
 import SeqSurveyButton from './seqSurveyButton';
 import { postRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '800px',
@@ -88,7 +89,17 @@ export default function ModalSeqSurvey({status, surveys, categoryList }) {
     };
 
     try {
-      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'PUT');
+      const cookies = new Cookies();
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken');
+      if (!accessTkn || !refreshTkn) {
+        console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+        alert('로그아웃 되었습니다.');
+        navigate('/login', { replace: true });
+        return;
+    }
+
+      const response = await postRequestApi(API.changeSurveyOrder , JSON.stringify(config), errMsg, navigate, accessTkn, refreshTkn, 'PUT');
       if (response.status === 200) {
           // 성공적으로 등록
           console.log('[ModifySurveyForm]', response.data);

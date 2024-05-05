@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
 import { Button, Dialog, DialogTitle } from "@mui/material";
 
 import { API } from '../../../../apiLink';
 import { postRequestApi } from '../../../../apiRequest';
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 UserAnswerHeaders.propTypes = {
     userData: PropTypes.object,
@@ -25,9 +27,18 @@ export default function UserAnswerHeaders({userData, dateSet, dateValue}){
     const getUserLoginCode = async () => {
       const errMsg = 'Error : getUserLoginCode';
       const config = { id: userData.id };
-  
+      
       try {
-        const response = await postRequestApi(API.getUserLoginCode, config, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+        const cookies = new Cookies();
+        const accessTkn = await cookies.get('accessToken');
+        const refreshTkn = await cookies.get('refreshToken'); // 
+        if (!accessTkn || !refreshTkn) {
+          console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+          alert('로그아웃 되었습니다.');
+          navigate('/login', { replace: true });
+          return;
+        }
+        const response = await postRequestApi(API.getUserLoginCode, config, errMsg, navigate, accessTkn, refreshTkn);
         if (response.status === 200 && response.data.loginCode !== undefined) {
           setLoginCode(response.data.loginCode);
           setLoginCodeOpen(true);

@@ -1,12 +1,14 @@
-  import React, { useState, useEffect } from 'react';
-  import { useNavigate } from 'react-router-dom';
-  import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Cookies } from 'react-cookie';
 
-  import { Checkbox, TableRow, TableCell, TableBody, Stack, Typography, Collapse, Box, Avatar } from '@mui/material';
-  import Label from '../../../components/label';
-  import { API } from '../../../apiLink';
-  import { postRequestApi } from '../../../apiRequest';
-  import { getCookie } from '../../auth/cookie/cookie';
+
+import { Checkbox, TableRow, TableCell, TableBody, Stack, Typography, Collapse, Box, Avatar } from '@mui/material';
+import Label from '../../../components/label';
+import { API } from '../../../apiLink';
+import { postRequestApi } from '../../../apiRequest';
+//  import { getCookie } from '../../auth/cookie/cookie';
 
   RequirementListBody.propTypes = {
     page: PropTypes.number.isRequired,
@@ -43,8 +45,16 @@
 
 
       try {
-        console.log()
-        const response = await postRequestApi(`${API.checkRequirement}?requestId=${clickedId}` , null, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+        const cookies = new Cookies();
+        const accessTkn = await cookies.get('accessToken');
+        const refreshTkn = await cookies.get('refreshToken'); // accessTkn, refreshTkn
+        if (!accessTkn || !refreshTkn) {
+          console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+          alert('로그아웃 되었습니다.');
+          navigate('/login', { replace: true });
+          return;
+      }
+        const response = await postRequestApi(`${API.checkRequirement}?requestId=${clickedId}` , null, errMsg, navigate, accessTkn, refreshTkn);
         if (response.status === 200) {
           console.log('체크 요청 성공');
           } else {

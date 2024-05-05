@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
 
 import {
     Grid,
@@ -12,7 +14,7 @@ import {
 
 import { getDefaultRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 // import { useState } from 'react';
 // import CategoryAdd from './addSurveyDialog';
 
@@ -36,7 +38,18 @@ export default function AddSurveySelectForm({inputs, setInputs}) {
           const errMsg = 'Error : getCategoryList';
       
           try {
-            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'));
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken');
+    
+            // 쿠키 값이 undefined인 경우, 사용자에게 알리고 로그인 페이지로 리다이렉션
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+            const response = await getDefaultRequestApi(API.getCategoryList, errMsg, navigate, accessTkn, refreshTkn);
             console.log(response.data);
             if (response.status === 200 && response.data.categoryList !== undefined) {
                 setCategorySelect(response.data.categoryList);

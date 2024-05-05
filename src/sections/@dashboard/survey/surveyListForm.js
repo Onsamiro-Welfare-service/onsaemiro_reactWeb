@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import React, { useState  } from 'react';
+import { Cookies } from 'react-cookie';
 import {
   Box,
   TableCell,
@@ -25,7 +26,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { API } from '../../../apiLink';
 import { postRequestApi } from '../../../apiRequest';
-import { getCookie } from '../../auth/cookie/cookie';
+// import { getCookie } from '../../auth/cookie/cookie';
 
 // import { tagList, levelList } from './constants';
 // import CategoryIcon from '../../../components/category/categoryIcon';
@@ -66,7 +67,16 @@ export default function SurveyListForm({ surveyData, prevClick, modifyClick, set
     console.log(config);
 
     try {
-      const response = await postRequestApi(API.deleteSurvey , JSON.stringify(config), errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), 'DELETE');
+      const cookies = new Cookies();
+      const accessTkn = await cookies.get('accessToken');
+      const refreshTkn = await cookies.get('refreshToken'); // 
+      if (!accessTkn || !refreshTkn) {
+        console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+        alert('로그아웃 되었습니다.');
+        navigate('/login', { replace: true });
+        return;
+      }
+      const response = await postRequestApi(API.deleteSurvey , JSON.stringify(config), errMsg, navigate, accessTkn, refreshTkn, 'DELETE');
       if (response.status === 200) {
         console.log('성공');
         setOpenDialog(false); // 다이얼로그 닫기

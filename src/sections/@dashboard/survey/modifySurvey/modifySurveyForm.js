@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState, useCallback  } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+
 
 import {
     Box,
@@ -12,7 +14,7 @@ import SurveyInputForm from './modifySurveyInputForm';
 import PreviewSurveyModal from '../previewSurvey/previewSurveyModal';
 import { multiFormRequestApi, getRequestApi } from '../../../../apiRequest';
 import { API } from '../../../../apiLink';
-import { getCookie } from '../../../auth/cookie/cookie';
+// import { getCookie } from '../../../auth/cookie/cookie';
 
 const style = {
     width: '600px',
@@ -73,7 +75,7 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
             }
         }
 
-        console.log(inputs.answerList);
+        // console.log(inputs.answerList);
         formData.append('request', JSON.stringify({
             surveyId: inputs.id,
             question: inputs.question,
@@ -102,8 +104,18 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
             }
         });
         
+
         try {
-            const response = await multiFormRequestApi(API.modifySurvey, formData, errMsg, navigate, getCookie('accessToken'), getCookie('refreshToken'), "PUT");
+            const cookies = new Cookies();
+            const accessTkn = await cookies.get('accessToken');
+            const refreshTkn = await cookies.get('refreshToken'); // accessTkn, refreshTkn
+            if (!accessTkn || !refreshTkn) {
+                console.error(errMsg, '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                alert('로그아웃 되었습니다.');
+                navigate('/login', { replace: true });
+                return;
+            }
+            const response = await multiFormRequestApi(API.modifySurvey, formData, errMsg, navigate, accessTkn, refreshTkn, "PUT");
             if (response.status === 200) {
                 alert('질문이 수정되었습니다.');
                 reload();
@@ -122,12 +134,21 @@ export default function ModifySurveyForm({status, mode, data, closeModal, reload
 
     useEffect(() => {
         const fetchPrevData = async () => { // 이전 데이터를 가져오는 로직
-          try {
-            const response = await getRequestApi(`${API.getSurveyData}/${data.id}`, null, 'Error Message', navigate, getCookie('accessToken'), getCookie('refreshToken'));
-            setPrevInputs(response.data);
-          } catch (error) {
-            console.error('Error fetching previous data', error);
-          }
+            try {
+                const cookies = new Cookies();
+                const accessTkn = await cookies.get('accessToken');
+                const refreshTkn = await cookies.get('refreshToken'); // accessTkn, refreshTkn
+                if (!accessTkn || !refreshTkn) {
+                    console.error('fetchPrevData', '접근 토큰 또는 갱신 토큰이 유효하지 않습니다. 다시 로그인이 필요합니다.');
+                    alert('로그아웃 되었습니다.');
+                    navigate('/login', { replace: true });
+                    return;
+                }
+                const response = await getRequestApi(`${API.getSurveyData}/${data.id}`, null, 'Error Message', navigate, accessTkn, refreshTkn);
+                setPrevInputs(response.data);
+            } catch (error) {
+                console.error('Error fetching previous data', error);
+            }
         };
     
         if (data) {
